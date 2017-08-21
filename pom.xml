@@ -227,6 +227,15 @@
                     <configLocation>google_checks.xml</configLocation>
                 </configuration>
             </plugin>
+            <!--Maven exec-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <mainClass>package.yourclasstorun</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
