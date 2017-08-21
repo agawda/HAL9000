@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="https://bootswatch.com/slate/bootstrap.css"
+          th:href="@{https://bootswatch.com/slate/bootstrap.css}"/>
+</head>
+<body>
+<h1>
+    <p th:text="'Hello, ' + ${name} + '!'"/>
+    <tr th:each="number: ${exampleBooks}">
+        <td th:text="${number}">a</td>
+        <br/>
+    </tr>
+</h1>
+</body>
+</html>
