@@ -64,6 +64,7 @@
         <maven.surefire.version>2.20</maven.surefire.version>
         <!--TestNG-->
         <testng.version>6.11</testng.version>
+        <h2db.version>1.4.192</h2db.version>
         <!--Code quality-->
         <jacoco.version>0.7.9</jacoco.version>
         <sonar.version>3.3.0.603</sonar.version>
@@ -104,6 +105,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2db.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
