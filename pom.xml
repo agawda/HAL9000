@@ -6,11 +6,16 @@
     <groupId>com.javaacademy</groupId>
     <artifactId>robot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <prerequisites>
         <maven>${maven.version}</maven>
     </prerequisites>
+
+    <modules>
+        <module>crawler</module>
+        <module>springapp</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -70,6 +75,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -225,15 +235,6 @@
                 <version>${checkstyle.version}</version>
                 <configuration>
                     <configLocation>google_checks.xml</configLocation>
-                </configuration>
-            </plugin>
-            <!--Maven exec-->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <configuration>
-                    <mainClass>package.yourclasstorun</mainClass>
                 </configuration>
             </plugin>
         </plugins>
