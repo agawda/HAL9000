@@ -108,6 +108,19 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>gemstone-release</id>
+            <name>GemStone Maven RELEASE Repository</name>
+            <url>http://dist.gemstone.com/maven/release</url>
+        </repository>
+        <repository>
+            <id>libs-release</id>
+            <name>Spring Maven libs-release Repository</name>
+            <url>http://repo.spring.io/libs-release</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <!--Spring Boot-->
