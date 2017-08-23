@@ -20,4 +20,5 @@ addons:
     branches:
       - master
       - development
-      - /^development-.*$/
+      - development-sonar
+      - /development-*/
