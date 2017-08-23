@@ -9,4 +9,5 @@ services:
     - postgresql
 script:
 - mvn clean install
+- mvn sonar:sonar
 - mvn test

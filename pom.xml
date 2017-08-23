@@ -73,6 +73,10 @@
         <jxr.version>2.5</jxr.version>
         <project.info.version>2.9</project.info.version>
         <dependency.locations.enabled>false</dependency.locations.enabled>
+        <!--SonarCloud-->
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>agawda-github</sonar.organization>
+        <sonar.login>{dEvmsqV6JZ4HWMWkkn25RC5j3b+K9SNnaPDnfi1Ejfae3JFm9K9PWre35RZyMw4WHBGzJe5KTBsLP643+coCFg==}</sonar.login>
     </properties>
 
     <dependencies>
