@@ -1,17 +1,24 @@
 package com.javaacademy.robot.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "books")
 public class Book {
+
     @Id
-    Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id",unique=true, nullable = false)
+    private Long id;
+
     @Column(name = "name")
-    String name;
+    private String name;
 
     public Book() {}
+
+    public Book(String name) {
+        this.name = name;
+    }
 
     public Book(Long id, String name) {
         this.id = id;
