@@ -20,4 +20,10 @@ public class GreetingController {
         model.addAttribute("exampleBooks", Arrays.asList("Advanced Java", "Clean Code", "Effective Java"));
         return "../static/templates/greeting";
     }
+
+    @RequestMapping("/Helion")
+    public String book(Model model) {
+        model.addAttribute("bookTitle", "Advanced Java");
+        return "../static/templates/bookstores";
+    }
 }
