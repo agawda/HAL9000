@@ -1,21 +1,21 @@
 package com.javaacademy.crawler.googlebooks.dao;
 
-import com.javaacademy.crawler.googlebooks.model.ImageLinks;
-import com.javaacademy.crawler.googlebooks.model.Isbn;
+import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author devas
  * @since 24.08.17
  */
+@Data
 public class GoogleBooksDao {
-
     private int totalItems;
     private String title;
     private String subtitle;
     private List<String> authors;
-    private List<Isbn> industryIdentifiers;
+    private Map<String, Integer> industryIdentifiers;
     private List<String> categories; // genre
     private String smallThumbnail;
     private String canonicalVolumeLink;

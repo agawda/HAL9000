@@ -1,8 +1,10 @@
 package com.javaacademy.crawler.googlebooks.dao;
 
 import com.javaacademy.crawler.googlebooks.model.GoogleBooksWrapper;
+import com.javaacademy.crawler.googlebooks.model.TotalItemsWrapper;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Url;
 
 /**
  * @author devas
@@ -11,8 +13,8 @@ import retrofit2.http.GET;
  */
 public interface GoogleBookEndpoint {
 
-    String parameters = "volumes?q=-&printType=books&filter=ebooks&orderBy=newest&startIndex=0&maxResults=40";
-
-    @GET(parameters)
-    Call<GoogleBooksWrapper> getFortyGoogleBooks();
+    @GET()
+    Call<GoogleBooksWrapper> getFortyGoogleBooks(@Url String url);
+    @GET()
+    Call<TotalItemsWrapper> getNumberOfGoogleBooks(@Url String url);
 }

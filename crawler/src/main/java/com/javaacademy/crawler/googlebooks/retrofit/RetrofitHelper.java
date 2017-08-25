@@ -13,8 +13,8 @@ public class RetrofitHelper {
 
     private static final String BASE_GOOGLE_URL = "https://www.googleapis.com/books/v1/";
 
-    public GoogleBookEndpoint getGoogleBooksEndpoint(int start, int end) {
-        Retrofit retrofit = createRetrofitInstance(generateGoogleRangedUrl(start, end));
+    public GoogleBookEndpoint getGoogleBooksEndpoint() {
+        Retrofit retrofit = createRetrofitInstance(BASE_GOOGLE_URL);
         return retrofit.create(GoogleBookEndpoint.class);
     }
 
@@ -23,11 +23,5 @@ public class RetrofitHelper {
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-    }
-
-    private String generateGoogleRangedUrl(int start, int end) {
-        return BASE_GOOGLE_URL
-                .replace("startIndex=", "startIndex=" + start)
-                .replace("maxResults=", "maxResults=" + end);
     }
 }

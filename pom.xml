@@ -73,6 +73,7 @@
         <jxr.version>2.5</jxr.version>
         <project.info.version>2.9</project.info.version>
         <dependency.locations.enabled>false</dependency.locations.enabled>
+        <lombok.version>1.16.18</lombok.version>
     </properties>
 
     <dependencies>
@@ -113,6 +114,12 @@
             <version>${h2db.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>
