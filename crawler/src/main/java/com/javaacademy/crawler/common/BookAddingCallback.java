@@ -22,6 +22,7 @@ public class  BookAddingCallback<T extends BooksWrapper> implements Callback<T> 
     public void onResponse(Call<T> call, Response<T> response) {
         if (response.isSuccessful()) {
             BooksWrapper bw = response.body();
+            System.out.println("bw = " + bw.getItems());
             books.addAll(bw.getItems());
             requestStatus = RequestStatus.COMPLETED;
         } else {

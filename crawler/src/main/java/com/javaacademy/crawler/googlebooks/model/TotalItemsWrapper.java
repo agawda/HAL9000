@@ -1,8 +1,8 @@
 package com.javaacademy.crawler.googlebooks.model;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class TotalItemsWrapper {
     int totalItems;
 }

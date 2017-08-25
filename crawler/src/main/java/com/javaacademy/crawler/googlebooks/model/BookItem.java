@@ -1,13 +1,17 @@
 package com.javaacademy.crawler.googlebooks.model;
 
 import com.javaacademy.crawler.common.interfaces.Book;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * @author devas
  * @since 24.08.17
  */
-@Data
+@EqualsAndHashCode
+@ToString
+@Getter
 public class BookItem implements Book {
     private VolumeInfo volumeInfo;
     private SaleInfo saleInfo;

@@ -1,6 +1,8 @@
 package com.javaacademy.crawler.googlebooks.model;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -8,13 +10,15 @@ import java.util.List;
  * @author devas
  * @since 24.08.17
  */
-@Data
+@EqualsAndHashCode
+@ToString
+@Getter
 public class VolumeInfo {
-    private String title;
-    private String subtitle;
-    private List<String> authors;
-    private List<Isbn> industryIdentifiers;
-    private List<String> categories; // genre
-    private ImageLinks imageLinks;
-    private String canonicalVolumeLink;
+    String title;
+    String subtitle;
+    List<String> authors;
+    List<Isbn> industryIdentifiers;
+    List<String> categories; // genre
+    ImageLinks imageLinks;
+    String canonicalVolumeLink;
 }
