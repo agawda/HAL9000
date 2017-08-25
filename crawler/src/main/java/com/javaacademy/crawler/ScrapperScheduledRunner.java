@@ -19,6 +19,6 @@ public class ScrapperScheduledRunner {
     };
 
     public ScrapperScheduledRunner() {
-        timer.schedule (timerTask, 0l, 1000*60*60);
+        timer.schedule (timerTask, 0l, (long)1000*60*60);
     }
 }

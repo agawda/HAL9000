@@ -1,6 +1,7 @@
 package com.javaacademy.crawler.googlebooks.model;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 /**
@@ -9,8 +10,9 @@ import lombok.ToString;
  */
 @EqualsAndHashCode
 @ToString
+@Getter
 public class SaleInfo {
-    private String saleability;
-    private Price listPrice; // normal price
-    private Price retailPrice; // price with discount
+    String saleability;
+    Price listPrice; // normal price
+    Price retailPrice; // price with discount
 }
