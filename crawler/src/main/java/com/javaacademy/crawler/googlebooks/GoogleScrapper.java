@@ -47,6 +47,7 @@ public class GoogleScrapper {
                 Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
         isLoopDone = true;
