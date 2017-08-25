@@ -21,4 +21,5 @@ addons:
       - master
       - development
       - development-sonar
+      - development-scrapper
       - /development-*/
