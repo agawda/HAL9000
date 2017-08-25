@@ -1,15 +1,15 @@
 package com.javaacademy.crawler.googlebooks.model;
 
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.Getter;
 
 /**
  * @author devas
  * @since 24.08.17
  */
 @EqualsAndHashCode
-@ToString
+@Getter
 public class Price {
-    private double amount;
-    private String currencyCode;
+     double amount;
+     String currencyCode;
 }

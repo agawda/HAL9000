@@ -1,6 +1,8 @@
 package com.javaacademy.crawler.googlebooks.dao;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Map;
@@ -9,19 +11,21 @@ import java.util.Map;
  * @author devas
  * @since 24.08.17
  */
-@Data
+@EqualsAndHashCode
+@ToString
+@Getter
 public class GoogleBooksDao {
-    private int totalItems;
-    private String title;
-    private String subtitle;
-    private List<String> authors;
-    private Map<String, Integer> industryIdentifiers;
-    private List<String> categories; // genre
-    private String smallThumbnail;
-    private String canonicalVolumeLink;
-    private String saleability;
-    private double listPriceAmount;
-    private String listPriceCurrencyCode;
-    private double retailPriceAmount;
-    private String retailPriceCurrencyCode;
+    int totalItems;
+    String title;
+    String subtitle;
+    List<String> authors;
+    Map<String, Integer> industryIdentifiers;
+    List<String> categories; // genre
+    String smallThumbnail;
+    String canonicalVolumeLink;
+    String saleability;
+    double listPriceAmount;
+    String listPriceCurrencyCode;
+    double retailPriceAmount;
+    String retailPriceCurrencyCode;
 }

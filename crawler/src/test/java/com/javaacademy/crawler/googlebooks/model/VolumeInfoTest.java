@@ -41,4 +41,11 @@ public class VolumeInfoTest {
         assertFalse(volumeInfo.equals(volumeInfo1));
     }
 
+    public void testToString() {
+        VolumeInfo volumeInfo = new VolumeInfo();
+        volumeInfo.title = "Dummy";
+        volumeInfo.industryIdentifiers = new ArrayList<>();
+        assertEquals(volumeInfo.toString(), "VolumeInfo(title=Dummy, subtitle=null, authors=null, industryIdentifiers=[], categories=null, imageLinks=null, canonicalVolumeLink=null)");
+    }
+
 }

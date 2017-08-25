@@ -13,6 +13,6 @@ import lombok.ToString;
 @ToString
 @Getter
 public class BookItem implements Book {
-    private VolumeInfo volumeInfo;
-    private SaleInfo saleInfo;
+    VolumeInfo volumeInfo;
+    SaleInfo saleInfo;
 }
