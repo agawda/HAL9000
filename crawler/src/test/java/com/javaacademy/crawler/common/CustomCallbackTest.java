@@ -28,17 +28,17 @@ public class CustomCallbackTest {
     }
 
     @Test
-    public void testOnResponse_success() {
-        Consumer consumer = mock(Consumer.class);
-        BooksWrapper booksWrapper = mock(BooksWrapper.class);
-        Response<BooksWrapper> response = Response.success(booksWrapper);
-        CustomCallback<BooksWrapper> customCallback = new CustomCallback<>(consumer);
-        customCallback.onResponse(null, response);
-        verify(consumer, times(1)).accept(any());
+    public void testOnResponseSuccess() {
+        Consumer consumerSuccess = mock(Consumer.class);
+        BooksWrapper booksWrapperSucces = mock(BooksWrapper.class);
+        Response<BooksWrapper> responseSuccess = Response.success(booksWrapperSucces);
+        CustomCallback<BooksWrapper> customCallback = new CustomCallback<>(consumerSuccess);
+        customCallback.onResponse(null, responseSuccess);
+        verify(consumerSuccess, times(1)).accept(any());
     }
 
     @Test
-    public void testOnResponse_error() {
+    public void testOnResponseError() {
         ResponseBody responseBody = mock(ResponseBody.class);
         response = Response.error(500, responseBody);
         customCallback.onResponse(null, response);

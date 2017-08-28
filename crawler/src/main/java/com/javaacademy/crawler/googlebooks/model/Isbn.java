@@ -1,6 +1,7 @@
 package com.javaacademy.crawler.googlebooks.model;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 /**
@@ -9,7 +10,8 @@ import lombok.ToString;
  */
 @EqualsAndHashCode
 @ToString
+@Getter
 public class Isbn {
-    private String type;
-    private String identifier;
+    String type;
+    String identifier;
 }

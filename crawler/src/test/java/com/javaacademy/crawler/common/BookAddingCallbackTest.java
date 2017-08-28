@@ -35,7 +35,7 @@ public class BookAddingCallbackTest {
     }
 
     @Test
-    public void testOnResponse_success() {
+    public void testOnResponseSuccess() {
         BooksWrapper booksWrapper = mock(BooksWrapper.class);
         List<Book> booksList = new ArrayList<>();
         Book book = mock(Book.class);
@@ -48,7 +48,7 @@ public class BookAddingCallbackTest {
     }
 
     @Test
-    public void testOnResponse_error() {
+    public void testOnResponseError() {
         ResponseBody responseBody = mock(ResponseBody.class);
         Response<BooksWrapper> response = Response.error(500, responseBody);
         callback.onResponse(null, response);

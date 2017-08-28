@@ -11,7 +11,6 @@ public class BookModelTest {
 
     public void getterAndSetterTests() {
         BookModel bookModel = new BookModel();
-        int totalItems = 10;
         String title = "DummyTitle";
         String subtitle = "DummySubtitle";
         List<String> authors = new ArrayList<>(Arrays.asList("Author1"));
@@ -25,21 +24,19 @@ public class BookModelTest {
         double retailPriceAmount = 2.0;
         String retailPriceCurrencyCode = "DummyRetailsPriceCode";
 
-        bookModel.totalItems = totalItems;
-        bookModel.title = title;
-        bookModel.subtitle = subtitle;
-        bookModel.authors = authors;
-        bookModel.industryIdentifiers = industryIdentifiers;
-        bookModel.categories = categories;
-        bookModel.smallThumbnail = smallThumbnail;
-        bookModel.canonicalVolumeLink = canonicalVolumeLink;
-        bookModel.saleability = saleability;
-        bookModel.listPriceAmount = listPriceAmount;
-        bookModel.listPriceCurrencyCode = listPriceCurrencyCode;
-        bookModel.retailPriceAmount = retailPriceAmount;
-        bookModel.retailPriceCurrencyCode = retailPriceCurrencyCode;
+        bookModel.setTitle(title);
+        bookModel.setSubtitle(subtitle);
+        bookModel.setAuthors(authors);
+        bookModel.setIndustryIdentifiers(industryIdentifiers);
+        bookModel.setCategories(categories);
+        bookModel.setSmallThumbnail(smallThumbnail);
+        bookModel.setCanonicalVolumeLink(canonicalVolumeLink);
+        bookModel.setSaleability(saleability);
+        bookModel.setListPriceAmount(listPriceAmount);
+        bookModel.setListPriceCurrencyCode(listPriceCurrencyCode);
+        bookModel.setRetailPriceAmount(retailPriceAmount);
+        bookModel.setRetailPriceCurrencyCode(retailPriceCurrencyCode);
 
-        assertEquals(bookModel.getTotalItems(), totalItems);
         assertEquals(bookModel.getTitle(), title);
         assertEquals(bookModel.getSubtitle(), subtitle);
         assertEquals(bookModel.getAuthors(), authors);
@@ -64,6 +61,6 @@ public class BookModelTest {
 
     public void toStringTest() {
         BookModel bookModel = new BookModel();
-        assertEquals(bookModel.toString(), "BookModel(totalItems=0, title=null, subtitle=null, authors=null, industryIdentifiers=null, categories=null, smallThumbnail=null, canonicalVolumeLink=null, saleability=null, listPriceAmount=0.0, listPriceCurrencyCode=null, retailPriceAmount=0.0, retailPriceCurrencyCode=null)");
+        assertEquals(bookModel.toString(), "BookModel(title=null, subtitle=null, authors=null, industryIdentifiers=null, categories=null, smallThumbnail=null, canonicalVolumeLink=null, saleability=null, listPriceAmount=0.0, listPriceCurrencyCode=null, retailPriceAmount=0.0, retailPriceCurrencyCode=null)");
     }
 }
