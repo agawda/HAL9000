@@ -24,14 +24,14 @@ public class BookServiceTest {
     }
 
     @Test
-    public void testSave() throws Exception {
+    public void testSave() {
         Book book = new Book(1L, "DummyName");
         boolean returnValue = bookService.saveBook(book);
         assertTrue(returnValue);
     }
 
     @Test
-    public void testGetAllBooks() throws Exception {
+    public void testGetAllBooks() {
         Book book = new Book(1L, "DummyName");
         Book book1 = new Book(2L, "DummyName1");
         bookService.saveBook(book);
