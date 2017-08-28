@@ -23,7 +23,6 @@ public class App {
             try {
                 Thread.sleep(6000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
                 AppLogger.logger.log(Level.WARNING,"Exception while waiting", e);
                         Thread.currentThread().interrupt();
             }
