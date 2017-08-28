@@ -1,9 +1,13 @@
 package com.javaacademy.crawler;
 
 import com.javaacademy.crawler.common.interfaces.Book;
+import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.googlebooks.GoogleScrapper;
 
 import java.util.Set;
+import java.util.logging.Level;
+
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 /**
  * @author devas
@@ -13,6 +17,7 @@ import java.util.Set;
 public class App {
 
     public static void main(String[] args) {
+        AppLogger.initializeLogger();
         GoogleScrapper googleScrapper = new GoogleScrapper();
         googleScrapper.runScrapping();
 
@@ -20,12 +25,12 @@ public class App {
             try {
                 Thread.sleep(6000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt();
+                AppLogger.logger.log(Level.WARNING,"Exception while waiting", e);
+                        Thread.currentThread().interrupt();
             }
         }
 
         Set<Book> books = googleScrapper.getBooks();
-        System.out.println("All the books collected size is: " + books.size());
+        AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
     }
 }

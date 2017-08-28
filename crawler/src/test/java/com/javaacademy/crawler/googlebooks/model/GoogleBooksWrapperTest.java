@@ -12,7 +12,7 @@ import static org.testng.Assert.assertTrue;
 @Test
 public class GoogleBooksWrapperTest {
 
-    public void testGetItems() throws Exception {
+    public void testGetItems() {
         List<BookItem> books = new ArrayList<>();
         books.add(new BookItem());
         books.add(new BookItem());
@@ -21,10 +21,10 @@ public class GoogleBooksWrapperTest {
         assertEquals(googleBooksWrapper.getItems().size(), 2);
     }
 
-    public void testToString() throws Exception {
+    public void testToString() {
         GoogleBooksWrapper googleBooksWrapper = new GoogleBooksWrapper();
         googleBooksWrapper.items = new ArrayList<>();
-        assertEquals(googleBooksWrapper.toString(), "GoogleBooksWrapper(totalItems=0, items=[])");
+        assertEquals(googleBooksWrapper.toString(), "GoogleBooksWrapper(items=[])");
     }
 
     public void testEquals() {
