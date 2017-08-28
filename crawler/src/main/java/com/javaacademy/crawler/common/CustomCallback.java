@@ -1,7 +1,9 @@
 package com.javaacademy.crawler.common;
 
 import com.javaacademy.crawler.common.logger.AppLogger;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -10,7 +12,9 @@ import retrofit2.Response;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
-@Data
+@Getter
+@EqualsAndHashCode
+@AllArgsConstructor
 public class CustomCallback<T> implements Callback<T> {
     @NonNull
     Consumer<T> consumer;
