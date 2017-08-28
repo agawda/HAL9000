@@ -9,8 +9,6 @@ services:
     - postgresql
 script:
 - mvn clean install
-- mvn test
-- ls
 - sonar-scanner
 addons:
   sonarcloud:
@@ -21,4 +19,5 @@ addons:
       - master
       - development
       - development-sonar
+      - development-scrapper
       - /development-*/
