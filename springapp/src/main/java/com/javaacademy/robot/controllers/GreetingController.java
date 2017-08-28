@@ -21,9 +21,17 @@ public class GreetingController {
         return "../static/templates/greeting";
     }
 
-    @RequestMapping("/Helion")
-    public String book(Model model) {
+    @RequestMapping("/bookstores")
+    public String bookstore(@RequestParam(value = "id") String bookstore, Model model) {
+        model.addAttribute("id", bookstore);
         model.addAttribute("bookTitle", "Advanced Java");
-        return "../static/templates/bookstores";
+        return "../static/templates/bookstore";
+    }
+
+    @RequestMapping("/books/")
+    public String book(@RequestParam(value = "id") String bookTitle, Model model) {
+        model.addAttribute("id", bookTitle);
+        model.addAttribute("price", 23.99); //hardcoded example price
+        return "../static/templates/bookview";
     }
 }

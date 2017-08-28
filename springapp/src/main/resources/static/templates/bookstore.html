@@ -8,18 +8,23 @@
           href="hhttps://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
           th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css}"/>
 </head>
-<body>
-<h1>
-    <p th:text="'Hello, ' + ${name} + '!'"/>
-    <div class="container">
-        <h2 class="list-group-item active">Discounted books:</h2>
-        <div class="row">
-            <div class="col-sm-6" th:each="book: ${exampleBooks}">
-                <p class="list-group-item active" th:text="${book}"></p>
-                <img src="http://www.picgifs.com/glitter-gifs/h/hearts/picgifs-hearts-314486.gif"/>
-            </div>
-        </div>
-    </div>
-</h1>
+<body class="bg-dark">
+<h1 class="text-primary text-center" th:text="${id}"></h1>
+<table class="table">
+    <thead class="text-primary">
+    <tr class="h3">
+        <th>#</th>
+        <th>Book Title</th>
+        <th>Discount</th>
+    </tr>
+    </thead>
+    <tbody class="text-secondary">
+    <tr class="h4">
+        <th>1</th>
+        <td><a th:href="@{~/books/(id=${bookTitle})}" th:text="${bookTitle}"></a></td>
+        <td><p>Price</p></td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
