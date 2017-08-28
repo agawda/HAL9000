@@ -4,6 +4,7 @@ import com.javaacademy.crawler.common.BookAddingCallback;
 import com.javaacademy.crawler.common.CustomCallback;
 import com.javaacademy.crawler.common.RequestStatus;
 import com.javaacademy.crawler.common.interfaces.Book;
+import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.googlebooks.controllers.Controller;
 import com.javaacademy.crawler.googlebooks.model.GoogleBooksWrapper;
 import com.javaacademy.crawler.googlebooks.model.TotalItemsWrapper;
@@ -11,6 +12,9 @@ import com.javaacademy.crawler.googlebooks.model.TotalItemsWrapper;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 public class GoogleScrapper {
     private static final int SLEEP_TIME = 5000;
@@ -33,7 +37,8 @@ public class GoogleScrapper {
     private void collectAllBooksFromGoogle(int numOfBooks) {
         int step = 40;
         for (int i = 0; i < numOfBooks; i += step) {
-            BookAddingCallback<GoogleBooksWrapper> bookItemBookAddingCallback = new BookAddingCallback<>(books, "Google Bookstore");
+            BookAddingCallback<GoogleBooksWrapper> bookItemBookAddingCallback =
+                    new BookAddingCallback<>(books, "Google Bookstore");
             callbacks.add(bookItemBookAddingCallback);
             int end = step;
             int nextStep = i + step;
@@ -46,7 +51,7 @@ public class GoogleScrapper {
             try {
                 Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                AppLogger.logger.log(Level.WARNING, "Exception while waaiting, ", e);
                 Thread.currentThread().interrupt();
             }
         }
@@ -54,7 +59,7 @@ public class GoogleScrapper {
     }
 
     private void getGoogleBooks(int start, int end, BookAddingCallback<GoogleBooksWrapper> bookItemBookAddingCallback) {
-        System.out.println(String.format("start = %d end %d", start, end));
+        AppLogger.logger.log(DEFAULT_LEVEL, (String.format("start = %d end %d", start, end)));
         new Controller().getLimitedNumberBooksFromGoogle(bookItemBookAddingCallback, start, end);
     }
 

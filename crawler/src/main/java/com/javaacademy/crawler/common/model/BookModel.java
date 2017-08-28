@@ -1,4 +1,4 @@
-package com.javaacademy.crawler.googlebooks.dao;
+package com.javaacademy.crawler.common.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import java.util.Map;
 @EqualsAndHashCode
 @ToString
 @Getter
-public class GoogleBooksDao {
+public class BookModel {
     int totalItems;
     String title;
     String subtitle;
