@@ -37,14 +37,14 @@ public class BookAddingCallbackTest {
     @Test
     public void testOnResponse_success() {
         BooksWrapper booksWrapper = mock(BooksWrapper.class);
-        List<Book> books = new ArrayList<>();
+        List<Book> booksList = new ArrayList<>();
         Book book = mock(Book.class);
-        books.add(book);
-        when(booksWrapper.getItems()).thenReturn(books);
+        booksList.add(book);
+        when(booksWrapper.getItems()).thenReturn(booksList);
         Response<BooksWrapper> response = Response.success(booksWrapper);
         callback.onResponse(null, response);
         assertEquals(callback.getRequestStatus(), COMPLETED);
-        assertEquals(callback.getBooks(), books);
+        assertEquals(callback.getBooks(), booksList);
     }
 
     @Test

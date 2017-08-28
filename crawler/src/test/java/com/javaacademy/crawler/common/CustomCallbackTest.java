@@ -29,6 +29,10 @@ public class CustomCallbackTest {
 
     @Test
     public void testOnResponse_success() {
+        Consumer consumer = mock(Consumer.class);
+        BooksWrapper booksWrapper = mock(BooksWrapper.class);
+        Response<BooksWrapper> response = Response.success(booksWrapper);
+        CustomCallback<BooksWrapper> customCallback = new CustomCallback<>(consumer);
         customCallback.onResponse(null, response);
         verify(consumer, times(1)).accept(any());
     }

@@ -7,6 +7,8 @@ import com.javaacademy.crawler.googlebooks.GoogleScrapper;
 import java.util.Set;
 import java.util.logging.Level;
 
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+
 /**
  * @author devas
  * @author mprtcz
@@ -29,6 +31,6 @@ public class App {
         }
 
         Set<Book> books = googleScrapper.getBooks();
-        System.out.println("All the books collected size is: " + books.size());
+        AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
     }
 }

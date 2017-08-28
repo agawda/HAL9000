@@ -45,7 +45,7 @@ public class AppLogger {
             }
         }
 
-        private MyFileHandler(String pattern, boolean append) throws IOException, SecurityException {
+        private MyFileHandler(String pattern, boolean append) throws IOException {
             super(pattern, append);
         }
 

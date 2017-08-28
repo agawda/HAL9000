@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 @ToString
 public class GoogleBooksWrapper implements BooksWrapper {
-    private int totalItems;
     List<BookItem> items;
 
     @Override

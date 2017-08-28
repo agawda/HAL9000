@@ -11,6 +11,7 @@ public class RobotApplicationTests {
 
 	@Test
 	public void contextLoads() {
+		// no implementation yet, a method which will load the context for tests
 	}
 
 }
