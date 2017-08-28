@@ -1,4 +1,4 @@
-# Robot
+# Robot ![biuld](https://travis-ci.org/agawda/HAL9000.svg?branch=development-sonar)
 Robot collects book information for gratis and promo books.
 
 ### Authors
