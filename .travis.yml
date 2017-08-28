@@ -18,6 +18,4 @@ addons:
     branches:
       - master
       - development
-      - development-sonar
-      - development-scrapper
-      - /development-*/
+      - db-model

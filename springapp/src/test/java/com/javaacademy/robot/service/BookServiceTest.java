@@ -24,13 +24,6 @@ public class BookServiceTest {
     }
 
     @Test
-    public void testSave() {
-        Book book = new Book(1L, "DummyName");
-        boolean returnValue = bookService.saveBook(book);
-        assertTrue(returnValue);
-    }
-
-    @Test
     public void testGetAllBooks() {
         Book book = new Book(1L, "DummyName");
         Book book1 = new Book(2L, "DummyName1");
