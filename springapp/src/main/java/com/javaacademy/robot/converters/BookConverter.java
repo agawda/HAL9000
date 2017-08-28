@@ -12,12 +12,38 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
 
     @Override
     public BookDto toDto(Book entity) {
-        return new BookDto(entity.getName());
+        BookDto bookDto = new BookDto();
+        bookDto.setIndustryIdentifier(entity.getIndustryIdentifier());
+        bookDto.setTitle(entity.getTitle());
+        bookDto.setSubtitle(entity.getSubtitle());
+        bookDto.setAuthors(entity.getAuthors());
+        bookDto.setCategories(entity.getCategories());
+        bookDto.setSmallThumbnail(entity.getSmallThumbnail());
+        bookDto.setCanonicalVolumeLink(entity.getCanonicalVolumeLink());
+        bookDto.setSaleability(entity.getSaleability());
+        bookDto.setListPriceAmount(entity.getListPriceAmount());
+        bookDto.setListPriceCurrencyCode(entity.getListPriceCurrencyCode());
+        bookDto.setRetailPriceAmount(entity.getRetailPriceAmount());
+        bookDto.setListPriceCurrencyCode(entity.getRetailPriceCurrencyCode());
+        return bookDto;
     }
 
     @Override
     public Book toEntity(BookDto dto) {
-        return new Book(dto.getName());
+        Book book = new Book();
+        book.setIndustryIdentifier(dto.getIndustryIdentifier());
+        book.setTitle(dto.getTitle());
+        book.setSubtitle(dto.getSubtitle());
+        book.setAuthors(dto.getAuthors());
+        book.setCategories(dto.getCategories());
+        book.setSmallThumbnail(dto.getSmallThumbnail());
+        book.setCanonicalVolumeLink(dto.getCanonicalVolumeLink());
+        book.setSaleability(dto.getSaleability());
+        book.setListPriceAmount(dto.getListPriceAmount());
+        book.setListPriceCurrencyCode(dto.getListPriceCurrencyCode());
+        book.setRetailPriceAmount(dto.getRetailPriceAmount());
+        book.setListPriceCurrencyCode(dto.getRetailPriceCurrencyCode());
+        return book;
     }
 
     @Override
