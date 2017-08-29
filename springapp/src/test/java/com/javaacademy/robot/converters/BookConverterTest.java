@@ -60,9 +60,7 @@ public class BookConverterTest {
         List<Book> books = new ArrayList<>(Arrays.asList(book1, book2));
 
         BookConverter bookConverter = new BookConverter();
-
         List<BookDto> dtos = bookConverter.toDtos(books);
-
         BookDto bookDto1 = dtos.get(0);
         BookDto bookDto2 = dtos.get(1);
 
@@ -72,7 +70,6 @@ public class BookConverterTest {
         assertEquals(bookDto2.getSubtitle(), book2.getSubtitle());
 
         List<Book> convertedBooks = bookConverter.toEntities(dtos);
-
         assertEquals(convertedBooks, books);
     }
 }
