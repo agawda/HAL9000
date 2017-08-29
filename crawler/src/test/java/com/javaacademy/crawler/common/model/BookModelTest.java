@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import java.util.*;
 
 import static org.testng.Assert.*;
+import static org.testng.AssertJUnit.assertEquals;
 
 @Test
 public class BookModelTest {
@@ -63,5 +64,16 @@ public class BookModelTest {
         BookModel bookModel = new BookModel();
         assertEquals(bookModel.toString(),
                 "BookModel(industryIdentifier=null, title=null, subtitle=null, authors=null, categories=null, smallThumbnail=null, canonicalVolumeLink=null, saleability=null, listPriceAmount=0.0, listPriceCurrencyCode=null, retailPriceAmount=0.0, retailPriceCurrencyCode=null)");
+    }
+
+    @Test
+    public void testThis() {
+        List<Integer> list = new ArrayList<>(Arrays.asList(1, 2,3,4,5,6));
+        int maxIndex = 7;
+        if( maxIndex > list.size()) {
+            maxIndex = list.size();
+        }
+        List<Integer> sublist = list.subList(0, maxIndex);
+        assertEquals(sublist.size(), 6);
     }
 }

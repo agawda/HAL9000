@@ -1,10 +1,12 @@
 package com.javaacademy.robot.model;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
-public class BookDtos {
+@ToString
+public class BookModels {
     List<BookDto> bookDtos;
 }

@@ -1,15 +1,19 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.converters.BookConverter;
+import com.javaacademy.robot.logger.ServerLogger;
 import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
-import com.javaacademy.robot.model.BookDtos;
+import com.javaacademy.robot.model.BookModels;
 import com.javaacademy.robot.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.javaacademy.robot.logger.ServerLogger.DEFAULT_LEVEL;
 
 @Service
 public class BookService {
@@ -48,9 +52,11 @@ public class BookService {
         return bookConverter.toDto(book);
     }
 
-    public void addAllBookDtos(BookDtos bookdtos) {
+    public void addAllBookDtos(BookModels bookdtos) {
+        ServerLogger.logger.log(DEFAULT_LEVEL, "Adding dtos: " +bookdtos.getBookDtos());
         List<BookDto> dtos = bookdtos.getBookDtos();
-        List<Book> books = bookConverter.toEntities(dtos);
+        List<BookDto> nonnullDtos = dtos.stream().filter(bookDto -> bookDto.getIndustryIdentifier() != null).collect(Collectors.toList());
+        List<Book> books = bookConverter.toEntities(nonnullDtos);
         bookRepository.save(books);
     }
 

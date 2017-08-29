@@ -1,7 +1,7 @@
 package com.javaacademy.robot.controllers;
 
 import com.javaacademy.robot.model.BookDto;
-import com.javaacademy.robot.model.BookDtos;
+import com.javaacademy.robot.model.BookModels;
 import com.javaacademy.robot.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -53,7 +53,8 @@ public class AppRestController {
     }
 
     @RequestMapping(method = PUT, value = "addall")
-    public void addAllBookDtos(@RequestBody BookDtos bookDtos) {
-        bookService.addAllBookDtos(bookDtos);
+    public void addAllBookDtos(@RequestBody BookModels bookModels) {
+        System.out.println("bookModels = " + bookModels);
+        bookService.addAllBookDtos(bookModels);
     }
 }

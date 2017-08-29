@@ -1,5 +1,6 @@
 package com.javaacademy.crawler;
 
+import com.javaacademy.crawler.common.booksender.BookSender;
 import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.googlebooks.GoogleScrapper;
@@ -23,7 +24,11 @@ public class App {
 
         while (!googleScrapper.areAllCallbacksDone()) {
             try {
+                AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks not done, waiting...");
                 Thread.sleep(6000);
+                AppLogger.logger.log(DEFAULT_LEVEL, "googleScrapper.areAllCallbacksDone(): "
+                        +googleScrapper.areAllCallbacksDone());
+
             } catch (InterruptedException e) {
                 AppLogger.logger.log(Level.WARNING,"Exception while waiting", e);
                         Thread.currentThread().interrupt();
@@ -32,5 +37,8 @@ public class App {
 
         Set<Book> books = googleScrapper.getBooks();
         AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
+
+        BookSender bookSender = new BookSender(books);
+        bookSender.sendBooksTo("http://127.0.0.1:8080");
     }
 }

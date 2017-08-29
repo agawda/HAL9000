@@ -1,4 +1,4 @@
-package com.javaacademy.crawler.common.logger;
+package com.javaacademy.robot.logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,8 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.*;
 
-public class AppLogger {
-    public static final Logger logger = Logger.getLogger(AppLogger.class.getName());
+public class ServerLogger {
+    public static final Logger logger = Logger.getLogger(ServerLogger.class.getName());
     private static Handler handler = null;
     public static final Level DEFAULT_LEVEL = Level.CONFIG;
     private static boolean isInitialized = false;
@@ -21,8 +21,9 @@ public class AppLogger {
             return;
         }
         try {
-            handler = MyFileHandler.createLoggerInstance("Crawler.log", false);
+            handler = MyFileHandler.createLoggerInstance("Server.log", false);
         } catch (IOException e) {
+            e.printStackTrace();
             logger.log(Level.WARNING, "Could not create file", e);
         }
         handler.setFormatter(new SimpleFormatter());
@@ -30,10 +31,9 @@ public class AppLogger {
         logger.addHandler(new StreamHandler(System.out, new SimpleFormatter()));
         logger.setLevel(Level.ALL);
         isInitialized = true;
-        logger.log(Level.FINEST, "Logger initialized");
     }
 
-    private AppLogger() {}
+    private ServerLogger() {}
 
     static class MyFileHandler extends FileHandler {
 

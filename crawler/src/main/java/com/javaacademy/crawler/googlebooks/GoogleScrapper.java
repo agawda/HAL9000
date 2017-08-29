@@ -18,7 +18,7 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 public class GoogleScrapper {
     private static final int SLEEP_TIME = 5000;
-    private static final int MAX_VALUE = 1000;
+    private static final int MAX_VALUE = 100;
     private Set<Book> books = new HashSet<>();
     private Set<BookAddingCallback> callbacks = new HashSet<>();
     private boolean isLoopDone = false;
@@ -29,7 +29,9 @@ public class GoogleScrapper {
 
     private void getNumberOfBooksAndStartCollection() {
         Consumer<TotalItemsWrapper> consumer =
-                totalItemsWrapper -> collectAllBooksFromGoogle(totalItemsWrapper.getTotalItems());
+                totalItemsWrapper -> collectAllBooksFromGoogle(
+                        totalItemsWrapper.getTotalItems()
+                );
         CustomCallback<TotalItemsWrapper> customCallback = new CustomCallback<>(consumer);
         new Controller().getHowManyBooksThereAre(customCallback);
     }
@@ -55,6 +57,7 @@ public class GoogleScrapper {
                 Thread.currentThread().interrupt();
             }
         }
+        AppLogger.logger.log(DEFAULT_LEVEL, "All callbacks done!");
         isLoopDone = true;
     }
 
@@ -66,8 +69,10 @@ public class GoogleScrapper {
     public boolean areAllCallbacksDone() {
         boolean areCallbacksDone = false;
         if (isLoopDone) {
-            areCallbacksDone = callbacks.stream().anyMatch(bookAddingCallback ->
+            AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks loop done");
+            areCallbacksDone = callbacks.stream().noneMatch(bookAddingCallback ->
                     bookAddingCallback.getRequestStatus() == RequestStatus.STARTED);
+            AppLogger.logger.log(DEFAULT_LEVEL, "areCallbacksDone: "+areCallbacksDone);
         }
         return isLoopDone && areCallbacksDone;
     }
