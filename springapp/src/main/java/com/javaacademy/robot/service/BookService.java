@@ -27,7 +27,6 @@ public class BookService {
     }
 
     public boolean saveBook(BookDto bookDto) {
-        System.out.println("bookDto = " + bookDto);
         Book convertedEntity = bookConverter.toEntity(bookDto);
         return saveBook(convertedEntity);
     }

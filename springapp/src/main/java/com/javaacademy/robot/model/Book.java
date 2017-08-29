@@ -54,14 +54,11 @@ public class Book {
     String retailPriceCurrencyCode;
 
     public Book() {
+        //required for ORM
     }
 
     public Book(long id, String title) {
         this.industryIdentifier = id;
-        this.title = title;
-    }
-
-    public Book(String title) {
         this.title = title;
     }
 }
