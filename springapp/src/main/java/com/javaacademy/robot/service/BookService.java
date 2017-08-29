@@ -37,6 +37,16 @@ public class BookService {
         return books;
     }
 
+    public void remove(Long isbn) {
+        bookRepository.delete(isbn);
+    }
+
+    public BookDto getBookByIsbn(Long isbn) {
+        Book book = bookRepository.findOne(isbn);
+        if (book == null) return null;
+        return bookConverter.toDto(book);
+    }
+
     public List<BookDto> getAllBookDtos() {
         return bookConverter.toDtos(getAllBooks());
     }

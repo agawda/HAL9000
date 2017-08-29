@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class GreetingController {
     @RequestMapping("/greeting")
     public String hello(@RequestParam(value = "name", required = false, defaultValue = "World")
-                                    String name, Model model) {
+                                String name, Model model) {
         model.addAttribute("name", name);
         model.addAttribute("exampleBooks", Arrays.asList("Advanced Java", "Clean Code", "Effective Java"));
         return "../static/templates/greeting";
