@@ -1,5 +1,6 @@
 package com.javaacademy.robot.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Table(name = "books")
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Book {
 
     @Id
