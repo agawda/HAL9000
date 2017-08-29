@@ -7,6 +7,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * An entity which is being stored in a database
+ */
+
 @Entity
 @Table(name = "books")
 @Getter
