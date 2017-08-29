@@ -16,10 +16,10 @@ public class GoogleBookConverter {
         bookModel.setTitle(volumeInfo.getTitle());
         bookModel.setSubtitle(volumeInfo.getSubtitle());
         bookModel.setAuthors(volumeInfo.getAuthors());
-        Map<String, Integer> map = new HashMap<>();
+        Map<String, Long> map = new HashMap<>();
         volumeInfo.getIndustryIdentifiers().forEach(isbn ->
-                map.put(isbn.getType(), Integer.valueOf(isbn.getIdentifier())));
-        bookModel.setIndustryIdentifiers(map);
+                map.put(isbn.getType(), Long.valueOf(isbn.getIdentifier())));
+        bookModel.setIndustryIdentifier(map.get("ISBN_13"));
         bookModel.setCategories(volumeInfo.getCategories());
         bookModel.setSmallThumbnail(volumeInfo.getImageLinks().getSmallThumbnail());
         bookModel.setCanonicalVolumeLink(volumeInfo.getCanonicalVolumeLink());

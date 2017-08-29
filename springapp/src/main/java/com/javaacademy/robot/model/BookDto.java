@@ -10,26 +10,15 @@ import java.util.List;
 public class BookDto {
 
     Long industryIdentifier;
-
     String title;
-
     String subtitle;
-
     List<String> authors;
-
-    List<String> categories; // genre
-
+    List<String> categories;
     String smallThumbnail;
-
     String canonicalVolumeLink;
-
     String saleability;
-
     double listPriceAmount;
-
     String listPriceCurrencyCode;
-
     double retailPriceAmount;
-
     String retailPriceCurrencyCode;
 }

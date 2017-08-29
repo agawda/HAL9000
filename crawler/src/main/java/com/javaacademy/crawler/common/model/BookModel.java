@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author devas
@@ -17,11 +16,11 @@ import java.util.Map;
 @Getter
 @Setter
 public class BookModel {
+    Long industryIdentifier;
     String title;
     String subtitle;
     List<String> authors;
-    Map<String, Integer> industryIdentifiers;
-    List<String> categories; // genre
+    List<String> categories;
     String smallThumbnail;
     String canonicalVolumeLink;
     String saleability;

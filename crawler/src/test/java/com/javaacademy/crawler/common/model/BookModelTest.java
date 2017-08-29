@@ -14,7 +14,7 @@ public class BookModelTest {
         String title = "DummyTitle";
         String subtitle = "DummySubtitle";
         List<String> authors = new ArrayList<>(Arrays.asList("Author1"));
-        Map<String, Integer> industryIdentifiers = new HashMap<>();
+        Long industryIdentifier = 10L;
         List<String> categories = new LinkedList<>(Arrays.asList("Cat1", "Cat2"));
         String smallThumbnail = "DummyThumbnail";
         String canonicalVolumeLink = "DummyLink";
@@ -27,7 +27,7 @@ public class BookModelTest {
         bookModel.setTitle(title);
         bookModel.setSubtitle(subtitle);
         bookModel.setAuthors(authors);
-        bookModel.setIndustryIdentifiers(industryIdentifiers);
+        bookModel.setIndustryIdentifier(industryIdentifier);
         bookModel.setCategories(categories);
         bookModel.setSmallThumbnail(smallThumbnail);
         bookModel.setCanonicalVolumeLink(canonicalVolumeLink);
@@ -40,7 +40,7 @@ public class BookModelTest {
         assertEquals(bookModel.getTitle(), title);
         assertEquals(bookModel.getSubtitle(), subtitle);
         assertEquals(bookModel.getAuthors(), authors);
-        assertEquals(bookModel.getIndustryIdentifiers(), industryIdentifiers);
+        assertEquals(bookModel.getIndustryIdentifier(), industryIdentifier);
         assertEquals(bookModel.getCategories(), categories);
         assertEquals(bookModel.getSmallThumbnail(), smallThumbnail);
         assertEquals(bookModel.getCanonicalVolumeLink(), canonicalVolumeLink);
@@ -61,6 +61,7 @@ public class BookModelTest {
 
     public void toStringTest() {
         BookModel bookModel = new BookModel();
-        assertEquals(bookModel.toString(), "BookModel(title=null, subtitle=null, authors=null, industryIdentifiers=null, categories=null, smallThumbnail=null, canonicalVolumeLink=null, saleability=null, listPriceAmount=0.0, listPriceCurrencyCode=null, retailPriceAmount=0.0, retailPriceCurrencyCode=null)");
+        assertEquals(bookModel.toString(),
+                "BookModel(industryIdentifier=null, title=null, subtitle=null, authors=null, categories=null, smallThumbnail=null, canonicalVolumeLink=null, saleability=null, listPriceAmount=0.0, listPriceCurrencyCode=null, retailPriceAmount=0.0, retailPriceCurrencyCode=null)");
     }
 }

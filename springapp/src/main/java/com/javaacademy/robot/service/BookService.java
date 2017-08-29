@@ -3,6 +3,7 @@ package com.javaacademy.robot.service;
 import com.javaacademy.robot.converters.BookConverter;
 import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
+import com.javaacademy.robot.model.BookDtos;
 import com.javaacademy.robot.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,12 @@ public class BookService {
         Book book = bookRepository.findOne(isbn);
         if (book == null) return null;
         return bookConverter.toDto(book);
+    }
+
+    public void addAllBookDtos(BookDtos bookdtos) {
+        List<BookDto> dtos = bookdtos.getBookDtos();
+        List<Book> books = bookConverter.toEntities(dtos);
+        bookRepository.save(books);
     }
 
     public List<BookDto> getAllBookDtos() {
