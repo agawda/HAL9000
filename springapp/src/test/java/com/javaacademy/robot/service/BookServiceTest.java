@@ -12,13 +12,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class BookServiceTest {
     private BookRepository bookRepository = mock(BookRepository.class);
     private BookConverter bookConverter = mock(BookConverter.class);
-    BookService bookService;
+    private BookService bookService;
 
     @Test
     public void getBookByIsbnTest() {
@@ -47,17 +46,26 @@ public class BookServiceTest {
         assertTrue(saveResult);
     }
 
-   @Test
+    @Test
     public void getAllBooksTest() {
-       bookConverter = mock(BookConverter.class);
-       bookRepository = mock(BookRepository.class);
-       List<BookDto> bookDtos = new ArrayList<>(Arrays.asList(new BookDto(), new BookDto()));
-       List<Book> books = new ArrayList<>(Arrays.asList(new Book(), new Book()));
-       when(bookRepository.findAll()).thenReturn(books);
-       when(bookConverter.toDtos(books)).thenReturn(bookDtos);
-       bookService = new BookService(bookRepository, bookConverter);
-       List<BookDto> resultDtos = bookService.getAllBookDtos();
-       assertEquals(resultDtos, bookDtos);
-   }
+        bookConverter = mock(BookConverter.class);
+        bookRepository = mock(BookRepository.class);
+        List<BookDto> bookDtos = new ArrayList<>(Arrays.asList(new BookDto(), new BookDto()));
+        List<Book> books = new ArrayList<>(Arrays.asList(new Book(), new Book()));
+        when(bookRepository.findAll()).thenReturn(books);
+        when(bookConverter.toDtos(books)).thenReturn(bookDtos);
+        bookService = new BookService(bookRepository, bookConverter);
+        List<BookDto> resultDtos = bookService.getAllBookDtos();
+        assertEquals(resultDtos, bookDtos);
+    }
+
+    @Test
+    public void testRemove() {
+        bookRepository = mock(BookRepository.class);
+        bookService = new BookService(bookRepository, bookConverter);
+        long id = 10L;
+        bookService.remove(id);
+        verify(bookRepository, times(1)).delete(id);
+    }
 
 }
