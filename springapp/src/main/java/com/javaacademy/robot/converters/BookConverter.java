@@ -24,7 +24,7 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         bookDto.setListPriceAmount(entity.getListPriceAmount());
         bookDto.setListPriceCurrencyCode(entity.getListPriceCurrencyCode());
         bookDto.setRetailPriceAmount(entity.getRetailPriceAmount());
-        bookDto.setListPriceCurrencyCode(entity.getRetailPriceCurrencyCode());
+        bookDto.setRetailPriceCurrencyCode(entity.getRetailPriceCurrencyCode());
         return bookDto;
     }
 
@@ -42,7 +42,7 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         book.setListPriceAmount(dto.getListPriceAmount());
         book.setListPriceCurrencyCode(dto.getListPriceCurrencyCode());
         book.setRetailPriceAmount(dto.getRetailPriceAmount());
-        book.setListPriceCurrencyCode(dto.getRetailPriceCurrencyCode());
+        book.setRetailPriceCurrencyCode(dto.getRetailPriceCurrencyCode());
         return book;
     }
 
