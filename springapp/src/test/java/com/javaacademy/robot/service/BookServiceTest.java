@@ -1,35 +1,63 @@
 package com.javaacademy.robot.service;
 
+import com.javaacademy.robot.converters.BookConverter;
 import com.javaacademy.robot.model.Book;
+import com.javaacademy.robot.model.BookDto;
+import com.javaacademy.robot.repository.BookRepository;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
 public class BookServiceTest {
-
-    @Autowired
+    private BookRepository bookRepository = mock(BookRepository.class);
+    private BookConverter bookConverter = mock(BookConverter.class);
     BookService bookService;
 
     @Test
-    public void testAutowiring() {
-        assertNotEquals(bookService, null);
+    public void getBookByIsbnTest() {
+        long isbn = 10L;
+        bookRepository = mock(BookRepository.class);
+        bookConverter = mock(BookConverter.class);
+        Book book = mock(Book.class);
+        BookDto bookDto = mock(BookDto.class);
+        when(bookRepository.findOne(isbn)).thenReturn(book);
+        when(bookConverter.toDto(book)).thenReturn(bookDto);
+        bookService = new BookService(bookRepository, bookConverter);
+        BookDto retrievedBook = bookService.getBookByIsbn(isbn);
+        assertEquals(retrievedBook, bookDto);
     }
 
     @Test
-    public void testGetAllBooks() {
-        Book book = new Book(1L, "DummyName");
-        Book book1 = new Book(2L, "DummyName1");
-        bookService.saveBook(book);
-        bookService.saveBook(book1);
-        List<Book> books = bookService.getAllBooks();
-        assertEquals(2, books.size());
+    public void saveBookTest() {
+        bookConverter = mock(BookConverter.class);
+        bookRepository = mock(BookRepository.class);
+        Book book = mock(Book.class);
+        BookDto bookDto = mock(BookDto.class);
+        when(bookConverter.toEntity(bookDto)).thenReturn(book);
+        when(bookRepository.save(book)).thenReturn(book);
+        bookService = new BookService(bookRepository, bookConverter);
+        boolean saveResult = bookService.saveBook(bookDto);
+        assertTrue(saveResult);
     }
+
+   @Test
+    public void getAllBooksTest() {
+       bookConverter = mock(BookConverter.class);
+       bookRepository = mock(BookRepository.class);
+       List<BookDto> bookDtos = new ArrayList<>(Arrays.asList(new BookDto(), new BookDto()));
+       List<Book> books = new ArrayList<>(Arrays.asList(new Book(), new Book()));
+       when(bookRepository.findAll()).thenReturn(books);
+       when(bookConverter.toDtos(books)).thenReturn(bookDtos);
+       bookService = new BookService(bookRepository, bookConverter);
+       List<BookDto> resultDtos = bookService.getAllBookDtos();
+       assertEquals(resultDtos, bookDtos);
+   }
+
 }
