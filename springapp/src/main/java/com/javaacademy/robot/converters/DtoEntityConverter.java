@@ -4,11 +4,11 @@ import java.util.List;
 
 public interface DtoEntityConverter<E, D> {
 
-     D toDto(E entity);
+    D toDto(E entity);
 
-     E toEntity(D dto);
+    E toEntity(D dto);
 
-     List<E> toEntities(List<D> dtos);
+    List<E> toEntities(List<D> dtos);
 
-     List<D> toDtos(List<E> entities);
+    List<D> toDtos(List<E> entities);
 }

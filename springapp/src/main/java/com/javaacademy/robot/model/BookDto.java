@@ -1,20 +1,35 @@
 package com.javaacademy.robot.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
 public class BookDto {
 
-    private String name;
+    Long industryIdentifier;
 
-    public BookDto() {}
+    String title;
 
-    public BookDto(String name) {
-        this.name = name;
-    }
+    String subtitle;
 
-    public String getName() {
-        return name;
-    }
+    List<String> authors;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    List<String> categories; // genre
+
+    String smallThumbnail;
+
+    String canonicalVolumeLink;
+
+    String saleability;
+
+    double listPriceAmount;
+
+    String listPriceCurrencyCode;
+
+    double retailPriceAmount;
+
+    String retailPriceCurrencyCode;
 }
