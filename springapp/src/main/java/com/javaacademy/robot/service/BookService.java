@@ -43,7 +43,7 @@ public class BookService {
 
     public BookDto getBookByIsbn(Long isbn) {
         Book book = bookRepository.findOne(isbn);
-        if(book == null) return null;
+        if (book == null) return null;
         return bookConverter.toDto(book);
     }
 

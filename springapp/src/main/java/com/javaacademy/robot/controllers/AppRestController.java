@@ -45,7 +45,7 @@ public class AppRestController {
         try {
             bookService.remove(isbn);
         } catch (EmptyResultDataAccessException e) {
-            return new ResponseEntity<>("Book not found",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity(HttpStatus.OK);
     }
