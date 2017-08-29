@@ -34,7 +34,4 @@ public class BookDto {
     double retailPriceAmount;
 
     String retailPriceCurrencyCode;
-
-    public BookDto() {}
-
 }
