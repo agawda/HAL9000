@@ -3,6 +3,7 @@ package com.javaacademy.robot.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode
+@ToString
 public class Book {
 
     @Id
@@ -25,7 +27,7 @@ public class Book {
     @Column(name = "title")
     String title;
 
-    @Column(name = "subtitle")
+    @Column(name = "subtitle", length = 512)
     String subtitle;
 
     @ElementCollection

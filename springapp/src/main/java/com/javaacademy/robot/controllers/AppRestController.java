@@ -1,6 +1,7 @@
 package com.javaacademy.robot.controllers;
 
 import com.javaacademy.robot.model.BookDto;
+import com.javaacademy.robot.model.BookModels;
 import com.javaacademy.robot.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 @RequestMapping("/books/")
@@ -48,5 +50,15 @@ public class AppRestController {
             return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(method = PUT, value = "addall")
+    public ResponseEntity<String> addAllBookDtos(@RequestBody BookModels bookModels) {
+        try {
+            bookService.addAllBookDtos(bookModels);
+            return new ResponseEntity<>("All ok!", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -18,4 +18,4 @@ addons:
     branches:
       - master
       - development
-      - db-model
+      - sending-books

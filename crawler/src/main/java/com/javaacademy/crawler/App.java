@@ -1,13 +1,18 @@
 package com.javaacademy.crawler;
 
+import com.javaacademy.crawler.common.booksender.BookSender;
 import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.googlebooks.GoogleScrapper;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+import static com.javaacademy.crawler.common.logger.AppLogger.logger;
 
 /**
  * @author devas
@@ -18,12 +23,18 @@ public class App {
 
     public static void main(String[] args) {
         AppLogger.initializeLogger();
+        String serverIpAddress = loadIpAddress();
+        if(serverIpAddress.equals("")) {return;}
         GoogleScrapper googleScrapper = new GoogleScrapper();
         googleScrapper.runScrapping();
 
         while (!googleScrapper.areAllCallbacksDone()) {
             try {
+                AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks not done, waiting...");
                 Thread.sleep(6000);
+                AppLogger.logger.log(DEFAULT_LEVEL, "googleScrapper.areAllCallbacksDone(): "
+                        +googleScrapper.areAllCallbacksDone());
+
             } catch (InterruptedException e) {
                 AppLogger.logger.log(Level.WARNING,"Exception while waiting", e);
                         Thread.currentThread().interrupt();
@@ -32,5 +43,22 @@ public class App {
 
         Set<Book> books = googleScrapper.getBooks();
         AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
+
+        BookSender bookSender = new BookSender(books);
+        bookSender.sendBooksTo(serverIpAddress);
+    }
+
+    private static String loadIpAddress() {
+        Properties properties = new Properties();
+        String filePath = "ipaddress.properties";
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+
+        try (InputStream input = classloader.getResourceAsStream(filePath)) {
+            properties.load(input);
+            return properties.getProperty("ip.address");
+        } catch (IOException e) {
+            logger.log(DEFAULT_LEVEL, "Ip address file not found");
+        }
+        return "";
     }
 }

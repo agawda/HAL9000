@@ -32,6 +32,6 @@ public class CustomCallback<T> implements Callback<T> {
     @Override
     public void onFailure(Call<T> call, Throwable throwable) {
         AppLogger.logger.log(Level.WARNING, "There was an error while making a custom retrofit call: "
-                + throwable.getMessage());
+                + throwable.getMessage() +"\n" + call.request());
     }
 }
