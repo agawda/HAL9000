@@ -111,10 +111,10 @@ public class BookSender {
             c = i > progress ? '-' : '+';
             printOnConsole(c + " ");
         }
-        printOnConsole("]");
+        printOnConsole("]\n");
     }
 
     private static void printOnConsole(String s) {
-        System.out.println(s);
+        System.out.print(s);
     }
 }
