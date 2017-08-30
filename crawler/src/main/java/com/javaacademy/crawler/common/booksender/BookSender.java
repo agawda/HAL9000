@@ -28,8 +28,6 @@ public class BookSender {
         this.booksSendCounter = new HashMap<>();
         books.forEach(bookModel ->
                 booksToSend.put(googleBookConverter.convertToDto((BookItem) bookModel), false));
-        books.forEach(bookModel ->
-                booksSendCounter.put(googleBookConverter.convertToDto((BookItem) bookModel), 0));
     }
 
     private void sendBooksTo(String serverIp, int numberOfBooks) {
@@ -46,6 +44,7 @@ public class BookSender {
     public void sendBooksTo(String serverIp) {
         int numberOfBooksSentAtOnce = 20;
         int maxNumberOfTries = booksToSend.size() * 2 / numberOfBooksSentAtOnce;
+        printOnConsole("Sending scrapped books to server:\n");
         for (int i = 0; i < maxNumberOfTries; i++) {
             if (areAllBooksSent()) {
                 break;
@@ -111,10 +110,10 @@ public class BookSender {
             c = i > progress ? '-' : '+';
             printOnConsole(c + " ");
         }
-        printOnConsole("]\n");
+        printOnConsole("] "+ progress +"%\n");
     }
 
-    private static void printOnConsole(String s) {
+    public static void printOnConsole(String s) {
         System.out.print(s);
     }
 }

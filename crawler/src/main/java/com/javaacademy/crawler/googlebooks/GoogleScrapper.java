@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
+import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsole;
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 public class GoogleScrapper {
@@ -39,6 +40,7 @@ public class GoogleScrapper {
 
     private void collectAllBooksFromGoogle(int numOfBooks) {
         int step = 40;
+        printOnConsole("Scrapping books from google:\n");
         for (int i = 0; i < numOfBooks; i += step) {
             long progress = i * 100 / MAX_VALUE;
             displayProgress(progress);
@@ -60,6 +62,7 @@ public class GoogleScrapper {
                 Thread.currentThread().interrupt();
             }
         }
+        displayProgress(100);
         AppLogger.logger.log(DEFAULT_LEVEL, "All callbacks done!");
         isLoopDone = true;
     }
