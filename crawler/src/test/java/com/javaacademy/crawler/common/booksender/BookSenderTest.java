@@ -23,7 +23,7 @@ public class BookSenderTest {
         BookSender bookSender = new BookSender(getBooks(), getConverterMock());
         Call<String> serverResponse = mock(Call.class);
         bookSender.sendingRetrofit = getSendingRetrofitMock(serverResponse);
-        BookSender.BOOKS_SENT_AT_ONCE = 1;
+        BookSender.numberOfBooksSentAtOnce = 1;
         bookSender.sendBooksTo("IPADDRESS");
         verify(serverResponse, times(2)).enqueue(any());
     }

@@ -21,7 +21,7 @@ import static com.javaacademy.crawler.common.logger.AppLogger.logger;
 public class BookSender {
     Map<BookModel, Boolean> booksToSend; // a map which holds info about whether the book was successfully sent to server
     Map<BookModel, Integer> booksSendCounter;
-    static int BOOKS_SENT_AT_ONCE = 20;
+    static int numberOfBooksSentAtOnce = 20;
     SendingRetrofit sendingRetrofit = new SendingRetrofit();
 
     public BookSender(Set<Book> books, GoogleBookConverter googleBookConverter) {
@@ -43,13 +43,13 @@ public class BookSender {
     }
 
     public void sendBooksTo(String serverIp) {
-        int maxNumberOfTries = booksToSend.size() * 2 / BOOKS_SENT_AT_ONCE;
+        int maxNumberOfTries = booksToSend.size() * 2 / numberOfBooksSentAtOnce;
         printOnConsole("Sending scrapped books to server:\n");
         for (int i = 0; i < maxNumberOfTries; i++) {
             if (areAllBooksSent()) {
                 break;
             }
-            sendBooksTo(serverIp, BOOKS_SENT_AT_ONCE);
+            sendBooksTo(serverIp, numberOfBooksSentAtOnce);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
