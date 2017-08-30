@@ -57,7 +57,10 @@ public class BookService {
         List<BookDto> dtos = bookdtos.getBookDtos();
         List<BookDto> nonnullDtos = dtos.stream().filter(bookDto -> bookDto.getIndustryIdentifier() != null).collect(Collectors.toList());
         List<Book> books = bookConverter.toEntities(nonnullDtos);
-        bookRepository.save(books);
+        for (Book book :
+                books) {
+            saveBook(book);
+        }
     }
 
     public List<BookDto> getAllBookDtos() {

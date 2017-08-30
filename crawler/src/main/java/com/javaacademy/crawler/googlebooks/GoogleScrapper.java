@@ -18,7 +18,7 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 public class GoogleScrapper {
     private static final int SLEEP_TIME = 5000;
-    private static final int MAX_VALUE = 100;
+    private static final int MAX_VALUE = 1000;
     private Set<Book> books = new HashSet<>();
     private Set<BookAddingCallback> callbacks = new HashSet<>();
     private boolean isLoopDone = false;

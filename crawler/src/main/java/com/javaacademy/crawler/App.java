@@ -5,7 +5,6 @@ import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.googlebooks.GoogleScrapper;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -25,6 +24,7 @@ public class App {
     public static void main(String[] args) {
         AppLogger.initializeLogger();
         String serverIpAddress = loadIpAddress();
+        if(serverIpAddress.equals("")) {return;}
         GoogleScrapper googleScrapper = new GoogleScrapper();
         googleScrapper.runScrapping();
 
@@ -50,9 +50,10 @@ public class App {
 
     private static String loadIpAddress() {
         Properties properties = new Properties();
-        String filePath = "file:src/main/resources/ipaddress.properties";
+        String filePath = "ipaddress.properties";
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
-        try (InputStream input = new FileInputStream(filePath)) {
+        try (InputStream input = classloader.getResourceAsStream(filePath)) {
             properties.load(input);
             return properties.getProperty("ip.address");
         } catch (IOException e) {
