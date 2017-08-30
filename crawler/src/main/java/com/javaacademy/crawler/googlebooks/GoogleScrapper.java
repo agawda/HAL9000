@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
+import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 public class GoogleScrapper {
@@ -39,7 +40,8 @@ public class GoogleScrapper {
     private void collectAllBooksFromGoogle(int numOfBooks) {
         int step = 40;
         for (int i = 0; i < numOfBooks; i += step) {
-            System.out.println("Step " + i +"/" + numOfBooks);
+            long progress = i * 100 / MAX_VALUE;
+            displayProgress(progress);
             BookAddingCallback<GoogleBooksWrapper> bookItemBookAddingCallback =
                     new BookAddingCallback<>(books, "Google Bookstore");
             callbacks.add(bookItemBookAddingCallback);
@@ -73,7 +75,7 @@ public class GoogleScrapper {
             AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks loop done");
             areCallbacksDone = callbacks.stream().noneMatch(bookAddingCallback ->
                     bookAddingCallback.getRequestStatus() == RequestStatus.STARTED);
-            AppLogger.logger.log(DEFAULT_LEVEL, "areCallbacksDone: "+areCallbacksDone);
+            AppLogger.logger.log(DEFAULT_LEVEL, "areCallbacksDone: " + areCallbacksDone);
         }
         return isLoopDone && areCallbacksDone;
     }

@@ -47,7 +47,6 @@ public class BookSender {
         int numberOfBooksSentAtOnce = 20;
         int maxNumberOfTries = booksToSend.size() * 2 / numberOfBooksSentAtOnce;
         for (int i = 0; i < maxNumberOfTries; i++) {
-            System.out.println("try " + i + "/" + maxNumberOfTries);
             if (areAllBooksSent()) {
                 break;
             }
@@ -56,9 +55,11 @@ public class BookSender {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 logger.log(Level.WARNING, "Interrupted waiting when sending books to book server: ", e);
+                Thread.currentThread().interrupt();
             }
-            System.out.println("Sending progress: " +((booksToSend.values().stream().filter(aBoolean -> aBoolean).count()
-                    * 100) / booksToSend.values().stream().filter(aBoolean -> !aBoolean).count()));
+            long progress = (booksToSend.values().stream().filter(aBoolean -> aBoolean).count()
+                    * 100) / booksToSend.size();
+            displayProgress(progress);
         }
     }
 
@@ -98,5 +99,16 @@ public class BookSender {
         boolean areAllBooksSent = booksToSend.values().stream().allMatch(aBoolean -> aBoolean);
         logger.log(DEFAULT_LEVEL, "Are all books sent: " + areAllBooksSent);
         return areAllBooksSent;
+    }
+
+    public static void displayProgress(long progress) {
+        if(progress > 100) {return;}
+        char c;
+        System.out.print("[");
+        for (int i = 0; i <= 100; i++) {
+            c = i > progress ? '-' : '+';
+            System.out.print(c + " ");
+        }
+        System.out.println("]");
     }
 }
