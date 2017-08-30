@@ -5,10 +5,15 @@ import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.googlebooks.GoogleScrapper;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+import static com.javaacademy.crawler.common.logger.AppLogger.logger;
 
 /**
  * @author devas
@@ -16,10 +21,10 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
  * @since 24.08.17
  */
 public class App {
-    private static final String IP_ADDRESS = "http://127.0.0.1:8080";
 
     public static void main(String[] args) {
         AppLogger.initializeLogger();
+        String serverIpAddress = loadIpAddress();
         GoogleScrapper googleScrapper = new GoogleScrapper();
         googleScrapper.runScrapping();
 
@@ -40,6 +45,19 @@ public class App {
         AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
 
         BookSender bookSender = new BookSender(books);
-        bookSender.sendBooksTo(IP_ADDRESS);
+        bookSender.sendBooksTo(serverIpAddress);
+    }
+
+    private static String loadIpAddress() {
+        Properties properties = new Properties();
+        String filePath = "file:src/main/resources/ipaddress.properties";
+
+        try (InputStream input = new FileInputStream(filePath)) {
+            properties.load(input);
+            return properties.getProperty("ip.address");
+        } catch (IOException e) {
+            logger.log(DEFAULT_LEVEL, "Ip address file not found");
+        }
+        return "";
     }
 }

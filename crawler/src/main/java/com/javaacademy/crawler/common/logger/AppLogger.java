@@ -27,7 +27,6 @@ public class AppLogger {
         }
         handler.setFormatter(new SimpleFormatter());
         logger.addHandler(handler);
-        logger.addHandler(new StreamHandler(System.out, new SimpleFormatter()));
         logger.setLevel(Level.ALL);
         isInitialized = true;
         logger.log(Level.FINEST, "Logger initialized");

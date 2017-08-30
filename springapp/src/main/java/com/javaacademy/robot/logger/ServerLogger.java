@@ -8,7 +8,6 @@ import java.util.logging.*;
 
 public class ServerLogger {
     public static final Logger logger = Logger.getLogger(ServerLogger.class.getName());
-    private static Handler loggerHandler = null;
     public static final Level DEFAULT_LEVEL = Level.CONFIG;
     private static boolean isInitialized = false;
     private static final String FILE_NAME = "Server.log";
@@ -24,7 +23,7 @@ public class ServerLogger {
             return;
         }
         try {
-            loggerHandler = MyFileHandler.createLoggerInstance();
+            Handler loggerHandler = MyFileHandler.createLoggerInstance();
             loggerHandler.setFormatter(new SimpleFormatter());
             logger.addHandler(loggerHandler);
             logger.setLevel(Level.ALL);
