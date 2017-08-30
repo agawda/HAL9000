@@ -1,5 +1,6 @@
 package com.javaacademy.crawler.common.model;
 
+import com.javaacademy.crawler.common.interfaces.Book;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,7 @@ import java.util.List;
 @ToString
 @Getter
 @Setter
-public class BookModel {
+public class BookModel implements Book {
     Long industryIdentifier;
     String subtitle;
     String title;

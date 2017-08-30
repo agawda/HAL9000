@@ -1,6 +1,7 @@
 package com.javaacademy.crawler;
 
 import com.javaacademy.crawler.common.booksender.BookSender;
+import com.javaacademy.crawler.common.converters.GoogleBookConverter;
 import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.googlebooks.GoogleScrapper;
@@ -44,7 +45,7 @@ public class App {
         Set<Book> books = googleScrapper.getBooks();
         AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
 
-        BookSender bookSender = new BookSender(books);
+        BookSender bookSender = new BookSender(books, new GoogleBookConverter());
         bookSender.sendBooksTo(serverIpAddress);
     }
 
