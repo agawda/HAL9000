@@ -8,5 +8,5 @@ import retrofit2.http.PUT;
 public interface BookServerEndpoint {
 
     @PUT("/books/addall")
-    Call<Object> putBooksToServer(@Body BookModels bookModels);
+    Call<String> putBooksToServer(@Body BookModels bookModels);
 }

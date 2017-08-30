@@ -53,7 +53,12 @@ public class AppRestController {
     }
 
     @RequestMapping(method = PUT, value = "addall")
-    public void addAllBookDtos(@RequestBody BookModels bookModels) {
-        bookService.addAllBookDtos(bookModels);
+    public ResponseEntity<String> addAllBookDtos(@RequestBody BookModels bookModels) {
+        try {
+            bookService.addAllBookDtos(bookModels);
+            return new ResponseEntity<>("All ok!", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

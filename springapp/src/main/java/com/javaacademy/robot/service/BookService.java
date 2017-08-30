@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.javaacademy.robot.logger.ServerLogger.DEFAULT_LEVEL;
+import static com.javaacademy.robot.logger.ServerLogger.logger;
 
 @Service
 public class BookService {
@@ -27,7 +28,12 @@ public class BookService {
     }
 
     boolean saveBook(Book book) {
-        Book savedBook = bookRepository.save(book);
+        Book savedBook = new Book();
+        try {
+            savedBook = bookRepository.save(book);
+        } catch (Exception e) {
+            logger.log(DEFAULT_LEVEL, "Could not save the book " + book + ", exception: " +e.getMessage());
+        }
         return book.equals(savedBook);
     }
 

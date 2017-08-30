@@ -17,8 +17,8 @@ import java.util.logging.Level;
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 public class GoogleScrapper {
-    private static final int SLEEP_TIME = 5000;
-    private static final int MAX_VALUE = 1000;
+    private static final int SLEEP_TIME = 2000;
+    private static final int MAX_VALUE = 1_000; //Should not be greater than 1000
     private Set<Book> books = new HashSet<>();
     private Set<BookAddingCallback> callbacks = new HashSet<>();
     private boolean isLoopDone = false;
@@ -39,6 +39,7 @@ public class GoogleScrapper {
     private void collectAllBooksFromGoogle(int numOfBooks) {
         int step = 40;
         for (int i = 0; i < numOfBooks; i += step) {
+            System.out.println("Step " + i +"/" + numOfBooks);
             BookAddingCallback<GoogleBooksWrapper> bookItemBookAddingCallback =
                     new BookAddingCallback<>(books, "Google Bookstore");
             callbacks.add(bookItemBookAddingCallback);

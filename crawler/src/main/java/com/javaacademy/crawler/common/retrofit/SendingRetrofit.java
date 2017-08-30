@@ -1,5 +1,7 @@
 package com.javaacademy.crawler.common.retrofit;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -21,9 +23,10 @@ public class SendingRetrofit {
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);
+        Gson gson = new GsonBuilder().setLenient().create();
         return new Retrofit.Builder()
                 .baseUrl(hostAddress)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(httpClient.build())
                 .build();
     }
