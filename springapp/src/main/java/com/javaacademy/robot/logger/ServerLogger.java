@@ -8,9 +8,12 @@ import java.util.logging.*;
 
 public class ServerLogger {
     public static final Logger logger = Logger.getLogger(ServerLogger.class.getName());
-    private static Handler handler = null;
+    private static Handler loggerHandler = null;
     public static final Level DEFAULT_LEVEL = Level.CONFIG;
     private static boolean isInitialized = false;
+    private static final String FILE_NAME = "Server.log";
+    private static final boolean APPEND_TO_FILE = true;
+    public static final String FOLDER_NAME = "serverLogs";
 
     /**
      * This method will initialize the logger with the path and a name of the logfile, level of the logging info and
@@ -21,39 +24,37 @@ public class ServerLogger {
             return;
         }
         try {
-            handler = MyFileHandler.createLoggerInstance("Server.log", false);
+            loggerHandler = MyFileHandler.createLoggerInstance();
+            loggerHandler.setFormatter(new SimpleFormatter());
+            logger.addHandler(loggerHandler);
+            logger.setLevel(Level.ALL);
         } catch (IOException e) {
-            e.printStackTrace();
             logger.log(Level.WARNING, "Could not create file", e);
         }
-        handler.setFormatter(new SimpleFormatter());
-        logger.addHandler(handler);
-        logger.addHandler(new StreamHandler(System.out, new SimpleFormatter()));
-        logger.setLevel(Level.ALL);
         isInitialized = true;
     }
 
-    private ServerLogger() {}
+    private ServerLogger() {
+    }
 
     static class MyFileHandler extends FileHandler {
-
-        static MyFileHandler createLoggerInstance(String filename, boolean append) throws IOException {
-            String folderName = "logs";
-            Path logFilePath = Paths.get(folderName,filename);
-            if (createLogFolder(folderName)) {
-                return new MyFileHandler(logFilePath.toString(), append);
-            } else {
-                return new MyFileHandler(filename, append);
-            }
-        }
 
         private MyFileHandler(String pattern, boolean append) throws IOException {
             super(pattern, append);
         }
 
-        private static boolean createLogFolder(String folderName) {
+        static MyFileHandler createLoggerInstance() throws IOException {
+            Path logFilePath = Paths.get(FOLDER_NAME, FILE_NAME);
+            if (createLoggersFolder(FOLDER_NAME)) {
+                return new MyFileHandler(logFilePath.toString(), APPEND_TO_FILE);
+            } else {
+                return new MyFileHandler(FILE_NAME, APPEND_TO_FILE);
+            }
+        }
+
+        private static boolean createLoggersFolder(String folderName) {
             File dir = new File(folderName);
-            return dir.exists()|| dir.mkdir();
+            return dir.exists() || dir.mkdir();
         }
     }
 }

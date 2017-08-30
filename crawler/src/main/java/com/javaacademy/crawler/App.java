@@ -16,6 +16,7 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
  * @since 24.08.17
  */
 public class App {
+    private static final String IP_ADDRESS = "http://127.0.0.1:8080";
 
     public static void main(String[] args) {
         AppLogger.initializeLogger();
@@ -39,6 +40,6 @@ public class App {
         AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
 
         BookSender bookSender = new BookSender(books);
-        bookSender.sendBooksTo("http://127.0.0.1:8080");
+        bookSender.sendBooksTo(IP_ADDRESS);
     }
 }

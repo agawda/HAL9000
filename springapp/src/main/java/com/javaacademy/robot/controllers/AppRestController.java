@@ -54,7 +54,6 @@ public class AppRestController {
 
     @RequestMapping(method = PUT, value = "addall")
     public void addAllBookDtos(@RequestBody BookModels bookModels) {
-        System.out.println("bookModels = " + bookModels);
         bookService.addAllBookDtos(bookModels);
     }
 }

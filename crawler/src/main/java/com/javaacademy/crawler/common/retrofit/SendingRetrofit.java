@@ -1,9 +1,12 @@
 package com.javaacademy.crawler.common.retrofit;
 
+import com.javaacademy.crawler.common.logger.AppLogger;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 public class SendingRetrofit {
 
@@ -13,7 +16,8 @@ public class SendingRetrofit {
     }
 
     private Retrofit createRetrofitInstance(String hostAddress) {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(System.out::println);
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(s ->
+                AppLogger.logger.log(DEFAULT_LEVEL, s));
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.addInterceptor(logging);

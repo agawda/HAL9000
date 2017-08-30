@@ -17,15 +17,15 @@ import java.util.List;
 @Setter
 public class BookModel {
     Long industryIdentifier;
-    String title;
     String subtitle;
-    List<String> authors;
+    String title;
     List<String> categories;
-    String smallThumbnail;
+    List<String> authors;
     String canonicalVolumeLink;
     String saleability;
+    String smallThumbnail;
     double listPriceAmount;
-    String listPriceCurrencyCode;
     double retailPriceAmount;
+    String listPriceCurrencyCode;
     String retailPriceCurrencyCode;
 }

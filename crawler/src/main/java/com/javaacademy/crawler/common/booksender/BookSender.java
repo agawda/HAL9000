@@ -4,15 +4,15 @@ import com.javaacademy.crawler.common.CustomCallback;
 import com.javaacademy.crawler.common.converters.GoogleBookConverter;
 import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
-import com.javaacademy.crawler.common.model.BookDtos;
 import com.javaacademy.crawler.common.model.BookModel;
+import com.javaacademy.crawler.common.model.BookModels;
 import com.javaacademy.crawler.common.retrofit.BookServerEndpoint;
-import com.javaacademy.crawler.common.retrofit.BookServerResponse;
 import com.javaacademy.crawler.common.retrofit.SendingRetrofit;
 import com.javaacademy.crawler.googlebooks.model.BookItem;
 import retrofit2.Call;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
@@ -26,35 +26,57 @@ public class BookSender {
                 booksToSend.put(googleBookConverter.convertToDto((BookItem) bookModel), false));
     }
 
-    public void sendBooksTo(String serverIp) {
-        BookServerEndpoint endpoint =
-                new SendingRetrofit().getBookBookServerEndpoint(serverIp);
-        BookDtos bookDtos = selectBooksToSend(20);
-        if (bookDtos.isEmpty()) {
+    private void sendBooksTo(String serverIp, int numberOfBooks) {
+        BookServerEndpoint endpoint = new SendingRetrofit().getBookBookServerEndpoint(serverIp);
+        BookModels bookModels = selectBooksToSend(numberOfBooks);
+        if (bookModels.isEmpty()) {
             return;
         }
-        AppLogger.logger.log(DEFAULT_LEVEL, "Sending books to server: " + bookDtos.toString());
-        Call<BookServerResponse> serverResponse =
-                endpoint.putBooksToServer(bookDtos);
-        serverResponse.enqueue(new CustomCallback<>(
-                bookServerResponse -> AppLogger.logger.log(DEFAULT_LEVEL, "Request completed successfully")));
-
+        AppLogger.logger.log(DEFAULT_LEVEL, "Sending books to server: " + bookModels.toString());
+        Call<Object> serverResponse = endpoint.putBooksToServer(bookModels);
+        serverResponse.enqueue(new CustomCallback<>(createSuccessfulRequestConsumer(bookModels.getBookDtos())));
     }
 
-    private BookDtos selectBooksToSend(int numberOfBooks) {
+    public void sendBooksTo(String serverIp) {
+        int numberOfBooksSentAtOnce = 20;
+        int maxNumberOfTries = booksToSend.size() * 2 / numberOfBooksSentAtOnce;
+        for (int i = 0; i < maxNumberOfTries; i++) {
+            if (areAllBooksSent()) {
+                break;
+            }
+            sendBooksTo(serverIp, numberOfBooksSentAtOnce);
+        }
+    }
+
+    private Consumer<Object> createSuccessfulRequestConsumer(List<BookModel> processedBooks) {
+        return bookServerResponse -> markBooksAsSent(processedBooks);
+    }
+
+    private BookModels selectBooksToSend(int numberOfBooks) {
         List<BookModel> unsentBooks = new ArrayList<>();
         booksToSend.forEach((bookModel, aBoolean) -> {
             if (!aBoolean) {
                 unsentBooks.add(bookModel);
             }
         });
-        return new BookDtos(getSublist(unsentBooks, numberOfBooks));
+        return new BookModels(getSublist(unsentBooks, numberOfBooks));
     }
 
     private List<BookModel> getSublist(List<BookModel> list, int numberOfElements) {
+        int actualNumberOfElements = numberOfElements;
         if (numberOfElements > list.size()) {
-            numberOfElements = list.size();
+            actualNumberOfElements = list.size();
         }
-        return list.subList(0, numberOfElements);
+        return list.subList(0, actualNumberOfElements);
+    }
+
+    private void markBooksAsSent(List<BookModel> sentBooks) {
+        for (BookModel bookModel : sentBooks) {
+            booksToSend.put(bookModel, true);
+        }
+    }
+
+    private boolean areAllBooksSent() {
+        return booksToSend.values().stream().anyMatch(aBoolean -> aBoolean);
     }
 }
