@@ -56,7 +56,7 @@ public class GoogleScrapper {
             try {
                 Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
-                AppLogger.logger.log(Level.WARNING, "Exception while waaiting, ", e);
+                AppLogger.logger.log(Level.WARNING, "Exception while waiting, ", e);
                 Thread.currentThread().interrupt();
             }
         }

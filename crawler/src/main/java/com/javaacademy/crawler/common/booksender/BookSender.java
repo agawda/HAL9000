@@ -92,7 +92,7 @@ public class BookSender {
             booksSendCounter.merge(bookModel, 0, (integer, integer2) -> integer + 1);
         }
         logger.log(DEFAULT_LEVEL, "Number of sent books after update = " + booksToSend.values().stream().filter(aBoolean -> aBoolean).count());
-        logger.log(DEFAULT_LEVEL, "How many times books were sent: " +booksSendCounter.values());
+        logger.log(DEFAULT_LEVEL, "How many times books were sent: " + booksSendCounter.values());
     }
 
     private boolean areAllBooksSent() {
@@ -102,13 +102,19 @@ public class BookSender {
     }
 
     public static void displayProgress(long progress) {
-        if(progress > 100) {return;}
+        if (progress > 100) {
+            return;
+        }
         char c;
-        System.out.print("[");
+        printOnConsole("[");
         for (int i = 0; i <= 100; i++) {
             c = i > progress ? '-' : '+';
-            System.out.print(c + " ");
+            printOnConsole(c + " ");
         }
-        System.out.println("]");
+        printOnConsole("]");
+    }
+
+    private static void printOnConsole(String s) {
+        System.out.println(s);
     }
 }
