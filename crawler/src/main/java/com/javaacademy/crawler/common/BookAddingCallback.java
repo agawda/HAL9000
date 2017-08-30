@@ -12,6 +12,8 @@ import retrofit2.Response;
 import java.util.Set;
 import java.util.logging.Level;
 
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+
 @Getter
 @EqualsAndHashCode
 public class  BookAddingCallback<T extends BooksWrapper> implements Callback<T> {
@@ -24,11 +26,17 @@ public class  BookAddingCallback<T extends BooksWrapper> implements Callback<T> 
         this.bookstoreName = bookstoreName;
     }
 
+    public RequestStatus getRequestStatus() {
+        AppLogger.logger.log(DEFAULT_LEVEL, "Checking callback's status: " +requestStatus);
+        return requestStatus;
+    }
+
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
         if (response.isSuccessful()) {
             BooksWrapper bw = response.body();
             books.addAll(bw.getItems());
+            AppLogger.logger.log(DEFAULT_LEVEL, "Callback completed");
             requestStatus = RequestStatus.COMPLETED;
         } else {
             AppLogger.logger.log(Level.WARNING, "error " + response.code());

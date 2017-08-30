@@ -1,14 +1,20 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.converters.BookConverter;
+import com.javaacademy.robot.logger.ServerLogger;
 import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
+import com.javaacademy.robot.model.BookModels;
 import com.javaacademy.robot.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.javaacademy.robot.logger.ServerLogger.DEFAULT_LEVEL;
+import static com.javaacademy.robot.logger.ServerLogger.logger;
 
 @Service
 public class BookService {
@@ -22,7 +28,12 @@ public class BookService {
     }
 
     boolean saveBook(Book book) {
-        Book savedBook = bookRepository.save(book);
+        Book savedBook = new Book();
+        try {
+            savedBook = bookRepository.save(book);
+        } catch (Exception e) {
+            logger.log(DEFAULT_LEVEL, "Could not save the book " + book + ", exception: " +e.getMessage());
+        }
         return book.equals(savedBook);
     }
 
@@ -45,6 +56,17 @@ public class BookService {
         Book book = bookRepository.findOne(isbn);
         if (book == null) return null;
         return bookConverter.toDto(book);
+    }
+
+    public void addAllBookDtos(BookModels bookdtos) {
+        ServerLogger.logger.log(DEFAULT_LEVEL, "Adding dtos: " +bookdtos.getBookDtos());
+        List<BookDto> dtos = bookdtos.getBookDtos();
+        List<BookDto> nonnullDtos = dtos.stream().filter(bookDto -> bookDto.getIndustryIdentifier() != null).collect(Collectors.toList());
+        List<Book> books = bookConverter.toEntities(nonnullDtos);
+        for (Book book :
+                books) {
+            saveBook(book);
+        }
     }
 
     public List<BookDto> getAllBookDtos() {

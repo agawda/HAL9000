@@ -4,15 +4,14 @@ import com.javaacademy.crawler.common.interfaces.BooksWrapper;
 import okhttp3.ResponseBody;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import retrofit2.Call;
 import retrofit2.Response;
 
 import java.util.function.Consumer;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class CustomCallbackTest {
     private Consumer consumer;
@@ -48,7 +47,8 @@ public class CustomCallbackTest {
     @Test
     public void testOnFailure() {
         Throwable throwable = new Throwable("Test");
-        customCallback.onFailure(null, throwable);
+        Call call = mock(Call.class);
+        customCallback.onFailure(call, throwable);
         verify(consumer, times(0)).accept(any());
     }
 

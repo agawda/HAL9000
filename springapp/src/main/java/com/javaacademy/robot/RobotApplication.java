@@ -1,5 +1,6 @@
 package com.javaacademy.robot;
 
+import com.javaacademy.robot.logger.ServerLogger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RobotApplication {
 
 	public static void main(String[] args) {
+		ServerLogger.initializeLogger();
 		SpringApplication.run(RobotApplication.class, args);
 	}
 }

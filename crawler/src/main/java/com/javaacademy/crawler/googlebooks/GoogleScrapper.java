@@ -14,11 +14,13 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
+import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
+import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsole;
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 public class GoogleScrapper {
-    private static final int SLEEP_TIME = 5000;
-    private static final int MAX_VALUE = 1000;
+    private static final int SLEEP_TIME = 2000;
+    private static final int MAX_VALUE = 1_000; //Should not be greater than 1000
     private Set<Book> books = new HashSet<>();
     private Set<BookAddingCallback> callbacks = new HashSet<>();
     private boolean isLoopDone = false;
@@ -29,14 +31,19 @@ public class GoogleScrapper {
 
     private void getNumberOfBooksAndStartCollection() {
         Consumer<TotalItemsWrapper> consumer =
-                totalItemsWrapper -> collectAllBooksFromGoogle(totalItemsWrapper.getTotalItems());
+                totalItemsWrapper -> collectAllBooksFromGoogle(
+                        totalItemsWrapper.getTotalItems()
+                );
         CustomCallback<TotalItemsWrapper> customCallback = new CustomCallback<>(consumer);
         new Controller().getHowManyBooksThereAre(customCallback);
     }
 
     private void collectAllBooksFromGoogle(int numOfBooks) {
         int step = 40;
+        printOnConsole("Scrapping books from google:\n");
         for (int i = 0; i < numOfBooks; i += step) {
+            long progress = i * 100 / MAX_VALUE;
+            displayProgress(progress);
             BookAddingCallback<GoogleBooksWrapper> bookItemBookAddingCallback =
                     new BookAddingCallback<>(books, "Google Bookstore");
             callbacks.add(bookItemBookAddingCallback);
@@ -51,10 +58,12 @@ public class GoogleScrapper {
             try {
                 Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
-                AppLogger.logger.log(Level.WARNING, "Exception while waaiting, ", e);
+                AppLogger.logger.log(Level.WARNING, "Exception while waiting, ", e);
                 Thread.currentThread().interrupt();
             }
         }
+        displayProgress(100);
+        AppLogger.logger.log(DEFAULT_LEVEL, "All callbacks done!");
         isLoopDone = true;
     }
 
@@ -66,8 +75,10 @@ public class GoogleScrapper {
     public boolean areAllCallbacksDone() {
         boolean areCallbacksDone = false;
         if (isLoopDone) {
-            areCallbacksDone = callbacks.stream().anyMatch(bookAddingCallback ->
+            AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks loop done");
+            areCallbacksDone = callbacks.stream().noneMatch(bookAddingCallback ->
                     bookAddingCallback.getRequestStatus() == RequestStatus.STARTED);
+            AppLogger.logger.log(DEFAULT_LEVEL, "areCallbacksDone: " + areCallbacksDone);
         }
         return isLoopDone && areCallbacksDone;
     }

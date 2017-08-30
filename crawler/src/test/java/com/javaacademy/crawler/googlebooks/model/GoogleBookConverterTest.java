@@ -32,7 +32,7 @@ public class GoogleBookConverterTest {
         String subtitle = "SubtitleTest";
         List<String> authors = new ArrayList<>(Arrays.asList("Author1", "Author2"));
         Isbn isbn = new Isbn();
-        String type = "IsbnType";
+        String type = "ISBN_13";
         String identifier = "1101";
         isbn.type = type;
         isbn.identifier = identifier;
@@ -55,13 +55,12 @@ public class GoogleBookConverterTest {
         GoogleBookConverter googleBookConverter = new GoogleBookConverter();
         BookModel bookModel = googleBookConverter.convertToDto(bookItem);
 
-        Map<String, Integer> convertedIsbns = new HashMap<>();
-        convertedIsbns.put(type, Integer.valueOf(identifier));
+        Long convertedIsbn = 1101L;
 
         assertEquals(bookModel.getTitle(), title);
         assertEquals(bookModel.getSubtitle(), subtitle);
         assertEquals(bookModel.getAuthors(), authors);
-        assertEquals(bookModel.getIndustryIdentifiers(), convertedIsbns);
+        assertEquals(bookModel.getIndustryIdentifier(), convertedIsbn);
         assertEquals(bookModel.getCategories(), categories);
         assertEquals(bookModel.getSmallThumbnail(), smallThumbNail);
         assertEquals(bookModel.getCanonicalVolumeLink(), canonicalVolumeLink);
