@@ -17,6 +17,24 @@ import java.util.stream.Collectors;
  */
 class BonitoScrapper {
 
+    private Document doc;
+    private static final String BONITO_BASE_URL = "https://bonito.pl";
+    private static final String BONITO_PROMOS_LINK = "https://bonito.pl/wyprzedaz";
+
+    public List<BookModel> scrapAndGetBookModels() {
+        doc = connectAndGetDoc(BONITO_PROMOS_LINK);
+
+        Elements elements = doc.getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
+        Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
+
+        Set<String> links = new HashSet<>(sublinks.stream().map(BONITO_BASE_URL::concat).collect(Collectors.toSet()));
+
+        List<BookModel> bookModels = new LinkedList<>();
+        links.forEach(link -> bookModels.add(parseLinkAndGetBookModel(link)));
+
+        return bookModels;
+    }
+
     private Document connectAndGetDoc(String link) {
         Document doc = null;
         try {
@@ -27,49 +45,97 @@ class BonitoScrapper {
         return doc;
     }
 
-    List<BookModel> scrapAndGetBookModels() {
-        Document doc = connectAndGetDoc("https://bonito.pl/wyprzedaz");
-
-        Elements elements = doc.getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
-        System.out.println(elements.size());
-        Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-
-        final String BASE_URL = "https://bonito.pl";
-        Set<String> links = new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
-
-        List<BookModel> bookModels = new LinkedList<>();
-        links.forEach(link -> bookModels.add(parseLinkAndGetBookModel(link)));
-        bookModels.forEach(System.out::println);
-
-        return bookModels;
-    }
-
     private BookModel parseLinkAndGetBookModel(String link) {
-        System.out.println(link);
-        Document doc = connectAndGetDoc(link);
+        doc = connectAndGetDoc(link);
 
         BookModel bookModel = new BookModel();
-        String identifier = doc.select("td:containsOwn(Numer ISBN:)").next().first().child(0).html();
-        bookModel.setIndustryIdentifier(Long.parseLong(identifier.replace("-", "")));
-        bookModel.setTitle(doc.getElementsByAttributeValue("itemprop", "name").first().html());
-        bookModel.setSubtitle("");
-        List<String> authorsList = new ArrayList<>();
-        Elements authors = doc.select("td:containsOwn(Autor:\u00a0)").next().first().getElementsByTag("a");
-        authors.forEach(element -> authorsList.add(element.html()));
-        bookModel.setAuthors(authorsList);
-        String categories = doc.getElementsByAttributeValue("itemprop", "category").first().attr("content");
-        bookModel.setCategories(Arrays.asList(categories.substring(13).split(" > ")));
-        String imageLink = doc.select("a:has(img)[title=Powiększ...]>img").first().attr("src");
-        bookModel.setSmallThumbnail("https://".concat(imageLink.substring(2)));
-        bookModel.setCanonicalVolumeLink(link);
-        bookModel.setSaleability("FOR_SALE");
-        Elements prices = doc.select("b:contains(zł)");
-        bookModel.setListPriceAmount(Double.parseDouble(prices.get(0).html().split(" ")[0].replace(',', '.')));
-        bookModel.setListPriceCurrencyCode("PLN");
-        bookModel.setRetailPriceAmount(Double.parseDouble(prices.get(1).html().split(" ")[0].replace(',', '.')));
-        bookModel.setRetailPriceCurrencyCode("PLN");
+        setIndustryIdentifier(bookModel);
+        setTitle(bookModel);
+        setSubtitle(bookModel);
+        setAuthors(bookModel);
+        setCategories(bookModel);
+        setSmallThumbnail(bookModel);
+        setCanonicalVolumeLink(bookModel, link);
+        setSaleability(bookModel);
+        setPrices(bookModel);
 
         return bookModel;
     }
 
+    private void setIndustryIdentifier(BookModel bookModel) {
+        Elements elements = doc.select("td:containsOwn(Kod paskowy (EAN):)");
+        if (elements.size() == 0) {
+            bookModel.setIndustryIdentifier(new Random().nextLong());
+        } else {
+            String identifier = elements.next().first().child(0).html();
+            bookModel.setIndustryIdentifier(Long.parseLong(identifier.replace("-", "")));
+        }
+    }
+
+    private void setTitle(BookModel bookModel) {
+        Elements elements = doc.getElementsByAttributeValue("itemprop", "name");
+        if (elements.size() == 0) {
+            bookModel.setTitle("");
+        } else {
+            bookModel.setTitle(elements.first().html());
+        }
+    }
+
+    private void setSubtitle(BookModel bookModel) {
+        bookModel.setSubtitle("");
+    }
+
+    private void setAuthors(BookModel bookModel) {
+        List<String> authorsList = new ArrayList<>();
+        Elements elements = doc.select("td:containsOwn(Autor:\u00a0)");
+        if (elements.size() == 0) {
+            bookModel.setAuthors(Collections.singletonList(""));
+        } else {
+            Elements authors = elements.next().first().getElementsByTag("a");
+            authors.forEach(element -> authorsList.add(element.html()));
+            bookModel.setAuthors(authorsList);
+        }
+    }
+
+    private void setCategories(BookModel bookModel) {
+        Elements elements = doc.getElementsByAttributeValue("itemprop", "category");
+        if (elements.size() == 0) {
+            bookModel.setCategories(Collections.singletonList(""));
+        } else {
+            String categories = elements.first().attr("content");
+            bookModel.setCategories(Arrays.asList(categories.substring(13).split(" > ")));
+        }
+    }
+
+    private void setSmallThumbnail(BookModel bookModel) {
+        Elements elements = doc.select("a:has(img)[title=Powiększ...]>img");
+        if (elements.size() == 0) {
+            bookModel.setSmallThumbnail("");
+        } else {
+            String imageLink = elements.first().attr("src");
+            bookModel.setSmallThumbnail("https://".concat(imageLink.substring(2)));
+        }
+    }
+
+    private void setCanonicalVolumeLink(BookModel bookModel, String link) {
+        bookModel.setCanonicalVolumeLink(link);
+    }
+
+    private void setSaleability(BookModel bookModel) {
+        bookModel.setSaleability("FOR_SALE");
+    }
+
+    private void setPrices(BookModel bookModel) {
+        bookModel.setListPriceCurrencyCode("PLN");
+        bookModel.setRetailPriceCurrencyCode("PLN");
+
+        Elements prices = doc.select("b:contains(zł)");
+        if (prices.size() == 0) {
+            bookModel.setListPriceAmount(0);
+            bookModel.setRetailPriceAmount(0);
+        } else {
+            bookModel.setListPriceAmount(Double.parseDouble(prices.get(0).html().split(" ")[0].replace(',', '.')));
+            bookModel.setRetailPriceAmount(Double.parseDouble(prices.get(1).html().split(" ")[0].replace(',', '.')));
+        }
+    }
 }
