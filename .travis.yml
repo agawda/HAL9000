@@ -18,4 +18,4 @@ addons:
     branches:
       - master
       - development
-      - sending-books
+      - sending-books-tests

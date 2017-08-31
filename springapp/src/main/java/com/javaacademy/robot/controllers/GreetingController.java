@@ -20,4 +20,18 @@ public class GreetingController {
         model.addAttribute("exampleBooks", Arrays.asList("Advanced Java", "Clean Code", "Effective Java"));
         return "../static/templates/greeting";
     }
+
+    @RequestMapping("/bookstores")
+    public String bookstore(@RequestParam(value = "id") String bookstore, Model model) {
+        model.addAttribute("id", bookstore);
+        model.addAttribute("bookTitle", "Advanced Java");
+        return "../static/templates/bookstore";
+    }
+
+    @RequestMapping("/books/")
+    public String book(@RequestParam(value = "id") String bookTitle, Model model) {
+        model.addAttribute("id", bookTitle);
+        model.addAttribute("price", 23.99); //hardcoded example price
+        return "../static/templates/bookview";
+    }
 }

@@ -19,19 +19,20 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 import static com.javaacademy.crawler.common.logger.AppLogger.logger;
 
 public class BookSender {
-    private Map<BookModel, Boolean> booksToSend; // a map which holds info about whether the book was successfully sent to server
-    private Map<BookModel, Integer> booksSendCounter;
+    Map<BookModel, Boolean> booksToSend; // a map which holds info about whether the book was successfully sent to server
+    Map<BookModel, Integer> booksSendCounter;
+    static int numberOfBooksSentAtOnce = 20;
+    SendingRetrofit sendingRetrofit = new SendingRetrofit();
 
-    public BookSender(Set<Book> books) {
-        GoogleBookConverter googleBookConverter = new GoogleBookConverter();
+    public BookSender(Set<Book> books, GoogleBookConverter googleBookConverter) {
         this.booksToSend = new HashMap<>();
         this.booksSendCounter = new HashMap<>();
-        books.forEach(bookModel ->
-                booksToSend.put(googleBookConverter.convertToDto((BookItem) bookModel), false));
+        books.forEach(bookItem ->
+                booksToSend.put(googleBookConverter.convertToDto((BookItem) bookItem), false));
     }
 
     private void sendBooksTo(String serverIp, int numberOfBooks) {
-        BookServerEndpoint endpoint = new SendingRetrofit().getBookBookServerEndpoint(serverIp);
+        BookServerEndpoint endpoint = sendingRetrofit.getBookBookServerEndpoint(serverIp);
         BookModels bookModels = selectBooksToSend(numberOfBooks);
         if (bookModels.isEmpty()) {
             return;
@@ -42,7 +43,6 @@ public class BookSender {
     }
 
     public void sendBooksTo(String serverIp) {
-        int numberOfBooksSentAtOnce = 20;
         int maxNumberOfTries = booksToSend.size() * 2 / numberOfBooksSentAtOnce;
         printOnConsole("Sending scrapped books to server:\n");
         for (int i = 0; i < maxNumberOfTries; i++) {
@@ -84,17 +84,17 @@ public class BookSender {
         return list.subList(0, actualNumberOfElements);
     }
 
-    private void markBooksAsSent(List<BookModel> sentBooks) {
+    void markBooksAsSent(List<BookModel> sentBooks) {
         logger.log(DEFAULT_LEVEL, "Number of sent books before update = " + booksToSend.values().stream().filter(aBoolean -> aBoolean).count());
         for (BookModel bookModel : sentBooks) {
             booksToSend.put(bookModel, true);
-            booksSendCounter.merge(bookModel, 0, (integer, integer2) -> integer + 1);
+            booksSendCounter.merge(bookModel, 1, (integer, integer2) -> integer + 1);
         }
         logger.log(DEFAULT_LEVEL, "Number of sent books after update = " + booksToSend.values().stream().filter(aBoolean -> aBoolean).count());
         logger.log(DEFAULT_LEVEL, "How many times books were sent: " + booksSendCounter.values());
     }
 
-    private boolean areAllBooksSent() {
+    boolean areAllBooksSent() {
         boolean areAllBooksSent = booksToSend.values().stream().allMatch(aBoolean -> aBoolean);
         logger.log(DEFAULT_LEVEL, "Are all books sent: " + areAllBooksSent);
         return areAllBooksSent;
