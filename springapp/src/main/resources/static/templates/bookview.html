@@ -13,9 +13,6 @@
           href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
           th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css}"/>
 
-    <!-- Custom styles for this template -->
-    <link href="css/shop-item.css" rel="stylesheet"/>
-
     <link rel="stylesheet" type="text/css"
           href="../css/bookview.css"
           th:href="@{../css/bookview.css}"/>
@@ -25,9 +22,9 @@
 <body>
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
     <div class="container">
-        <a class="navbar-brand" href="#">Book name</a>
+        <a class="navbar-brand" href="">Book</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -35,7 +32,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home
+                    <a class="nav-link" href="/">Home
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
@@ -51,9 +48,9 @@
 </nav>
 
 <!-- Page Content -->
-<div id="Second" class="row">
+<div id="Second" class="row grey-row">
     <div class="container">
-
+        <!--/*@thymesVar id="book" type="com.javaacademy.robot.model.BookDto"*/-->
         <div class="card-columns">
             <div class="card">
                 <img class="card-img-top" th:src="${book.smallThumbnail}" alt="Card image cap"/>
@@ -70,9 +67,11 @@
                     <ul class="list-group" th:each="cat, stat : ${book.categories}">
                         <li class="list-group-item" th:text="${cat}"></li>
                     </ul>
-                    <h4 class="card-title">Authors</h4>
+                    <h4 class="card-title">person</i>Authors</h4>
                     <ul class="list-group" th:each="author, stat : ${book.authors}">
-                        <li class="list-group-item" th:text="${author}"></li>
+                        <li class="list-group-item">
+                            <i th:text="${author}"></i>
+                        </li>
                     </ul>
                 </footer>
             </div>
@@ -81,9 +80,9 @@
                     <h4 class="card-title">Prices</h4>
                     <del class="card-text" th:text="${book.listPriceAmount}"></del>
                     <p class="card-text" th:text="${book.retailPriceAmount}"></p>
-                    <button type="submit" class="btn">Go to page
-                        <span class="glyphicon glyphicon-star"></span>
-                    </button>
+                    <a type="submit" role="button" class="btn btn-xs btn-danger icon-button"
+                       th:href="${book.canonicalVolumeLink}">BUY
+                    </a>
                 </footer>
             </div>
         </div>
