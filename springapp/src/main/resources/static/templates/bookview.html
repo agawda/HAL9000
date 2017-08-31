@@ -17,8 +17,8 @@
     <link href="css/shop-item.css" rel="stylesheet"/>
 
     <link rel="stylesheet" type="text/css"
-          href="..static/css/bookview.css"
-          th:href="@{..static/css/bookview.css}"/>
+          href="../css/bookview.css"
+          th:href="@{../css/bookview.css}"/>
 
 </head>
 
@@ -54,41 +54,47 @@
 <div id="Second" class="row">
     <div class="container">
 
-        <div class="row">
-
-            <div class="col-lg-9">
-
-                <div class="card mt-4">
-                    <img class="card-img-top img-fluid" src="http://placehold.it/900x400" alt=""/>
-                    <div class="card-body">
-                        <!--Hardcoded data from the controller-->
-                        <h3 class="card-title" th:text="${id}"></h3>
-                        <h4 th:text="${price}">$24.99</h4>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente dicta
-                            fugit
-                            fugiat hic aliquam itaque facereckkasdriam sequi pariatur
-                            praesentium animi perspiciatis molestias iure, ducimus!</p>
-                    </div>
-                </div>
-                <!-- /.card -->
-
+        <div class="card-columns">
+            <div class="card">
+                <img class="card-img-top" th:src="${book.smallThumbnail}" alt="Card image cap"/>
             </div>
-            <!-- /.col-lg-9 -->
-
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-text" th:text="${book.title}"></h4>
+                    <p class="card-text" th:text="${book.subtitle}"></p>
+                </div>
+            </div>
+            <div class="card p-3">
+                <footer class="card-body">
+                    <h4 class="card-title">Categories</h4>
+                    <ul class="list-group" th:each="cat, stat : ${book.categories}">
+                        <li class="list-group-item" th:text="${cat}"></li>
+                    </ul>
+                    <h4 class="card-title">Authors</h4>
+                    <ul class="list-group" th:each="author, stat : ${book.authors}">
+                        <li class="list-group-item" th:text="${author}"></li>
+                    </ul>
+                </footer>
+            </div>
+            <div class="card p-3">
+                <footer class="card-body">
+                    <h4 class="card-title">Prices</h4>
+                    <del class="card-text" th:text="${book.listPriceAmount}"></del>
+                    <p class="card-text" th:text="${book.retailPriceAmount}"></p>
+                    <button type="submit" class="btn">Go to page
+                        <span class="glyphicon glyphicon-star"></span>
+                    </button>
+                </footer>
+            </div>
         </div>
-
     </div>
 </div>
-<!-- /.container -->
 
-<!-- Footer -->
-<footer class="py-5 bg-dark">
+<footer class="py-5 bg-dark my-footer">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
+        <p class="m-0 text-center text-white">Copyright &copy; The Grandmasters 2017</p>
     </div>
-    <!-- /.container -->
 </footer>
-
 </body>
 
 </html>
