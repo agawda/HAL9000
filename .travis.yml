@@ -19,3 +19,4 @@ addons:
       - master
       - development
       - sending-books-tests
+      - integration_jsoup

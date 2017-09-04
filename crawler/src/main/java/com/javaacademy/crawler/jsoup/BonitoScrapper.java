@@ -1,5 +1,6 @@
 package com.javaacademy.crawler.jsoup;
 
+import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.Jsoup;
@@ -15,13 +16,13 @@ import java.util.stream.Collectors;
  * @author devas
  * @since 29.08.17
  */
-class BonitoScrapper {
+public class BonitoScrapper {
 
     private Document doc;
     private static final String BONITO_BASE_URL = "https://bonito.pl";
     private static final String BONITO_PROMOS_LINK = "https://bonito.pl/wyprzedaz";
 
-    public List<BookModel> scrapAndGetBookModels() {
+    public Set<BookModel> scrapAndGetBookModels() {
         doc = connectAndGetDoc(BONITO_PROMOS_LINK);
 
         Elements elements = doc.getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
@@ -29,7 +30,7 @@ class BonitoScrapper {
 
         Set<String> links = new HashSet<>(sublinks.stream().map(BONITO_BASE_URL::concat).collect(Collectors.toSet()));
 
-        List<BookModel> bookModels = new LinkedList<>();
+        Set<BookModel> bookModels = new HashSet<>();
         links.forEach(link -> bookModels.add(parseLinkAndGetBookModel(link)));
 
         return bookModels;
