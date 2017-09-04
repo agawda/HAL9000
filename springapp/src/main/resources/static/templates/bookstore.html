@@ -7,22 +7,28 @@
     <link rel="stylesheet" type="text/css"
           href="hhttps://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
           th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css"
+          href="../css/bookstore.css"
+          th:href="@{../css/bookstore.css}"/>
 </head>
-<body class="bg-dark">
+<body>
+<!--/*@thymesVar id="book" type="com.javaacademy.robot.model.BookDto"*/-->
 <h1 class="text-primary text-center" th:text="${id}"></h1>
-<table class="table">
-    <thead class="text-primary">
-    <tr class="h3">
+<table class="table books-table" align="center">
+    <thead class="thead-inverse">
+    <tr>
         <th>#</th>
         <th>Book Title</th>
-        <th>Discount</th>
+        <th>Normal Price</th>
+        <th>Discount Price</th>
     </tr>
     </thead>
-    <tbody class="text-secondary">
-    <tr class="h4">
-        <th>1</th>
-        <td><a th:href="@{~/books/(id=${bookTitle})}" th:text="${bookTitle}"></a></td>
-        <td><p>Price</p></td>
+    <tbody>
+    <tr th:each="book, stat : ${books}" class="h4">
+        <th th:text="${stat.count}">1</th>
+        <td><a th:href="@{~/books/(id=${book.getIndustryIdentifier()})}" th:text="${book.getTitle()}"></a></td>
+        <td><p th:text="${book.getListPriceAmount()}"></p></td>
+        <td><p th:text="${book.getRetailPriceAmount()}"></p></td>
     </tr>
     </tbody>
 </table>

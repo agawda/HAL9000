@@ -4,12 +4,27 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-shop-item/blob/master/LICENSE)
  */
 
-body {
-    padding-top: 54px;
+.grey-row {
+    height: calc(100% - 50px);
+    overflow: auto;
+    padding-bottom: 120px;
+    padding-top: 20px;
+    background-color: lightgrey;
+    margin-right: 0 !important;
 }
 
-@media (min-width: 992px) {
-    body {
-        padding-top: 56px;
-    }
+body, html {
+    height: 100%;
+    width: 100% !important;
+}
+
+body {
+    background-color: darkgrey;
+}
+
+.my-footer {
+    position: relative;
+    margin-top: -120px; /* negative value of footer height */
+    height: 120px;
+    width: 100%;
 }
