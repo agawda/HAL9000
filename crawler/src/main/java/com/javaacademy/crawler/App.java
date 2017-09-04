@@ -4,7 +4,9 @@ import com.javaacademy.crawler.common.booksender.BookSender;
 import com.javaacademy.crawler.common.converters.GoogleBookConverter;
 import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
+import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.googlebooks.GoogleScrapper;
+import com.javaacademy.crawler.jsoup.BonitoScrapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +27,19 @@ public class App {
     public static void main(String[] args) {
         AppLogger.initializeLogger();
         String serverIpAddress = loadIpAddress();
-        if(serverIpAddress.equals("")) {return;}
+        if (serverIpAddress.equals("")) return;
+
+        Set<Book> googleBooks = runGoogleScrapper();
+        BookSender googleBookSender = new BookSender(googleBooks, new GoogleBookConverter());
+        googleBookSender.sendBooksTo(serverIpAddress);
+
+        Set<BookModel> bonitoBooks = runBonitoScrapper();
+        bonitoBooks.forEach(System.out::println);
+        BookSender bonitoBookSender = new BookSender(bonitoBooks);
+        bonitoBookSender.sendBooksTo(serverIpAddress);
+    }
+
+    private static Set<Book> runGoogleScrapper() {
         GoogleScrapper googleScrapper = new GoogleScrapper();
         googleScrapper.runScrapping();
 
@@ -34,19 +48,22 @@ public class App {
                 AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks not done, waiting...");
                 Thread.sleep(6000);
                 AppLogger.logger.log(DEFAULT_LEVEL, "googleScrapper.areAllCallbacksDone(): "
-                        +googleScrapper.areAllCallbacksDone());
+                        + googleScrapper.areAllCallbacksDone());
 
             } catch (InterruptedException e) {
-                AppLogger.logger.log(Level.WARNING,"Exception while waiting", e);
-                        Thread.currentThread().interrupt();
+                AppLogger.logger.log(Level.WARNING, "Exception while waiting", e);
+                Thread.currentThread().interrupt();
             }
         }
 
         Set<Book> books = googleScrapper.getBooks();
         AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
+        return books;
+    }
 
-        BookSender bookSender = new BookSender(books, new GoogleBookConverter());
-        bookSender.sendBooksTo(serverIpAddress);
+    private static Set<BookModel> runBonitoScrapper() {
+        BonitoScrapper bonitoScrapper = new BonitoScrapper();
+        return bonitoScrapper.scrapAndGetBookModels();
     }
 
     private static String loadIpAddress() {

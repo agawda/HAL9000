@@ -19,6 +19,7 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 import static com.javaacademy.crawler.common.logger.AppLogger.logger;
 
 public class BookSender {
+
     Map<BookModel, Boolean> booksToSend; // a map which holds info about whether the book was successfully sent to server
     Map<BookModel, Integer> booksSendCounter;
     static int numberOfBooksSentAtOnce = 20;
@@ -29,6 +30,12 @@ public class BookSender {
         this.booksSendCounter = new HashMap<>();
         books.forEach(bookItem ->
                 booksToSend.put(googleBookConverter.convertToDto((BookItem) bookItem), false));
+    }
+
+    public BookSender(Set<BookModel> books) {
+        this.booksToSend = new HashMap<>();
+        this.booksSendCounter = new HashMap<>();
+        books.forEach(bookItem -> booksToSend.put(bookItem, false));
     }
 
     private void sendBooksTo(String serverIp, int numberOfBooks) {
@@ -110,7 +117,7 @@ public class BookSender {
             c = i > progress ? '-' : '+';
             printOnConsole(c + " ");
         }
-        printOnConsole("] "+ progress +"%\n");
+        printOnConsole("] " + progress + "%\n");
     }
 
     public static void printOnConsole(String s) {

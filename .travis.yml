@@ -18,4 +18,3 @@ addons:
     branches:
       - master
       - development
-      - dev-frontend
