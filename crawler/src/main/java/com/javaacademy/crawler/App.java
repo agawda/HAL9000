@@ -29,14 +29,14 @@ public class App {
         String serverIpAddress = loadIpAddress();
         if (serverIpAddress.equals("")) return;
 
-        Set<Book> googleBooks = runGoogleScrapper();
-        BookSender googleBookSender = new BookSender(googleBooks, new GoogleBookConverter());
-        googleBookSender.sendBooksTo(serverIpAddress);
-
         Set<BookModel> bonitoBooks = runBonitoScrapper();
         bonitoBooks.forEach(System.out::println);
         BookSender bonitoBookSender = new BookSender(bonitoBooks);
         bonitoBookSender.sendBooksTo(serverIpAddress);
+
+        Set<Book> googleBooks = runGoogleScrapper();
+        BookSender googleBookSender = new BookSender(googleBooks, new GoogleBookConverter());
+        googleBookSender.sendBooksTo(serverIpAddress);
     }
 
     private static Set<Book> runGoogleScrapper() {
