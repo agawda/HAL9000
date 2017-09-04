@@ -7,19 +7,19 @@
     <link rel="stylesheet" type="text/css"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
           th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css"
+          href="css/index.css"
+          th:href="@{css/index.css}"/>
+
 
 </head>
-<body class="bg-dark">
+<body>
 <div class="container text-center">
-    <h1 class="text-light">Available bookstores:</h1>
-    <div class="col-md" th:each="bookstore: ${bookstores}">
-        <div class="row justify-content-center">
-            <div class="col-4 bg-info">
-                <h1><a class="text-dark" th:href="@{bookstores/(id=${bookstore})}" th:text="${bookstore}"></a></h1>
-            </div>
+    <div class="row justify-content-center">
+        <div class="col-4 bg-info">
+            <a type="button" href="/bookstores/?id=Books" class="btn btn-success">See Books</a>
         </div>
     </div>
-    <!--<img src="http://www.picgifs.com/glitter-gifs/h/hearts/picgifs-hearts-314486.gif"/>-->
 </div>
 </body>
 </html>

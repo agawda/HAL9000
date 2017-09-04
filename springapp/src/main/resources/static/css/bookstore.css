@@ -1,0 +1,15 @@
+.books-table {
+    max-width: 80%;
+    background-color: lightgrey;
+}
+
+body {
+    align-items: center;
+    background-color: darkgrey;
+}
+a {
+    color: black;
+}
+.text-primary {
+    color: black !important;
+}
