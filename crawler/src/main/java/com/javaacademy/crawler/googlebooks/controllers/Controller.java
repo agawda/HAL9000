@@ -15,6 +15,7 @@ import retrofit2.Callback;
 public class Controller {
 
     private static final String BASE_GOOGLE_URL = "volumes?q=-&printType=books&filter=ebooks&orderBy=newest";
+    private static final String GOOGLE_KEY = "&key=AIzaSyA9pzKTyLsStKstnmN_Rgr6UUK-2IYkmf4";
 
     public void getLimitedNumberBooksFromGoogle(Callback<GoogleBooksWrapper> callback, int start, int end) {
         GoogleBookEndpoint endpoint = new RetrofitHelper().getGoogleBooksEndpoint();
@@ -29,10 +30,10 @@ public class Controller {
     }
 
     private String getGoogleNumberOfBooksUrl() {
-        return BASE_GOOGLE_URL + "&fields=totalItems";
+        return BASE_GOOGLE_URL + "&fields=totalItems" + GOOGLE_KEY;
     }
 
     private String generateGoogleRangedUrl(int start, int end) {
-        return BASE_GOOGLE_URL + "&startIndex=" + start + "&maxResults=" + end;
+        return BASE_GOOGLE_URL + "&startIndex=" + start + "&maxResults=" + end + GOOGLE_KEY;
     }
 }
