@@ -135,8 +135,8 @@ public class BonitoScrapper {
             bookModel.setListPriceAmount(0);
             bookModel.setRetailPriceAmount(0);
         } else {
-            bookModel.setListPriceAmount(Double.parseDouble(prices.get(0).html().split(" ")[0].replace(',', '.')));
-            bookModel.setRetailPriceAmount(Double.parseDouble(prices.get(1).html().split(" ")[0].replace(',', '.')));
+            bookModel.setListPriceAmount(Double.parseDouble(prices.get(1).html().split(" ")[0].replace(',', '.')));
+            bookModel.setRetailPriceAmount(Double.parseDouble(prices.get(0).html().split(" ")[0].replace(',', '.')));
         }
     }
 }
