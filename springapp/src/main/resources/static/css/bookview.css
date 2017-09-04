@@ -18,6 +18,10 @@ body, html {
     width: 100% !important;
 }
 
+body {
+    background-color: darkgrey;
+}
+
 .my-footer {
     position: relative;
     margin-top: -120px; /* negative value of footer height */

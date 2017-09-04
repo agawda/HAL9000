@@ -5,4 +5,11 @@
 
 body {
     align-items: center;
+    background-color: darkgrey;
+}
+a {
+    color: black;
+}
+.text-primary {
+    color: black !important;
 }

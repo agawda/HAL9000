@@ -78,8 +78,10 @@
             <div class="card p-3">
                 <footer class="card-body">
                     <h4 class="card-title">Prices</h4>
-                    <del class="card-text" th:text="${book.listPriceAmount}"></del>
-                    <p class="card-text" th:text="${book.retailPriceAmount}"></p>
+                    <del class="card-text" th:text="${book.listPriceAmount}"> </del><del class="card-text" th:text="${book.getListPriceCurrencyCode()}"></del>
+                    <p></p>
+                    <a class="card-text" th:text="${book.retailPriceAmount}"></a><a class="card-text" th:text="${book.getRetailPriceCurrencyCode()}"></a>
+                    <p></p>
                     <a type="submit" role="button" class="btn btn-xs btn-danger icon-button"
                        th:href="${book.canonicalVolumeLink}">BUY
                     </a>
