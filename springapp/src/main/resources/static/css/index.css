@@ -1,0 +1,12 @@
+.row {
+    padding: 15px;
+    margin: 20px;
+}
+
+.bg-info {
+    background-color: darkgrey!important;
+}
+
+body {
+    background-color: darkgrey;
+}
