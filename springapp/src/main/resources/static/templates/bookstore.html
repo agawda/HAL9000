@@ -27,7 +27,7 @@
     <tr th:each="book, stat : ${books}" class="h4">
         <th th:text="${stat.count}">1</th>
         <td><a th:href="@{~/books/(id=${book.getIndustryIdentifier()})}" th:text="${book.getTitle()}"></a></td>
-        <td><p th:text="${book.getListPriceAmount()}"></p></td>
+        <td><del><p th:text="${book.getListPriceAmount()}"></p></del></td>
         <td><p th:text="${book.getRetailPriceAmount()}"></p></td>
     </tr>
     </tbody>

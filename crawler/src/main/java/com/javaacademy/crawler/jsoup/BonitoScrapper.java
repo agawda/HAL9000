@@ -1,13 +1,9 @@
 package com.javaacademy.crawler.jsoup;
 
-import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -16,14 +12,13 @@ import java.util.stream.Collectors;
  * @author devas
  * @since 29.08.17
  */
-public class BonitoScrapper {
+public class BonitoScrapper extends JsoupScrapper {
 
-    private Document doc;
     private static final String BONITO_BASE_URL = "https://bonito.pl";
     private static final String BONITO_PROMOS_LINK = "https://bonito.pl/wyprzedaz";
 
-    public Set<BookModel> scrapAndGetBookModels() {
-        doc = connectAndGetDoc(BONITO_PROMOS_LINK);
+    public Set<BookModel> scrape() {
+        connectAndInitDocument(BONITO_PROMOS_LINK);
 
         Elements elements = doc.getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
@@ -36,18 +31,8 @@ public class BonitoScrapper {
         return bookModels;
     }
 
-    private Document connectAndGetDoc(String link) {
-        Document doc = null;
-        try {
-            doc = Jsoup.connect(link).get();
-        } catch (IOException e) {
-            AppLogger.logger.log(Level.SEVERE, "Exception connecting with Jsoup, ", e);
-        }
-        return doc;
-    }
-
     private BookModel parseLinkAndGetBookModel(String link) {
-        doc = connectAndGetDoc(link);
+        connectAndInitDocument(link);
 
         BookModel bookModel = new BookModel();
         setIndustryIdentifier(bookModel);
@@ -58,6 +43,7 @@ public class BonitoScrapper {
         setSmallThumbnail(bookModel);
         setCanonicalVolumeLink(bookModel, link);
         setSaleability(bookModel);
+        setCurrencyCodes(bookModel);
         setPrices(bookModel);
 
         return bookModel;
@@ -126,17 +112,25 @@ public class BonitoScrapper {
         bookModel.setSaleability("FOR_SALE");
     }
 
-    private void setPrices(BookModel bookModel) {
+    private void setCurrencyCodes(BookModel bookModel) {
         bookModel.setListPriceCurrencyCode("PLN");
         bookModel.setRetailPriceCurrencyCode("PLN");
+    }
 
+    private void setPrices(BookModel bookModel) {
         Elements prices = doc.select("b:contains(zł)");
         if (prices.size() == 0) {
             bookModel.setListPriceAmount(0);
             bookModel.setRetailPriceAmount(0);
         } else {
-            bookModel.setListPriceAmount(Double.parseDouble(prices.get(1).html().split(" ")[0].replace(',', '.')));
-            bookModel.setRetailPriceAmount(Double.parseDouble(prices.get(0).html().split(" ")[0].replace(',', '.')));
+            try {
+                bookModel.setListPriceAmount(Double.parseDouble(prices.get(1).html().split(" ")[0].
+                        replace(',', '.')));
+                bookModel.setRetailPriceAmount(Double.parseDouble(prices.get(0).html().split(" ")[0].
+                        replace(',', '.')));
+            } catch (NumberFormatException e) {
+                AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
+            }
         }
     }
 }

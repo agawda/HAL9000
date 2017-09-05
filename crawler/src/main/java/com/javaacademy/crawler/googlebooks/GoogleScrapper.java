@@ -19,6 +19,7 @@ import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsol
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 public class GoogleScrapper {
+
     private static final int SLEEP_TIME = 2000;
     private static final int MAX_VALUE = 1_000; //Should not be greater than 1000
     private Set<Book> books = new HashSet<>();
