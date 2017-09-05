@@ -19,34 +19,35 @@ import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsol
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 public class GoogleScrapper {
-
-    private static final int SLEEP_TIME = 2000;
-    private static final int MAX_VALUE = 1_000; //Should not be greater than 1000
-    private Set<Book> books = new HashSet<>();
-    private Set<BookAddingCallback> callbacks = new HashSet<>();
-    private boolean isLoopDone = false;
+    static int SLEEP_TIME = 2000;
+    static int MAX_VALUE = 1_000; //Should not be greater than 1000
+    Set<Book> books = new HashSet<>();
+    Set<BookAddingCallback> callbacks = new HashSet<>();
+    boolean isLoopDone = false;
+    Controller controller = new Controller();
 
     public void runScrapping() {
-        getNumberOfBooksAndStartCollection();
-    }
-
-    private void getNumberOfBooksAndStartCollection() {
         Consumer<TotalItemsWrapper> consumer =
                 totalItemsWrapper -> collectAllBooksFromGoogle(
                         totalItemsWrapper.getTotalItems()
                 );
-        CustomCallback<TotalItemsWrapper> customCallback = new CustomCallback<>(consumer);
-        new Controller().getHowManyBooksThereAre(customCallback);
+        getNumberOfBooksAndStartCollection(consumer);
     }
 
-    private void collectAllBooksFromGoogle(int numOfBooks) {
+    void getNumberOfBooksAndStartCollection(Consumer<TotalItemsWrapper> consumer) {
+        CustomCallback<TotalItemsWrapper> customCallback = new CustomCallback<>(consumer);
+        controller.getHowManyBooksThereAre(customCallback);
+    }
+
+    void collectAllBooksFromGoogle(int numOfBooks) {
         int step = 40;
         printOnConsole("Scrapping books from google:\n");
         for (int i = 0; i < numOfBooks; i += step) {
             long progress = i * 100 / MAX_VALUE;
             displayProgress(progress);
             BookAddingCallback<GoogleBooksWrapper> bookItemBookAddingCallback =
-                    new BookAddingCallback<>(books, "Google Bookstore");
+                    new BookAddingCallback<>(books,
+                            "Google Bookstore " + i + " - " + (i + step));
             callbacks.add(bookItemBookAddingCallback);
             int end = step;
             int nextStep = i + step;
@@ -70,15 +71,14 @@ public class GoogleScrapper {
 
     private void getGoogleBooks(int start, int end, BookAddingCallback<GoogleBooksWrapper> bookItemBookAddingCallback) {
         AppLogger.logger.log(DEFAULT_LEVEL, (String.format("start = %d end %d", start, end)));
-        new Controller().getLimitedNumberBooksFromGoogle(bookItemBookAddingCallback, start, end);
+        controller.getLimitedNumberBooksFromGoogle(bookItemBookAddingCallback, start, end);
     }
 
     public boolean areAllCallbacksDone() {
         boolean areCallbacksDone = false;
         if (isLoopDone) {
             AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks loop done");
-            areCallbacksDone = callbacks.stream().noneMatch(bookAddingCallback ->
-                    bookAddingCallback.getRequestStatus() == RequestStatus.STARTED);
+            areCallbacksDone = callbacks.stream().noneMatch(bookAddingCallback -> bookAddingCallback.getRequestStatus() == RequestStatus.STARTED);
             AppLogger.logger.log(DEFAULT_LEVEL, "areCallbacksDone: " + areCallbacksDone);
         }
         return isLoopDone && areCallbacksDone;
