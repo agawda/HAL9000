@@ -41,6 +41,7 @@ public class BookSenderTest {
     private GoogleBookConverter getConverterMock() {
         GoogleBookConverter googleBookConverter = mock(GoogleBookConverter.class);
         when(googleBookConverter.convertToDto(any())).thenReturn(mock(BookModel.class));
+        when(googleBookConverter.convertToDtosWithoutNulls(any())).thenCallRealMethod();
         return googleBookConverter;
     }
 

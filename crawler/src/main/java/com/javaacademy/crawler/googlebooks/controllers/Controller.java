@@ -1,11 +1,18 @@
 package com.javaacademy.crawler.googlebooks.controllers;
 
+import com.javaacademy.crawler.common.logger.AppLogger;
+import com.javaacademy.crawler.googlebooks.dao.GoogleBookEndpoint;
 import com.javaacademy.crawler.googlebooks.model.GoogleBooksWrapper;
 import com.javaacademy.crawler.googlebooks.model.TotalItemsWrapper;
 import com.javaacademy.crawler.googlebooks.retrofit.RetrofitHelper;
-import com.javaacademy.crawler.googlebooks.dao.GoogleBookEndpoint;
 import retrofit2.Call;
 import retrofit2.Callback;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.logging.Level;
 
 /**
  * @author devas
@@ -15,6 +22,22 @@ import retrofit2.Callback;
 public class Controller {
 
     private static final String BASE_GOOGLE_URL = "volumes?q=-&printType=books&filter=ebooks&orderBy=newest";
+    private static String GOOGLE_KEY;
+
+    public Controller() {
+        try (InputStream in = getPropertyFile()) {
+            Properties properties = new Properties();
+            properties.load(in);
+            GOOGLE_KEY = properties.getProperty("GoogleKey");
+        } catch (IOException | NullPointerException e) {
+            AppLogger.logger.log(Level.WARNING, "Could not find file", e);
+        }
+    }
+
+    private InputStream getPropertyFile() throws FileNotFoundException {
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        return classloader.getResourceAsStream("key.txt");
+    }
 
     public void getLimitedNumberBooksFromGoogle(Callback<GoogleBooksWrapper> callback, int start, int end) {
         GoogleBookEndpoint endpoint = new RetrofitHelper().getGoogleBooksEndpoint();
@@ -29,10 +52,10 @@ public class Controller {
     }
 
     private String getGoogleNumberOfBooksUrl() {
-        return BASE_GOOGLE_URL + "&fields=totalItems";
+        return BASE_GOOGLE_URL + "&fields=totalItems" + GOOGLE_KEY;
     }
 
     private String generateGoogleRangedUrl(int start, int end) {
-        return BASE_GOOGLE_URL + "&startIndex=" + start + "&maxResults=" + end;
+        return BASE_GOOGLE_URL + "&startIndex=" + start + "&maxResults=" + end + GOOGLE_KEY;
     }
 }

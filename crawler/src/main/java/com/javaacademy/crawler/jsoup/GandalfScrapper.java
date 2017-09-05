@@ -2,36 +2,43 @@ package com.javaacademy.crawler.jsoup;
 
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 /**
  * @author devas
- * @since 29.08.17
+ * @since 04.09.17
  */
-public class BonitoScrapper extends JsoupScrapper {
+public class GandalfScrapper extends JsoupScrapper {
 
-    private static final String BONITO_BASE_URL = "https://bonito.pl";
-    private static final String BONITO_PROMOS_LINK = "https://bonito.pl/wyprzedaz";
+    private static final String ENDING_CONDITION = "Brak produktów wybranego dystrybutora";
+    private static final String GANDALF_URL = "http://www.gandalf.com.pl/promocje/";
 
     public Set<BookModel> scrape() {
-        connectAndInitDocument(BONITO_PROMOS_LINK);
-
-        Elements elements = doc.getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
-        Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-
-        Set<String> links = new HashSet<>(sublinks.stream().map(BONITO_BASE_URL::concat).collect(Collectors.toSet()));
-
         Set<BookModel> bookModels = new HashSet<>();
-        links.forEach(link -> bookModels.add(parseLinkAndGetBookModel(link)));
-
+        int i = 0;
+        while (true) {
+            connectAndInitDocument(GANDALF_URL + i + "/");
+            if (doc.select(".no_products").text().startsWith(ENDING_CONDITION)) {
+                break;
+            }
+            Elements elements = doc.select(".prod");
+            for (Element element : elements) {
+                bookModels.add(parseLinkAndGetBookModel(getLink(element)));
+            }
+            if (i > 1) break;
+            i++;
+        }
         return bookModels;
     }
 
-     BookModel parseLinkAndGetBookModel(String link) {
+    BookModel parseLinkAndGetBookModel(String link) {
         connectAndInitDocument(link);
 
         BookModel bookModel = new BookModel();
@@ -44,27 +51,27 @@ public class BonitoScrapper extends JsoupScrapper {
         setCanonicalVolumeLink(bookModel, link);
         setSaleability(bookModel);
         setCurrencyCodes(bookModel);
-        setPrices(bookModel);
+        setListPrice(bookModel);
+        setRetailPrice(bookModel);
 
         return bookModel;
     }
 
     private void setIndustryIdentifier(BookModel bookModel) {
-        Elements elements = doc.select("td:containsOwn(Kod paskowy (EAN):)");
+        Elements elements = doc.select("td[itemprop=isbn]");
         if (elements.size() == 0) {
             bookModel.setIndustryIdentifier(new Random().nextLong());
         } else {
-            String identifier = elements.next().first().child(0).html();
-            bookModel.setIndustryIdentifier(Long.parseLong(identifier.replace("-", "")));
+            bookModel.setIndustryIdentifier(Long.parseLong(elements.text().replace("-", "")));
         }
     }
 
     private void setTitle(BookModel bookModel) {
-        Elements elements = doc.getElementsByAttributeValue("itemprop", "name");
+        Elements elements = doc.select(".gallthumb > img");
         if (elements.size() == 0) {
             bookModel.setTitle("");
         } else {
-            bookModel.setTitle(elements.first().html());
+            bookModel.setTitle(elements.attr("alt"));
         }
     }
 
@@ -73,34 +80,29 @@ public class BonitoScrapper extends JsoupScrapper {
     }
 
     private void setAuthors(BookModel bookModel) {
-        List<String> authorsList = new ArrayList<>();
-        Elements elements = doc.select("td:containsOwn(Autor:\u00a0)");
+        Elements elements = doc.select(".persons a");
         if (elements.size() == 0) {
             bookModel.setAuthors(Collections.singletonList(""));
         } else {
-            Elements authors = elements.next().first().getElementsByTag("a");
-            authors.forEach(element -> authorsList.add(element.html()));
-            bookModel.setAuthors(authorsList);
+            bookModel.setAuthors(elements.eachText());
         }
     }
 
     private void setCategories(BookModel bookModel) {
-        Elements elements = doc.getElementsByAttributeValue("itemprop", "category");
+        Elements elements = doc.select(".product_categories > a");
         if (elements.size() == 0) {
             bookModel.setCategories(Collections.singletonList(""));
         } else {
-            String categories = elements.first().attr("content");
-            bookModel.setCategories(Arrays.asList(categories.substring(13).split(" > ")));
+            bookModel.setCategories(elements.eachText());
         }
     }
 
     private void setSmallThumbnail(BookModel bookModel) {
-        Elements elements = doc.select("a:has(img)[title=Powiększ...]>img");
+        Elements elements = doc.select(".gallthumb > img");
         if (elements.size() == 0) {
             bookModel.setSmallThumbnail("");
         } else {
-            String imageLink = elements.first().attr("src");
-            bookModel.setSmallThumbnail("https://".concat(imageLink.substring(2)));
+            bookModel.setSmallThumbnail("http://www.gandalf.com.pl" + elements.attr("src"));
         }
     }
 
@@ -117,20 +119,33 @@ public class BonitoScrapper extends JsoupScrapper {
         bookModel.setRetailPriceCurrencyCode("PLN");
     }
 
-    private void setPrices(BookModel bookModel) {
-        Elements prices = doc.select("b:contains(zł)");
-        if (prices.size() == 0) {
+    private void setListPrice(BookModel bookModel) {
+        Elements elements = doc.select(".old_price");
+        if (elements.size() == 0) {
             bookModel.setListPriceAmount(0);
-            bookModel.setRetailPriceAmount(0);
         } else {
             try {
-                bookModel.setListPriceAmount(Double.parseDouble(prices.get(1).html().split(" ")[0].
-                        replace(',', '.')));
-                bookModel.setRetailPriceAmount(Double.parseDouble(prices.get(0).html().split(" ")[0].
-                        replace(',', '.')));
+                bookModel.setListPriceAmount(Double.parseDouble(elements.text().replaceAll(",", ".")));
             } catch (NumberFormatException e) {
                 AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
             }
         }
+    }
+
+    private void setRetailPrice(BookModel bookModel) {
+        Elements elements = doc.select(".new_price_big > span");
+        if (elements.size() == 0) {
+            bookModel.setRetailPriceAmount(0);
+        } else {
+            try {
+                bookModel.setRetailPriceAmount(Double.parseDouble(elements.text().replaceAll("[a-ż]", "").replaceAll(",", ".")));
+            } catch (NumberFormatException e) {
+                AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
+            }
+        }
+    }
+
+    private String getLink(Element element) {
+        return "http://www.gandalf.com.pl" + element.select("a").attr("href");
     }
 }

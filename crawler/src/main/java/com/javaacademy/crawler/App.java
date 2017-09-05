@@ -7,6 +7,7 @@ import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.googlebooks.GoogleScrapper;
 import com.javaacademy.crawler.jsoup.BonitoScrapper;
+import com.javaacademy.crawler.jsoup.GandalfScrapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,10 +30,13 @@ public class App {
         String serverIpAddress = loadIpAddress();
         if (serverIpAddress.equals("")) return;
 
-        Set<BookModel> bonitoBooks = runBonitoScrapper();
-        bonitoBooks.forEach(System.out::println);
+        Set<BookModel> bonitoBooks = new BonitoScrapper().scrape();
         BookSender bonitoBookSender = new BookSender(bonitoBooks);
         bonitoBookSender.sendBooksTo(serverIpAddress);
+
+        Set<BookModel> gandalfBooks = new GandalfScrapper().scrape();
+        BookSender gandalfBooksSender = new BookSender(gandalfBooks);
+        gandalfBooksSender.sendBooksTo(serverIpAddress);
 
         Set<Book> googleBooks = runGoogleScrapper();
         BookSender googleBookSender = new BookSender(googleBooks, new GoogleBookConverter());
@@ -59,11 +63,6 @@ public class App {
         Set<Book> books = googleScrapper.getBooks();
         AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
         return books;
-    }
-
-    private static Set<BookModel> runBonitoScrapper() {
-        BonitoScrapper bonitoScrapper = new BonitoScrapper();
-        return bonitoScrapper.scrapAndGetBookModels();
     }
 
     private static String loadIpAddress() {
