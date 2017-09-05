@@ -12,7 +12,7 @@ public class JsoupScrapperTests {
 
     private static final String GANDALF_URL = "http://www.gandalf.com.pl";
 
-    public void testIt() {
+    public void testValidLink() {
         JsoupScrapper jsoupScrapper = new JsoupScrapper();
         jsoupScrapper.connectAndInitDocument(GANDALF_URL);
         Assert.assertNotNull(jsoupScrapper.doc);
