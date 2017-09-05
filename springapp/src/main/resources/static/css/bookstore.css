@@ -13,7 +13,9 @@ a {
 .text-primary {
     color: black !important;
 }
-
 thead a {
     color: white !important;
+}
+#advSearch {
+    font-size: 12px;
 }
