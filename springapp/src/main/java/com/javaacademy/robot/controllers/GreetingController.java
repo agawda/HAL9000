@@ -52,12 +52,10 @@ public class GreetingController {
 
     private void setImageZoom(BookDto bookDto, int zoom) {
         String s = bookDto.getSmallThumbnail();
-        System.out.println("s = " + s);
         String zoomString = "&zoom=";
         if(s.contains(zoomString)) {
             String zoomValue = s.split(zoomString)[1].split("&")[0];
             String linkWithNewZoom = s.replace(zoomString + zoomValue, zoomString + zoom);
-            System.out.println("new link = " +linkWithNewZoom);
             bookDto.setSmallThumbnail(linkWithNewZoom);
         }
     }
