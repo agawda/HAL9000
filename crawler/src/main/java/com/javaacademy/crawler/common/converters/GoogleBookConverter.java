@@ -1,5 +1,6 @@
 package com.javaacademy.crawler.common.converters;
 
+import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.googlebooks.model.BookItem;
@@ -7,9 +8,8 @@ import com.javaacademy.crawler.googlebooks.model.Isbn;
 import com.javaacademy.crawler.googlebooks.model.SaleInfo;
 import com.javaacademy.crawler.googlebooks.model.VolumeInfo;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
@@ -38,7 +38,7 @@ public class GoogleBookConverter {
         return bookModel;
     }
 
-    private Long getIsbn(List<Isbn> list) {
+    Long getIsbn(List<Isbn> list) {
         Map<String, Long> map = new HashMap<>();
         for (Isbn isbn :
                 list) {
@@ -51,5 +51,18 @@ public class GoogleBookConverter {
             }
         }
         return map.getOrDefault("ISBN_13", -1L);
+    }
+
+    public List<BookModel> convertToDtosWithoutNulls(Set<Book> bookItems) {
+        List<BookModel> models = new ArrayList<>();
+        for (Book bookItem :
+                bookItems) {
+            try {
+                models.add(convertToDto((BookItem) bookItem));
+            } catch (Exception e) {
+                AppLogger.logger.log(Level.WARNING, "Could not convert BookItem: " +bookItem, e);
+            }
+        }
+        return models;
     }
 }

@@ -8,7 +8,6 @@ import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.common.model.BookModels;
 import com.javaacademy.crawler.common.retrofit.BookServerEndpoint;
 import com.javaacademy.crawler.common.retrofit.SendingRetrofit;
-import com.javaacademy.crawler.googlebooks.model.BookItem;
 import retrofit2.Call;
 
 import java.util.*;
@@ -28,8 +27,10 @@ public class BookSender {
     public BookSender(Set<Book> books, GoogleBookConverter googleBookConverter) {
         this.booksToSend = new HashMap<>();
         this.booksSendCounter = new HashMap<>();
-        books.forEach(bookItem ->
-                booksToSend.put(googleBookConverter.convertToDto((BookItem) bookItem), false));
+        List<BookModel> bookModels = googleBookConverter.convertToDtosWithoutNulls(books);
+        System.out.println("bookModels = " + bookModels);
+        bookModels.forEach(bookItem ->
+                booksToSend.put(bookItem, false));
     }
 
     public BookSender(Set<BookModel> books) {
@@ -114,8 +115,8 @@ public class BookSender {
         char c;
         printOnConsole("[");
         for (int i = 0; i <= 100; i++) {
-            c = i > progress ? '-' : '+';
-            printOnConsole(c + " ");
+            c = i > progress ? '-' : '|';
+            printOnConsole(c + "");
         }
         printOnConsole("] " + progress + "%\n");
     }
