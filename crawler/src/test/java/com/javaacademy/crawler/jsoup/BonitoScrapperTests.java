@@ -28,9 +28,4 @@ public class BonitoScrapperTests {
     public void testTitle() {
         Assert.assertEquals(bookModel.getTitle(), "Podręczny słownik niemiecko-polski A-Z");
     }
-
-    public void testSubtitle() {
-        Assert.assertEquals(bookModel.getSubtitle(), "");
-    }
-
 }

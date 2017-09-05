@@ -28,8 +28,4 @@ public class GandalfScrapperTests {
     public void testTitle() {
         Assert.assertEquals(bookModel.getTitle(), "Co Polskę stanowi Biografie historyczne");
     }
-
-    public void testSubtitle() {
-        Assert.assertEquals(bookModel.getSubtitle(), "");
-    }
 }
