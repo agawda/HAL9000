@@ -18,3 +18,4 @@ addons:
     branches:
       - master
       - development
+      - scrapper-tests
