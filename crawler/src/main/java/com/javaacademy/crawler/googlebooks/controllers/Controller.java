@@ -1,14 +1,18 @@
 package com.javaacademy.crawler.googlebooks.controllers;
 
+import com.javaacademy.crawler.common.logger.AppLogger;
+import com.javaacademy.crawler.googlebooks.dao.GoogleBookEndpoint;
 import com.javaacademy.crawler.googlebooks.model.GoogleBooksWrapper;
 import com.javaacademy.crawler.googlebooks.model.TotalItemsWrapper;
 import com.javaacademy.crawler.googlebooks.retrofit.RetrofitHelper;
-import com.javaacademy.crawler.googlebooks.dao.GoogleBookEndpoint;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 /**
  * @author devas
@@ -26,7 +30,7 @@ public class Controller {
             properties.load(in);
             GOOGLE_KEY = properties.getProperty("GoogleKey");
         } catch (IOException e) {
-            e.printStackTrace();
+            AppLogger.logger.log(Level.WARNING, "Could not find file", e);
         }
     }
 

@@ -18,7 +18,7 @@ import static org.testng.Assert.assertTrue;
 @Test
 public class GoogleScrapperTest {
 
-
+    @Test
     public void getNumberOfBooksAndStartCollectionTest() {
         GoogleScrapper googleScrapper = new GoogleScrapper();
         Controller controller = mock(Controller.class);
@@ -29,6 +29,7 @@ public class GoogleScrapperTest {
                 .getHowManyBooksThereAre(new CustomCallback<TotalItemsWrapper>(consumer));
     }
 
+    @Test
     public void collectAllBooksFromGoogleTest() {
         GoogleScrapper googleScrapper = new GoogleScrapper();
         Controller controller = mock(Controller.class);
@@ -41,21 +42,22 @@ public class GoogleScrapperTest {
         assertEquals(googleScrapper.callbacks.size(), 3);
     }
 
+    @Test
     public void areAllCallbacksDoneTest() {
         GoogleScrapper googleScrapper = new GoogleScrapper();
         googleScrapper.isLoopDone = true;
         googleScrapper.callbacks = getBookCallbacksSet(3);
-        boolean result=  googleScrapper.areAllCallbacksDone();
+        boolean result = googleScrapper.areAllCallbacksDone();
         assertTrue(result);
     }
 
+    @Test
     public void runScrappingTest() {
         GoogleScrapper googleScrapper = new GoogleScrapper();
-        Controller controller  = mock(Controller.class);
+        Controller controller = mock(Controller.class);
         googleScrapper.controller = controller;
         googleScrapper.runScrapping();
         verify(controller, times(1)).getHowManyBooksThereAre(any());
-
     }
 
     private Set<BookAddingCallback> getBookCallbacksSet(int number) {
