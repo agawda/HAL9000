@@ -30,7 +30,7 @@ public class GandalfScrapper extends JsoupScrapper {
             }
             Elements elements = doc.select(".prod");
             for (Element element : elements) {
-                bookModels.add(parseLinkAndGetBookModel(getLink(element), element));
+                bookModels.add(parseLinkAndGetBookModel(getLink(element)));
             }
             if (i > 1) break;
             i++;
@@ -38,21 +38,21 @@ public class GandalfScrapper extends JsoupScrapper {
         return bookModels;
     }
 
-    private BookModel parseLinkAndGetBookModel(String link, Element element) {
+    BookModel parseLinkAndGetBookModel(String link) {
         connectAndInitDocument(link);
 
         BookModel bookModel = new BookModel();
         setIndustryIdentifier(bookModel);
-        setTitle(bookModel, element);
-        setSubtitle(bookModel, element);
+        setTitle(bookModel);
+        setSubtitle(bookModel);
         setAuthors(bookModel);
         setCategories(bookModel);
-        setSmallThumbnail(bookModel, element);
+        setSmallThumbnail(bookModel);
         setCanonicalVolumeLink(bookModel, link);
         setSaleability(bookModel);
         setCurrencyCodes(bookModel);
         setListPrice(bookModel);
-        setRetailPrice(bookModel, element);
+        setRetailPrice(bookModel);
 
         return bookModel;
     }
@@ -66,22 +66,17 @@ public class GandalfScrapper extends JsoupScrapper {
         }
     }
 
-    private void setTitle(BookModel bookModel, Element element) {
-        Elements elements = element.select(".h2");
+    private void setTitle(BookModel bookModel) {
+        Elements elements = doc.select(".gallthumb > img");
         if (elements.size() == 0) {
             bookModel.setTitle("");
         } else {
-            bookModel.setTitle(elements.text());
+            bookModel.setTitle(elements.attr("alt"));
         }
     }
 
-    private void setSubtitle(BookModel bookModel, Element element) {
-        Elements elements = element.select("h1");
-        if (elements.size() == 0) {
-            bookModel.setSubtitle("");
-        } else {
-            bookModel.setSubtitle(elements.text());
-        }
+    private void setSubtitle(BookModel bookModel) {
+        bookModel.setSubtitle("");
     }
 
     private void setAuthors(BookModel bookModel) {
@@ -102,8 +97,8 @@ public class GandalfScrapper extends JsoupScrapper {
         }
     }
 
-    private void setSmallThumbnail(BookModel bookModel, Element element) {
-        Elements elements = element.select("img");
+    private void setSmallThumbnail(BookModel bookModel) {
+        Elements elements = doc.select(".gallthumb > img");
         if (elements.size() == 0) {
             bookModel.setSmallThumbnail("");
         } else {
@@ -137,8 +132,8 @@ public class GandalfScrapper extends JsoupScrapper {
         }
     }
 
-    private void setRetailPrice(BookModel bookModel, Element element) {
-        Elements elements = element.select(".new_price");
+    private void setRetailPrice(BookModel bookModel) {
+        Elements elements = doc.select(".new_price_big > span");
         if (elements.size() == 0) {
             bookModel.setRetailPriceAmount(0);
         } else {

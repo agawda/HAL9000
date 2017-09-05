@@ -19,3 +19,4 @@ addons:
       - master
       - development
       - scrapper-tests
+      - new_scrapper

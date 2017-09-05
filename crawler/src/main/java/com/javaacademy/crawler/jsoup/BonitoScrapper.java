@@ -31,7 +31,7 @@ public class BonitoScrapper extends JsoupScrapper {
         return bookModels;
     }
 
-    private BookModel parseLinkAndGetBookModel(String link) {
+     BookModel parseLinkAndGetBookModel(String link) {
         connectAndInitDocument(link);
 
         BookModel bookModel = new BookModel();

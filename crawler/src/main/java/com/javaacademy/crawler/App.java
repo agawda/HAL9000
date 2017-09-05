@@ -38,9 +38,9 @@ public class App {
         BookSender gandalfBooksSender = new BookSender(gandalfBooks);
         gandalfBooksSender.sendBooksTo(serverIpAddress);
 
-//        Set<Book> googleBooks = runGoogleScrapper();
-//        BookSender googleBookSender = new BookSender(googleBooks, new GoogleBookConverter());
-//        googleBookSender.sendBooksTo(serverIpAddress);
+        Set<Book> googleBooks = runGoogleScrapper();
+        BookSender googleBookSender = new BookSender(googleBooks, new GoogleBookConverter());
+        googleBookSender.sendBooksTo(serverIpAddress);
     }
 
     private static Set<Book> runGoogleScrapper() {
