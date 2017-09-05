@@ -18,7 +18,8 @@ public class MatrasScrapperTests {
     @BeforeMethod
     public void setUp() throws Exception {
         MatrasScrapper matrasScrapper = new MatrasScrapper();
-        bookModel = matrasScrapper.parseLinkAndGetBookModel(LINK);
+        matrasScrapper.connect(LINK);
+        bookModel = matrasScrapper.parseSinglePage(LINK);
     }
 
     public void testIdentifier() {

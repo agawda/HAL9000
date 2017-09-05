@@ -18,7 +18,8 @@ public class BonitoScrapperTests {
     @BeforeMethod
     public void setUp() throws Exception {
         BonitoScrapper bonitoScrapper = new BonitoScrapper();
-        bookModel = bonitoScrapper.parseLinkAndGetBookModel(LINK);
+        bonitoScrapper.connect(LINK);
+        bookModel = bonitoScrapper.parseSinglePage(LINK);
     }
 
     public void testIdentifier() {

@@ -18,7 +18,8 @@ public class GandalfScrapperTests {
     @BeforeMethod
     public void setUp() throws Exception {
         GandalfScrapper gandalfScrapper = new GandalfScrapper();
-        bookModel = gandalfScrapper.parseLinkAndGetBookModel(LINK);
+        gandalfScrapper.connect(LINK);
+        bookModel = gandalfScrapper.parseSinglePage(LINK);
     }
 
     public void testIdentifier() {

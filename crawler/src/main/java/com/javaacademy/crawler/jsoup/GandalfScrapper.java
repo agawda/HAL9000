@@ -5,147 +5,138 @@ import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
  * @author devas
  * @since 04.09.17
  */
-public class GandalfScrapper extends JsoupScrapper {
+public class GandalfScrapper extends JsoupBookScrapper {
 
     private static final String ENDING_CONDITION = "Brak produktów wybranego dystrybutora";
     private static final String GANDALF_URL = "http://www.gandalf.com.pl/promocje/";
 
+    @Override
     public Set<BookModel> scrape() {
         Set<BookModel> bookModels = new HashSet<>();
-        int i = 0;
+        int pageIndex = 0;
         while (true) {
-            connectAndInitDocument(GANDALF_URL + i + "/");
-            if (doc.select(".no_products").text().startsWith(ENDING_CONDITION)) {
+            connect(GANDALF_URL + pageIndex + "/");
+            if (getDoc().select(".no_products").text().startsWith(ENDING_CONDITION)) {
                 break;
             }
-            Elements elements = doc.select(".prod");
+            Elements elements = getDoc().select(".prod");
             for (Element element : elements) {
-                bookModels.add(parseLinkAndGetBookModel(getLink(element)));
+                String link = getLink(element);
+                connect(link);
+                BookModel bookModel = parseSinglePage(link);
+                bookModels.add(bookModel);
             }
-            if (i > 1) break;
-            i++;
+            if (pageIndex > 1) break;
+            pageIndex++;
         }
         return bookModels;
     }
 
-    BookModel parseLinkAndGetBookModel(String link) {
-        connectAndInitDocument(link);
-
-        BookModel bookModel = new BookModel();
-        setIndustryIdentifier(bookModel);
-        setTitle(bookModel);
-        setSubtitle(bookModel);
-        setAuthors(bookModel);
-        setCategories(bookModel);
-        setSmallThumbnail(bookModel);
-        setCanonicalVolumeLink(bookModel, link);
-        setSaleability(bookModel);
-        setCurrencyCodes(bookModel);
-        setListPrice(bookModel);
-        setRetailPrice(bookModel);
-
-        return bookModel;
+    @Override
+    BookModel parseSinglePage(String link) {
+        return new BookModel.Builder(
+                getIndustryIdentifier(),
+                getTitle(),
+                getAuthors(),
+                getCategories(),
+                link,
+                getSmallThumbnail(),
+                getListPrice(),
+                getRetailPrice()
+        ).build();
     }
 
-    private void setIndustryIdentifier(BookModel bookModel) {
-        Elements elements = doc.select("td[itemprop=isbn]");
+    @Override
+    Long getIndustryIdentifier() {
+        Elements elements = getDoc().select("td[itemprop=isbn]");
         if (elements.size() == 0) {
-            bookModel.setIndustryIdentifier(new Random().nextLong());
+            return new Random().nextLong();
         } else {
-            bookModel.setIndustryIdentifier(Long.parseLong(elements.text().replace("-", "")));
+            return Long.parseLong(elements.text().replace("-", ""));
         }
     }
 
-    private void setTitle(BookModel bookModel) {
-        Elements elements = doc.select(".gallthumb > img");
+    @Override
+    String getTitle() {
+        Elements elements = getDoc().select(".gallthumb > img");
         if (elements.size() == 0) {
-            bookModel.setTitle("");
+            return "";
         } else {
-            bookModel.setTitle(elements.attr("alt"));
+            return elements.attr("alt");
         }
     }
 
-    private void setSubtitle(BookModel bookModel) {
-        bookModel.setSubtitle("");
-    }
-
-    private void setAuthors(BookModel bookModel) {
-        Elements elements = doc.select(".persons a");
+    @Override
+    List<String> getAuthors() {
+        Elements elements = getDoc().select(".persons a");
         if (elements.size() == 0) {
-            bookModel.setAuthors(Collections.singletonList(""));
+            return Collections.singletonList("");
         } else {
-            bookModel.setAuthors(elements.eachText());
+            return elements.eachText();
         }
     }
 
-    private void setCategories(BookModel bookModel) {
-        Elements elements = doc.select(".product_categories > a");
+    @Override
+    List<String> getCategories() {
+        Elements elements = getDoc().select(".product_categories > a");
         if (elements.size() == 0) {
-            bookModel.setCategories(Collections.singletonList(""));
+            return Collections.singletonList("");
         } else {
-            bookModel.setCategories(elements.eachText());
+            return elements.eachText();
         }
     }
 
-    private void setSmallThumbnail(BookModel bookModel) {
-        Elements elements = doc.select(".gallthumb > img");
+    @Override
+    String getSmallThumbnail() {
+        Elements elements = getDoc().select(".gallthumb > img");
         if (elements.size() == 0) {
-            bookModel.setSmallThumbnail("");
+            return "";
         } else {
-            bookModel.setSmallThumbnail("http://www.gandalf.com.pl" + elements.attr("src"));
+            return "http://www.gandalf.com.pl" + elements.attr("src");
         }
     }
 
-    private void setCanonicalVolumeLink(BookModel bookModel, String link) {
-        bookModel.setCanonicalVolumeLink(link);
-    }
-
-    private void setSaleability(BookModel bookModel) {
-        bookModel.setSaleability("FOR_SALE");
-    }
-
-    private void setCurrencyCodes(BookModel bookModel) {
-        bookModel.setListPriceCurrencyCode("PLN");
-        bookModel.setRetailPriceCurrencyCode("PLN");
-    }
-
-    private void setListPrice(BookModel bookModel) {
-        Elements elements = doc.select(".old_price");
+    @Override
+    double getListPrice() {
+        Elements elements = getDoc().select(".old_price");
         if (elements.size() == 0) {
-            bookModel.setListPriceAmount(0);
+            return 0;
         } else {
+            double price = 0;
             try {
-                bookModel.setListPriceAmount(Double.parseDouble(elements.text().replaceAll(",", ".")));
+                price = Double.parseDouble(elements.text().replaceAll(",", "."));
             } catch (NumberFormatException e) {
                 AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
             }
+            return price;
         }
     }
 
-    private void setRetailPrice(BookModel bookModel) {
-        Elements elements = doc.select(".new_price_big > span");
+    @Override
+    double getRetailPrice() {
+        Elements elements = getDoc().select(".new_price_big > span");
         if (elements.size() == 0) {
-            bookModel.setRetailPriceAmount(0);
+            return 0;
         } else {
+            double price = 0;
             try {
-                bookModel.setRetailPriceAmount(Double.parseDouble(elements.text().replaceAll("[a-ż]", "").replaceAll(",", ".")));
+                price = Double.parseDouble(elements.text().replaceAll("[a-ż]", "").replaceAll(",", "."));
             } catch (NumberFormatException e) {
                 AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
             }
+            return price;
         }
     }
 
-    private String getLink(Element element) {
+    @Override
+    String getLink(Element element) {
         return "http://www.gandalf.com.pl" + element.select("a").attr("href");
     }
 }

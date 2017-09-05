@@ -56,7 +56,7 @@ public class BookModelTest {
         BookModel bookModel = new BookModel();
         BookModel bookModel1 = new BookModel();
         assertTrue(bookModel.equals(bookModel1));
-        bookModel.retailPriceCurrencyCode = "Dummy";
+        bookModel.setTitle("Java");
         assertFalse(bookModel.equals(bookModel1));
     }
 
