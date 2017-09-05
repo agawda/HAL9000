@@ -13,34 +13,38 @@
 </head>
 <body>
 <!--/*@thymesVar id="book" type="com.javaacademy.robot.model.BookDto"*/-->
-<div class="container-fluid">
+<div class="container">
     <div class="row justify-content-end align-items-center">
-        <div class="col-sm-4"><a class="h1 text-center" th:href="@{/bookstores/?id=Books}" th:text="${id}"></a> </div>
+        <div class="col-md-8 text-center"><a class="h1" th:href="@{/bookstores/?id=Books}" th:text="${id}"></a></div>
         <div class="col-sm-4">
             <form action="#" th:action="@{/search}" method="post">
-                <input type="text" name="content" placeholder="Search" />
-                <input type="submit" value="Search" />
+                <input type="text" name="content" placeholder="Search"/>
+                <input type="submit" value="Search"/>
             </form>
         </div>
     </div>
 </div>
-<table class="table books-table" align="center">
-    <thead class="thead-inverse">
-    <tr>
-        <th>#</th>
-        <th>Book Title</th>
-        <th>Normal Price</th>
-        <th>Discount Price</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="book, stat : ${books}" class="h4">
-        <th th:text="${stat.count}">1</th>
-        <td><a th:href="@{~/books/(id=${book.getIndustryIdentifier()})}" th:text="${book.getTitle()}"></a></td>
-        <td><del><p th:text="${book.getListPriceAmount()}"></p></del></td>
-        <td><p th:text="${book.getRetailPriceAmount()}"></p></td>
-    </tr>
-    </tbody>
-</table>
+<div class="container">
+    <table class="table books-table" align="center">
+        <thead class="thead-inverse">
+        <tr>
+            <th>#</th>
+            <th><a th:href="@{~/sort/(sorting=title)}">Book Title</a></th>
+            <th><a th:href="@{~/sort/(sorting=regularPrice)}">Normal Price</a></th>
+            <th><a th:href="@{~/sort/(sorting=newPrice)}">Discount Price</a></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="book, stat : ${books}" class="h4">
+            <th th:text="${stat.count}">1</th>
+            <td><a th:href="@{~/books/(id=${book.getIndustryIdentifier()})}" th:text="${book.getTitle()}"></a></td>
+            <td>
+                <del><p th:text="${book.getListPriceAmount()}"></p></del>
+            </td>
+            <td><p th:text="${book.getRetailPriceAmount()}"></p></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

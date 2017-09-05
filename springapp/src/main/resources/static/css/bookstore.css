@@ -13,3 +13,7 @@ a {
 .text-primary {
     color: black !important;
 }
+
+thead a {
+    color: white !important;
+}
