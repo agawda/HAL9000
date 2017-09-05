@@ -29,7 +29,7 @@ public class Controller {
             Properties properties = new Properties();
             properties.load(in);
             GOOGLE_KEY = properties.getProperty("GoogleKey");
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             AppLogger.logger.log(Level.WARNING, "Could not find file", e);
         }
     }
