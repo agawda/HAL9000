@@ -13,7 +13,17 @@
 </head>
 <body>
 <!--/*@thymesVar id="book" type="com.javaacademy.robot.model.BookDto"*/-->
-<h1 class="text-primary text-center" th:text="${id}"></h1>
+<div class="container-fluid">
+    <div class="row justify-content-end align-items-center">
+        <div class="col-sm-4"><a class="h1 text-center" th:href="@{/bookstores/?id=Books}" th:text="${id}"></a> </div>
+        <div class="col-sm-4">
+            <form action="#" th:action="@{/search}" method="post">
+                <input type="text" name="content" placeholder="Search" />
+                <input type="submit" value="Search" />
+            </form>
+        </div>
+    </div>
+</div>
 <table class="table books-table" align="center">
     <thead class="thead-inverse">
     <tr>

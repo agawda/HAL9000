@@ -1,12 +1,13 @@
 package com.javaacademy.robot.controllers;
 
+import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
+import com.javaacademy.robot.service.BookSearch;
 import com.javaacademy.robot.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,10 +20,12 @@ import java.util.List;
 public class GreetingController {
 
     private final BookService bookService;
+    private BookSearch bookSearch;
 
     @Autowired
-    public GreetingController(BookService bookService) {
+    public GreetingController(BookService bookService, BookSearch bookSearch) {
         this.bookService = bookService;
+        this.bookSearch = bookSearch;
     }
 
     @RequestMapping("/greeting")
@@ -48,6 +51,14 @@ public class GreetingController {
         setImageZoom(bookDto, 3);
         model.addAttribute("book", bookDto);
         return "../static/templates/bookview";
+    }
+
+    @PostMapping("/search")
+    public String searchController(@RequestParam("content") String content, Model model) {
+        model.addAttribute("id", "Books");
+        List<Book> books = bookSearch.search(content);
+        model.addAttribute("books", books);
+        return "../static/templates/bookstore";
     }
 
     private void setImageZoom(BookDto bookDto, int zoom) {
