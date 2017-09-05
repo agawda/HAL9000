@@ -8,9 +8,9 @@ import com.javaacademy.crawler.googlebooks.retrofit.RetrofitHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -25,7 +25,7 @@ public class Controller {
     private static String GOOGLE_KEY;
 
     public Controller() {
-        try (FileInputStream in = getPropertyFile()) {
+        try (InputStream in = getPropertyFile()) {
             Properties properties = new Properties();
             properties.load(in);
             GOOGLE_KEY = properties.getProperty("GoogleKey");
@@ -34,8 +34,9 @@ public class Controller {
         }
     }
 
-    private FileInputStream getPropertyFile() throws FileNotFoundException {
-        return new FileInputStream(getClass().getClassLoader().getResource("key.txt").getFile());
+    private InputStream getPropertyFile() throws FileNotFoundException {
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        return classloader.getResourceAsStream("key.txt");
     }
 
     public void getLimitedNumberBooksFromGoogle(Callback<GoogleBooksWrapper> callback, int start, int end) {
