@@ -27,8 +27,15 @@ public class BookSearch {
             if(book.getTitle().toLowerCase().contains(givenTitle)) {
                 result.add(book);
             }
+
             book.getAuthors().forEach(author -> {
                 if(author.toLowerCase().contains(givenTitle)) {
+                    result.add(book);
+                }
+            });
+
+            book.getCategories().forEach(category -> {
+                if(category.toLowerCase().contains(givenTitle)) {
                     result.add(book);
                 }
             });

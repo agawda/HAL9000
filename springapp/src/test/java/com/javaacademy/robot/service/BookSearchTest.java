@@ -27,6 +27,7 @@ public class BookSearchTest {
         Book exampleBook = new Book();
         exampleBook.setTitle("Keeping Up with the Quants");
         exampleBook.setAuthors(Arrays.asList("Thomas H. Davenport", "Jinho Kim"));
+        exampleBook.setCategories(Arrays.asList("Medical", "Thriller"));
         result.add(exampleBook);
         bookList = result;
     }
@@ -47,6 +48,17 @@ public class BookSearchTest {
         when(bookServiceMock.getAllBooks()).thenReturn(bookList);
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         String givenTitle = "davenport";
+
+        List<Book> givenResults = bookSearch.search(givenTitle);
+
+        assertEquals(givenResults.size(), 1);
+    }
+
+    @Test
+    public void shouldReturnBooksContainingCategoryKeyword() {
+        when(bookServiceMock.getAllBooks()).thenReturn(bookList);
+        BookSearch bookSearch = new BookSearch(bookServiceMock);
+        String givenTitle = "medical";
 
         List<Book> givenResults = bookSearch.search(givenTitle);
 

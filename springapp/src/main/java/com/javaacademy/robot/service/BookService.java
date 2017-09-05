@@ -59,7 +59,7 @@ public class BookService {
     }
 
     public void addAllBookDtos(BookModels bookdtos) {
-        ServerLogger.logger.log(DEFAULT_LEVEL, "Adding dtos: " +bookdtos.getBookDtos());
+        ServerLogger.logger.log(DEFAULT_LEVEL, "Adding dtos: " + bookdtos.getBookDtos());
         List<BookDto> dtos = bookdtos.getBookDtos();
         List<BookDto> nonnullDtos = dtos.stream().filter(bookDto -> bookDto.getIndustryIdentifier() != null).collect(Collectors.toList());
         List<Book> books = bookConverter.toEntities(nonnullDtos);
