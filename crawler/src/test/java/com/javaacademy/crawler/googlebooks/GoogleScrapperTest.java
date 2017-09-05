@@ -3,6 +3,7 @@ package com.javaacademy.crawler.googlebooks;
 import com.javaacademy.crawler.common.BookAddingCallback;
 import com.javaacademy.crawler.common.CustomCallback;
 import com.javaacademy.crawler.common.RequestStatus;
+import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.googlebooks.controllers.Controller;
 import com.javaacademy.crawler.googlebooks.model.TotalItemsWrapper;
 import org.testng.annotations.Test;
@@ -49,6 +50,14 @@ public class GoogleScrapperTest {
         googleScrapper.callbacks = getBookCallbacksSet(3);
         boolean result = googleScrapper.areAllCallbacksDone();
         assertTrue(result);
+    }
+
+    @Test
+    public void getBooksTest() {
+        GoogleScrapper googleScrapper = new GoogleScrapper();
+        Set<Book> books = mock(Set.class);
+        googleScrapper.books = books;
+        assertEquals(googleScrapper.getBooks(), books);
     }
 
     @Test

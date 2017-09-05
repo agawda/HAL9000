@@ -21,7 +21,7 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 public class GoogleScrapper {
     static int SLEEP_TIME = 2000;
     static int MAX_VALUE = 1_000; //Should not be greater than 1000
-    private Set<Book> books = new HashSet<>();
+    Set<Book> books = new HashSet<>();
     Set<BookAddingCallback> callbacks = new HashSet<>();
     boolean isLoopDone = false;
     Controller controller = new Controller();
@@ -78,8 +78,7 @@ public class GoogleScrapper {
         boolean areCallbacksDone = false;
         if (isLoopDone) {
             AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks loop done");
-            areCallbacksDone = callbacks.stream().noneMatch(bookAddingCallback ->
-                    bookAddingCallback.getRequestStatus() == RequestStatus.STARTED);
+            areCallbacksDone = callbacks.stream().noneMatch(bookAddingCallback -> bookAddingCallback.getRequestStatus() == RequestStatus.STARTED);
             AppLogger.logger.log(DEFAULT_LEVEL, "areCallbacksDone: " + areCallbacksDone);
         }
         return isLoopDone && areCallbacksDone;
