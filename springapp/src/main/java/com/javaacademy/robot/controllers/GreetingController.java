@@ -7,9 +7,10 @@ import com.javaacademy.robot.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -68,7 +69,7 @@ public class GreetingController {
         return "../static/templates/bookstore";
     }
 
-    private void setImageZoom(BookDto bookDto, int zoom) {
+    void setImageZoom(BookDto bookDto, int zoom) {
         String s = bookDto.getSmallThumbnail();
         String zoomString = "&zoom=";
         if(s.contains(zoomString)) {

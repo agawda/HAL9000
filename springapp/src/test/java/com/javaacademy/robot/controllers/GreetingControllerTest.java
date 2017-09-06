@@ -1,5 +1,6 @@
 package com.javaacademy.robot.controllers;
 
+import com.javaacademy.robot.model.BookDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,5 +80,27 @@ public class GreetingControllerTest {
                 .param("content", "")
                 .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void setImageZoomTest() {
+        BookDto bookDto = new BookDto();
+        String smallThumbnail = "&zoom=5";
+        bookDto.setSmallThumbnail(smallThumbnail);
+        GreetingController greetingController = new GreetingController(null, null);
+        int newZoom = 1;
+        greetingController.setImageZoom(bookDto, newZoom);
+        assertTrue(bookDto.getSmallThumbnail().contains("&zoom=" + newZoom));
+    }
+
+    @Test
+    public void setImageZoomTestWithoutString() {
+        BookDto bookDto = new BookDto();
+        String smallThumbnail = "";
+        bookDto.setSmallThumbnail(smallThumbnail);
+        GreetingController greetingController = new GreetingController(null, null);
+        int newZoom = 1;
+        greetingController.setImageZoom(bookDto, newZoom);
+        assertFalse(bookDto.getSmallThumbnail().contains("&zoom=" + newZoom));
     }
 }

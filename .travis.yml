@@ -20,4 +20,4 @@ addons:
       - development
       - scrapper-tests
       - new_scrapper
-      - final-bugfixes
+      - increasing-test-cov
