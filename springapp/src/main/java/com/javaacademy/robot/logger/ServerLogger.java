@@ -33,9 +33,6 @@ public class ServerLogger {
         isInitialized = true;
     }
 
-    ServerLogger() {
-    }
-
     static class MyFileHandler extends FileHandler {
 
         private MyFileHandler(String pattern, boolean append) throws IOException {

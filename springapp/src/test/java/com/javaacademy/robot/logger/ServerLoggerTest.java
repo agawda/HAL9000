@@ -12,6 +12,6 @@ public class ServerLoggerTest {
         assertFalse(ServerLogger.isInitialized);
         ServerLogger.initializeLogger();
         assertTrue(ServerLogger.isInitialized);
+        ServerLogger.initializeLogger();
     }
-
 }
