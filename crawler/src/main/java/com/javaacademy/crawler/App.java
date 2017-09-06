@@ -44,13 +44,9 @@ public class App {
         BookSender matrasBooksSender = new BookSender(matrasBooks);
         matrasBooksSender.sendBooksTo(serverIpAddress, "Matras");
 
-        Set<BookModel> matrasBooks = new MatrasScrapper().scrape();
-        BookSender matrasBooksSender = new BookSender(matrasBooks);
-        matrasBooksSender.sendBooksTo(serverIpAddress);
-
         Set<BookModel> czytamBooks = new CzytamScrapper().scrape();
         BookSender czytamBooksSender = new BookSender(czytamBooks);
-        czytamBooksSender.sendBooksTo(serverIpAddress);
+        czytamBooksSender.sendBooksTo(serverIpAddress, "Czytam");
 
         Set<Book> googleBooks = runGoogleScrapper();
         BookSender googleBookSender = new BookSender(googleBooks, new GoogleBookConverter());
