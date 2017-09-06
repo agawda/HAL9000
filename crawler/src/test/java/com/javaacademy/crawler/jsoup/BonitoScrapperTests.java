@@ -16,13 +16,13 @@ public class BonitoScrapperTests {
     private BookModel bookModel;
 
     @BeforeMethod
-    public void setUp() throws Exception {
+    public void setUp() {
         BonitoScrapper bonitoScrapper = new BonitoScrapper();
         bookModel = bonitoScrapper.parseLinkAndGetBookModel(LINK);
     }
 
     public void testIdentifier() {
-        Assert.assertEquals(bookModel.getIndustryIdentifier(), new Long(9788321412955L));
+        Assert.assertEquals(bookModel.getIndustryIdentifier(), Long.valueOf(9788321412955L));
     }
 
     public void testTitle() {

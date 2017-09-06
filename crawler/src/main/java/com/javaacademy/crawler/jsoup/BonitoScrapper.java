@@ -8,6 +8,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
+import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsole;
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+
 /**
  * @author devas
  * @since 29.08.17
@@ -18,6 +22,8 @@ public class BonitoScrapper extends JsoupScrapper {
     private static final String BONITO_PROMOS_LINK = "https://bonito.pl/wyprzedaz";
 
     public Set<BookModel> scrape() {
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Bonito");
+        printOnConsole("Scrapping books from Bonito\n");
         connectAndInitDocument(BONITO_PROMOS_LINK);
 
         Elements elements = doc.getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
@@ -26,8 +32,14 @@ public class BonitoScrapper extends JsoupScrapper {
         Set<String> links = new HashSet<>(sublinks.stream().map(BONITO_BASE_URL::concat).collect(Collectors.toSet()));
 
         Set<BookModel> bookModels = new HashSet<>();
-        links.forEach(link -> bookModels.add(parseLinkAndGetBookModel(link)));
-
+        int index = 1;
+        for (String link :
+                links) {
+            bookModels.add(parseLinkAndGetBookModel(link));
+            long progress = index * 100 / links.size();
+            displayProgress(progress);
+            index++;
+        }
         return bookModels;
     }
 
