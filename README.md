@@ -47,6 +47,7 @@ Checkstyle (TODO)
 ## How to run project:
 The project contain scripts that can be executed to run the applications. The command that needs to be executed is 
 `sh mainScript.sh` and should be executed from the directory above the HAL9000 directory. 
+
  The application it runs are: the spring application which communicates with the db and works in Tomcat container at
   port 8080. The other app is executed every 3 hours and scraps the results from following bookstores:
 - Gandalf
@@ -56,6 +57,14 @@ The project contain scripts that can be executed to run the applications. The co
 
 The scripts contain also script for cloning and switching to master branch `cloning.sh` but it is not enabled by default 
 in the main script (with assumption that the user already cloned the repository to get those scripts)
+
+Before running the scripts, the user has to have PostgreSQL installed and already created a database names `test_db`, running on port 5432.
+The script will ask for the password to the database with user `postgres` and will ask if the user wants to create schemas 
+for the application from scratch (If pressed `y` and the database already has any records, those will be deleted).
+
+The scrapper app will create logs every time it runs inside the logs directory. Log file will have a time of it's creation 
+attached to it's name.
+
 
 
 ## Demo.md:
