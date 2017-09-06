@@ -1,16 +1,16 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.model.Book;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
 
 /**
  * @author Anna Gawda
@@ -21,7 +21,7 @@ public class BookSearchTest {
     private BookService bookServiceMock = mock(BookService.class);
     private List<Book> bookList;
 
-    @BeforeTest
+    @Before
     public void setUp() {
         List<Book> result = new ArrayList<>();
         Book exampleBook = new Book();
