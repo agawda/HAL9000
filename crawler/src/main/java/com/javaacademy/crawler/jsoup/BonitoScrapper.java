@@ -54,7 +54,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
     @Override
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("td:containsOwn(Kod paskowy (EAN):)");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return new Random().nextLong();
         } else {
             String identifier = elements.next().first().child(0).html();
@@ -65,7 +65,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
     @Override
     String getTitle() {
         Elements elements = getDoc().getElementsByAttributeValue("itemprop", "name");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return "";
         } else {
             return elements.first().html();
@@ -75,7 +75,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
     @Override
     List<String> getAuthors() {
         Elements elements = getDoc().select("td:containsOwn(Autor:\u00a0)");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return Collections.singletonList("");
         } else {
             Elements authors = elements.next().first().getElementsByTag("a");
@@ -88,7 +88,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
     @Override
     List<String> getCategories() {
         Elements elements = getDoc().getElementsByAttributeValue("itemprop", "category");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return Collections.singletonList("");
         } else {
             String categories = elements.first().attr("content");
@@ -99,7 +99,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
     @Override
     String getSmallThumbnail() {
         Elements elements = getDoc().select("a:has(img)[title=Powiększ...]>img");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return "";
         } else {
             String imageLink = elements.first().attr("src");
@@ -110,7 +110,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
     @Override
     double getListPrice() {
         Elements prices = getDoc().select("b:contains(zł)");
-        if (prices.size() == 0) {
+        if (prices.isEmpty()) {
             return 0;
         } else {
             double price = 0;
@@ -126,7 +126,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
     @Override
     double getRetailPrice() {
         Elements prices = getDoc().select("b:contains(zł)");
-        if (prices.size() == 0) {
+        if (prices.isEmpty()) {
             return 0;
         } else {
             double price = 0;

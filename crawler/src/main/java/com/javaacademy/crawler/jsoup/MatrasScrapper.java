@@ -67,7 +67,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
     @Override
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("label:containsOwn(EAN:)");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return new Random().nextLong();
         } else {
             return Long.parseLong(elements.next().text());
@@ -77,7 +77,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
     @Override
     String getTitle() {
         Elements elements = getDoc().select("h1[itemprop=name]");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return "";
         } else {
             return elements.text();
@@ -87,7 +87,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
     @Override
     List<String> getAuthors() {
         Elements elements = getDoc().select("label:containsOwn(Autor:)");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return Collections.singletonList("");
         } else {
             return Arrays.asList(elements.next().text().split(", "));
@@ -97,7 +97,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
     @Override
     List<String> getCategories() {
         Elements elements = getDoc().select(".categories-product-inner-col");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return Collections.singletonList("");
         } else {
             return elements.select("span").select("a").select("span").eachText();
@@ -107,7 +107,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
     @Override
     String getSmallThumbnail() {
         Elements elements = getDoc().select("img");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return "";
         } else {
             return elements.attr("data-original");
@@ -118,7 +118,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
     @Override
     double getListPrice() {
         Elements elements = getDoc().select("div.old-price");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return 0;
         } else {
             double price = 0;
@@ -135,7 +135,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
     @Override
     double getRetailPrice() {
         Elements elements = getDoc().select("div.this-main-price");
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             return 0;
         } else {
             double price = 0;
