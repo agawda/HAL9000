@@ -30,14 +30,6 @@ public class GreetingController {
         this.bookSearch = bookSearch;
     }
 
-    @RequestMapping("/greeting")
-    public String hello(@RequestParam(value = "name", required = false, defaultValue = "World")
-                                String name, Model model) {
-        model.addAttribute("name", name);
-        model.addAttribute("exampleBooks", Arrays.asList("Advanced Java", "Clean Code", "Effective Java"));
-        return "../static/templates/greeting";
-    }
-
     @RequestMapping("/bookstores")
     public String bookstore(@RequestParam(value = "id") String bookstore, Model model) {
         model.addAttribute("id", bookstore);

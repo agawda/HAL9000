@@ -15,7 +15,7 @@
 <!--/*@thymesVar id="book" type="com.javaacademy.robot.model.BookDto"*/-->
 <div class="container">
     <div class="row justify-content-end align-items-center">
-        <div class="col-md-8 text-center"><a class="h1" th:href="@{/bookstores/?id=Books}" th:text="${id}"></a></div>
+        <div class="col-md-8 text-center"><a class="h1" th:href="@{/bookstores/?id=Books}">Books</a></div>
         <div class="col-sm-4">
             <form action="#" th:action="@{/search}" method="post">
                 <input type="text" name="content" placeholder="Search"/>
