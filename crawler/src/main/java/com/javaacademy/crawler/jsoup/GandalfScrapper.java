@@ -8,6 +8,8 @@ import org.jsoup.select.Elements;
 import java.util.*;
 import java.util.logging.Level;
 
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+
 /**
  * @author devas
  * @since 04.09.17
@@ -26,6 +28,7 @@ public class GandalfScrapper extends JsoupBookScrapper {
 
     @Override
     public Set<BookModel> scrape() {
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Gandalf");
         Set<BookModel> bookModels = new HashSet<>();
         int pageIndex = 0;
         while (true) {

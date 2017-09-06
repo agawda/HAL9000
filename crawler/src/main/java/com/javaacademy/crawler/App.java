@@ -34,11 +34,15 @@ public class App {
 
         Set<BookModel> bonitoBooks = new BonitoScrapper().scrape();
         BookSender bonitoBookSender = new BookSender(bonitoBooks);
-        bonitoBookSender.sendBooksTo(serverIpAddress);
+        bonitoBookSender.sendBooksTo(serverIpAddress, "Bonito");
 
         Set<BookModel> gandalfBooks = new GandalfScrapper().scrape();
         BookSender gandalfBooksSender = new BookSender(gandalfBooks);
-        gandalfBooksSender.sendBooksTo(serverIpAddress);
+        gandalfBooksSender.sendBooksTo(serverIpAddress, "Gandalf");
+
+        Set<BookModel> matrasBooks = new MatrasScrapper().scrape();
+        BookSender matrasBooksSender = new BookSender(matrasBooks);
+        matrasBooksSender.sendBooksTo(serverIpAddress, "Matras");
 
         Set<BookModel> matrasBooks = new MatrasScrapper().scrape();
         BookSender matrasBooksSender = new BookSender(matrasBooks);
@@ -50,7 +54,7 @@ public class App {
 
         Set<Book> googleBooks = runGoogleScrapper();
         BookSender googleBookSender = new BookSender(googleBooks, new GoogleBookConverter());
-        googleBookSender.sendBooksTo(serverIpAddress);
+        googleBookSender.sendBooksTo(serverIpAddress, "Google");
     }
 
     private static Set<Book> runGoogleScrapper() {

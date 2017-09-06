@@ -16,7 +16,8 @@ public class MatrasScrapper extends JsoupBookScrapper {
 
     private static String MATRAS_URL = "http://www.matras.pl/ksiazki/promocje,k,53?p=";
     private static final int BOOKS_PER_PAGE = 20;
-
+    private static final int NUMBER_OF_PAGES = 11;
+    
     public MatrasScrapper() {
     }
 
@@ -144,6 +145,6 @@ public class MatrasScrapper extends JsoupBookScrapper {
 
     private int getNumberOfPages() {
 //        return Integer.parseInt(connection.select("ul.pagination-list > *").get(7).select("a").text());
-        return 11;
+        return NUMBER_OF_PAGES;
     }
 }

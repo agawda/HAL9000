@@ -58,13 +58,12 @@ public class BookService {
         return bookConverter.toDto(book);
     }
 
-    public void addAllBookDtos(BookModels bookdtos) {
-        ServerLogger.logger.log(DEFAULT_LEVEL, "Adding dtos: " +bookdtos.getBookDtos());
-        List<BookDto> dtos = bookdtos.getBookDtos();
-        List<BookDto> nonnullDtos = dtos.stream().filter(bookDto -> bookDto.getIndustryIdentifier() != null).collect(Collectors.toList());
-        List<Book> books = bookConverter.toEntities(nonnullDtos);
-        for (Book book :
-                books) {
+    public void addAllBookDtos(BookModels bookModels) {
+        ServerLogger.logger.log(DEFAULT_LEVEL, "Adding dtos: " + bookModels.getBookDtos());
+        List<BookDto> dtos = bookModels.getBookDtos();
+        List<BookDto> nonNullDtos = dtos.stream().filter(bookDto -> bookDto.getIndustryIdentifier() != null).collect(Collectors.toList());
+        List<Book> books = bookConverter.toEntities(nonNullDtos);
+        for (Book book : books) {
             saveBook(book);
         }
     }

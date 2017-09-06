@@ -21,6 +21,7 @@
                 <input type="text" name="content" placeholder="Search"/>
                 <input type="submit" value="Search"/>
             </form>
+            <a id="advSearch" th:href="@{/advancedSearch}">Advanced search</a>
         </div>
     </div>
 </div>
@@ -35,7 +36,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="book, stat : ${books}" class="h4">
+        <tr class="h4" th:classappend="${book.getRetailPriceAmount()}==0.0 ? 'bg-success' : ''" th:each="book, stat : ${books}">
             <th th:text="${stat.count}">1</th>
             <td><a th:href="@{~/books/(id=${book.getIndustryIdentifier()})}" th:text="${book.getTitle()}"></a></td>
             <td>
