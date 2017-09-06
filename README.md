@@ -58,9 +58,15 @@ The project contain scripts that can be executed to run the applications. The co
 The scripts contain also script for cloning and switching to master branch `cloning.sh` but it is not enabled by default 
 in the main script (with assumption that the user already cloned the repository to get those scripts)
 
-Before running the scripts, the user has to have PostgreSQL installed and already created a database names `test_db`, running on port 5432.
+Before running the scripts, the user has to have [PostgreSQL](https://www.postgresql.org/download/) installed and already created a database names `test_db`, running on port 5432.
 The script will ask for the password to the database with user `postgres` and will ask if the user wants to create schemas 
 for the application from scratch (If pressed `y` and the database already has any records, those will be deleted).
+
+The other libraries need to be installed in order for the app to run correctly:
+- [java](https://www.java.com/en/download/help/download_options.xml), preferably the newest version
+- [maven](https://maven.apache.org/install.html)
+- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- any modern web [browser](https://en.wikipedia.org/wiki/List_of_web_browsers)
 
 The scrapper app will create logs every time it runs inside the logs directory. Log file will have a time of it's creation 
 attached to it's name.
