@@ -3,6 +3,7 @@ package com.javaacademy.robot.service;
 import com.javaacademy.robot.converters.BookConverter;
 import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
+import com.javaacademy.robot.model.BookModels;
 import com.javaacademy.robot.repository.BookRepository;
 import org.junit.Test;
 
@@ -66,6 +67,48 @@ public class BookServiceTest {
         long id = 10L;
         bookService.remove(id);
         verify(bookRepository, times(1)).delete(id);
+    }
+
+    @Test
+    public void testAddAllBookDtos() {
+        bookRepository = mock(BookRepository.class);
+        when(bookConverter.toEntities(anyList())).thenReturn(getBooks());
+        bookService = new BookService(bookRepository, bookConverter);
+        bookService.addAllBookDtos(getBookModels());
+        verify(bookRepository, times(3)).save(any(Book.class));
+    }
+
+    @Test
+    public void testAddAllBookDtosException() {
+        bookRepository = mock(BookRepository.class);
+        when(bookConverter.toEntities(anyList())).thenReturn(getBooks());
+        when(bookRepository.save(any(Book.class))).thenThrow(Exception.class);
+        bookService = new BookService(bookRepository, bookConverter);
+        bookService.addAllBookDtos(getBookModels());
+        verify(bookRepository, times(3)).save(any(Book.class));
+    }
+
+    private BookModels getBookModels() {
+        BookDto bookDto = new BookDto();
+        bookDto.setIndustryIdentifier(1L);
+        BookDto bookDto2 = new BookDto();
+        bookDto2.setIndustryIdentifier(2L);
+        BookDto bookDto3 = new BookDto();
+        bookDto3.setIndustryIdentifier(3L);
+        BookModels bookModels = mock(BookModels.class);
+        List<BookDto> bookDtos = new ArrayList<>(Arrays.asList(bookDto, bookDto2, bookDto3));
+        when(bookModels.getBookDtos()).thenReturn(bookDtos);
+        return bookModels;
+    }
+
+    private List<Book> getBooks() {
+        Book bookDto = new Book();
+        bookDto.setIndustryIdentifier(1L);
+        Book bookDto2 = new Book();
+        bookDto2.setIndustryIdentifier(2L);
+        Book bookDto3 = new Book();
+        bookDto3.setIndustryIdentifier(3L);;
+        return new ArrayList<>(Arrays.asList(bookDto, bookDto2, bookDto3));
     }
 
 }

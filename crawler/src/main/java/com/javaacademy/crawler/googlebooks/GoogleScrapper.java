@@ -19,8 +19,8 @@ import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsol
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 public class GoogleScrapper {
-    static int SLEEP_TIME = 2000;
-    static int MAX_VALUE = 1_000; //Should not be greater than 1000
+    static int sleepTime = 2000;
+    static int maxValue = 1_000; //Should not be greater than 1000
     Set<Book> books = new HashSet<>();
     Set<BookAddingCallback> callbacks = new HashSet<>();
     boolean isLoopDone = false;
@@ -43,7 +43,7 @@ public class GoogleScrapper {
         int step = 40;
         printOnConsole("Scrapping books from google:\n");
         for (int i = 0; i < numOfBooks; i += step) {
-            long progress = i * 100 / MAX_VALUE;
+            long progress = i * 100 / maxValue;
             displayProgress(progress);
             BookAddingCallback<GoogleBooksWrapper> bookItemBookAddingCallback =
                     new BookAddingCallback<>(books,
@@ -51,14 +51,14 @@ public class GoogleScrapper {
             callbacks.add(bookItemBookAddingCallback);
             int end = step;
             int nextStep = i + step;
-            if (nextStep >= MAX_VALUE) {
-                end = MAX_VALUE - i;
+            if (nextStep >= maxValue) {
+                end = maxValue - i;
                 getGoogleBooks(i, end, bookItemBookAddingCallback);
                 break;
             }
             getGoogleBooks(i, end, bookItemBookAddingCallback);
             try {
-                Thread.sleep(SLEEP_TIME);
+                Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 AppLogger.logger.log(Level.WARNING, "Exception while waiting, ", e);
                 Thread.currentThread().interrupt();

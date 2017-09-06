@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BookConverterTest {
 
@@ -40,9 +40,9 @@ public class BookConverterTest {
         assertEquals(bookDto.getSmallThumbnail(), book.getSmallThumbnail());
         assertEquals(bookDto.getCanonicalVolumeLink(), book.getCanonicalVolumeLink());
         assertEquals(bookDto.getSaleability(), book.getSaleability());
-        assertEquals(bookDto.getListPriceAmount(), book.getListPriceAmount());
+        assertEquals(bookDto.getListPriceAmount(), book.getListPriceAmount(), 0.1);
         assertEquals(bookDto.getListPriceCurrencyCode(), book.getListPriceCurrencyCode());
-        assertEquals(bookDto.getRetailPriceAmount(), book.getRetailPriceAmount());
+        assertEquals(bookDto.getRetailPriceAmount(), book.getRetailPriceAmount(), 0.1);
         assertEquals(bookDto.getRetailPriceCurrencyCode(), book.getRetailPriceCurrencyCode());
 
         Book converted = bookConverter.toEntity(bookDto);
