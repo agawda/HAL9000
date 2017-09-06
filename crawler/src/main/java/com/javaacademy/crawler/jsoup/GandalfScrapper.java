@@ -11,6 +11,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+
 /**
  * @author devas
  * @since 04.09.17
@@ -21,6 +23,7 @@ public class GandalfScrapper extends JsoupScrapper {
     private static final String GANDALF_URL = "http://www.gandalf.com.pl/promocje/";
 
     public Set<BookModel> scrape() {
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Gandalf");
         Set<BookModel> bookModels = new HashSet<>();
         int i = 0;
         while (true) {

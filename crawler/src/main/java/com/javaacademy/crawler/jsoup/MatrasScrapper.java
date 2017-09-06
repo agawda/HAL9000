@@ -8,6 +8,8 @@ import org.jsoup.select.Elements;
 import java.util.*;
 import java.util.logging.Level;
 
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+
 /**
  * @author devas
  * @since 05.09.17
@@ -16,11 +18,13 @@ public class MatrasScrapper extends JsoupScrapper {
 
     private static final String MATRAS_URL = "http://www.matras.pl/ksiazki/promocje,k,53?p=";
     private static final int BOOKS_PER_PAGE = 20;
+    private static final int NUMBER_OF_PAGES = 11;
 
     public Set<BookModel> scrape() {
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Matras");
         connectAndInitDocument(MATRAS_URL + 0);
         int lastPageNumber = getNumberOfPages() - 1;
-        System.out.println(lastPageNumber);
+        AppLogger.logger.log(DEFAULT_LEVEL, Integer.toString(lastPageNumber));
         Set<BookModel> bookModels = new HashSet<>();
         int i = 0;
         while (true) {
@@ -62,7 +66,7 @@ public class MatrasScrapper extends JsoupScrapper {
         setListPrice(bookModel);
         setRetailPrice(bookModel);
 
-        System.out.println(bookModel);
+        AppLogger.logger.log(DEFAULT_LEVEL, bookModel.toString());
         return bookModel;
     }
 
@@ -159,7 +163,6 @@ public class MatrasScrapper extends JsoupScrapper {
     }
 
     private int getNumberOfPages() {
-//        return Integer.parseInt(doc.select("ul.pagination-list > *").get(7).select("a").text());
-        return 11;
+        return NUMBER_OF_PAGES;
     }
 }
