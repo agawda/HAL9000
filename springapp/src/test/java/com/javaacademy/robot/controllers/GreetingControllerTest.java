@@ -3,20 +3,14 @@ package com.javaacademy.robot.controllers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.testng.annotations.BeforeTest;
-
-import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -50,10 +44,37 @@ public class GreetingControllerTest {
     }
 
     @Test
-    public void shouldReturnStatusOkForSortMapping() throws Exception {
+    public void shouldReturnStatusOkForSortTitleMapping() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
         this.mockMvc.perform(get("/sort")
-                .param("sorting", "")
+                .param("sorting", "title")
+                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnStatusOkForSortRegularPriceMapping() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
+        this.mockMvc.perform(get("/sort")
+                .param("sorting", "regularPrice")
+                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnStatusOkForSortNewPriceMapping() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
+        this.mockMvc.perform(get("/sort")
+                .param("sorting", "newPrice")
+                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnStatusOkForSearchMapping() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
+        this.mockMvc.perform(post("/search")
+                .param("content", "")
                 .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
                 .andExpect(status().isOk());
     }
