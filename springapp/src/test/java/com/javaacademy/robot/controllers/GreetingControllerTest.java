@@ -40,12 +40,21 @@ public class GreetingControllerTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    public void shouldReturnStatusOkForBooksMapping() throws Exception {
-//        mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
-//        this.mockMvc.perform(get("/books/?id=9781422187265")
-//                .sessionAttr("id", 9781422187265L)
-//                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    public void shouldReturnStatusOkForBooksMapping() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
+        this.mockMvc.perform(get("/books")
+                .param("id", "")
+                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void shouldReturnStatusOkForSortMapping() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
+        this.mockMvc.perform(get("/sort")
+                .param("sorting", "")
+                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+                .andExpect(status().isOk());
+    }
 }
