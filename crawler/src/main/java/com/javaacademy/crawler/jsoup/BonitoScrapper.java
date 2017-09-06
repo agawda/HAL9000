@@ -15,8 +15,15 @@ import java.util.stream.Collectors;
  */
 public class BonitoScrapper extends JsoupBookScrapper {
 
-    private static final String BONITO_BASE_URL = "https://bonito.pl";
+    private static String BONITO_BASE_URL = "https://bonito.pl";
     private static final String BONITO_PROMOS_LINK = "https://bonito.pl/wyprzedaz";
+
+    public BonitoScrapper() {
+    }
+
+    BonitoScrapper(String link) {
+        BONITO_BASE_URL = link;
+    }
 
     public Set<BookModel> scrape() {
         connect(BONITO_PROMOS_LINK);
@@ -54,22 +61,14 @@ public class BonitoScrapper extends JsoupBookScrapper {
     @Override
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("td:containsOwn(Kod paskowy (EAN):)");
-        if (elements.isEmpty()) {
-            return new Random().nextLong();
-        } else {
-            String identifier = elements.next().first().child(0).html();
-            return Long.parseLong(identifier.replace("-", ""));
-        }
+        return elements.isEmpty() ? new Random().nextLong() :
+                Long.parseLong(elements.next().first().child(0).html().replace("-", ""));
     }
 
     @Override
     String getTitle() {
         Elements elements = getDoc().getElementsByAttributeValue("itemprop", "name");
-        if (elements.isEmpty()) {
-            return "";
-        } else {
-            return elements.first().html();
-        }
+        return elements.isEmpty() ? "" : elements.first().html();
     }
 
     @Override
@@ -88,23 +87,14 @@ public class BonitoScrapper extends JsoupBookScrapper {
     @Override
     List<String> getCategories() {
         Elements elements = getDoc().getElementsByAttributeValue("itemprop", "category");
-        if (elements.isEmpty()) {
-            return Collections.singletonList("");
-        } else {
-            String categories = elements.first().attr("content");
-            return Arrays.asList(categories.substring(13).split(" > "));
-        }
+        return elements.isEmpty() ? Collections.singletonList("") :
+                Arrays.asList(elements.first().attr("content").substring(13).split(" > "));
     }
 
     @Override
     String getSmallThumbnail() {
         Elements elements = getDoc().select("a:has(img)[title=Powiększ...]>img");
-        if (elements.isEmpty()) {
-            return "";
-        } else {
-            String imageLink = elements.first().attr("src");
-            return "https://".concat(imageLink.substring(2));
-        }
+        return elements.isEmpty() ? "" : "https://".concat(elements.first().attr("src").substring(2));
     }
 
     @Override

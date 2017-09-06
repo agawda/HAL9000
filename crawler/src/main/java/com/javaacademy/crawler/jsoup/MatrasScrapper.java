@@ -14,8 +14,15 @@ import java.util.logging.Level;
  */
 public class MatrasScrapper extends JsoupBookScrapper {
 
-    private static final String MATRAS_URL = "http://www.matras.pl/ksiazki/promocje,k,53?p=";
+    private static String MATRAS_URL = "http://www.matras.pl/ksiazki/promocje,k,53?p=";
     private static final int BOOKS_PER_PAGE = 20;
+
+    public MatrasScrapper() {
+    }
+
+    public MatrasScrapper(String link) {
+        MATRAS_URL = link;
+    }
 
     @Override
     public Set<BookModel> scrape() {
@@ -67,51 +74,33 @@ public class MatrasScrapper extends JsoupBookScrapper {
     @Override
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("label:containsOwn(EAN:)");
-        if (elements.isEmpty()) {
-            return new Random().nextLong();
-        } else {
-            return Long.parseLong(elements.next().text());
-        }
+        return elements.isEmpty() ? new Random().nextLong() : Long.parseLong(elements.next().text());
     }
 
     @Override
     String getTitle() {
         Elements elements = getDoc().select("h1[itemprop=name]");
-        if (elements.isEmpty()) {
-            return "";
-        } else {
-            return elements.text();
-        }
+        return elements.isEmpty() ? "" : elements.text();
     }
 
     @Override
     List<String> getAuthors() {
         Elements elements = getDoc().select("label:containsOwn(Autor:)");
-        if (elements.isEmpty()) {
-            return Collections.singletonList("");
-        } else {
-            return Arrays.asList(elements.next().text().split(", "));
-        }
+        return elements.isEmpty() ? Collections.singletonList("") :
+                Arrays.asList(elements.next().text().split(", "));
     }
 
     @Override
     List<String> getCategories() {
         Elements elements = getDoc().select(".categories-product-inner-col");
-        if (elements.isEmpty()) {
-            return Collections.singletonList("");
-        } else {
-            return elements.select("span").select("a").select("span").eachText();
-        }
+        return elements.isEmpty() ? Collections.singletonList("") :
+                elements.select("span").select("a").select("span").eachText();
     }
 
     @Override
     String getSmallThumbnail() {
         Elements elements = getDoc().select("img");
-        if (elements.isEmpty()) {
-            return "";
-        } else {
-            return elements.attr("data-original");
-        }
+        return elements.isEmpty() ? "" : elements.attr("data-original");
     }
 
     @SuppressWarnings("Duplicates")

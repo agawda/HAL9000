@@ -14,8 +14,15 @@ import java.util.logging.Level;
  */
 public class GandalfScrapper extends JsoupBookScrapper {
 
+    private static String GANDALF_URL = "http://www.gandalf.com.pl/promocje/";
     private static final String ENDING_CONDITION = "Brak produktów wybranego dystrybutora";
-    private static final String GANDALF_URL = "http://www.gandalf.com.pl/promocje/";
+
+    public GandalfScrapper() {
+    }
+
+    public GandalfScrapper(String link) {
+        GANDALF_URL = link;
+    }
 
     @Override
     public Set<BookModel> scrape() {
@@ -56,51 +63,32 @@ public class GandalfScrapper extends JsoupBookScrapper {
     @Override
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("td[itemprop=isbn]");
-        if (elements.isEmpty()) {
-            return new Random().nextLong();
-        } else {
-            return Long.parseLong(elements.text().replace("-", ""));
-        }
+        return elements.isEmpty() ? new Random().nextLong() :
+                Long.parseLong(elements.text().replace("-", ""));
     }
 
     @Override
     String getTitle() {
         Elements elements = getDoc().select(".gallthumb > img");
-        if (elements.isEmpty()) {
-            return "";
-        } else {
-            return elements.attr("alt");
-        }
+        return elements.isEmpty() ? "" : elements.attr("alt");
     }
 
     @Override
     List<String> getAuthors() {
         Elements elements = getDoc().select(".persons a");
-        if (elements.isEmpty()) {
-            return Collections.singletonList("");
-        } else {
-            return elements.eachText();
-        }
+        return elements.isEmpty() ? Collections.singletonList("") : elements.eachText();
     }
 
     @Override
     List<String> getCategories() {
         Elements elements = getDoc().select(".product_categories > a");
-        if (elements.isEmpty()) {
-            return Collections.singletonList("");
-        } else {
-            return elements.eachText();
-        }
+        return elements.isEmpty() ? Collections.singletonList("") : elements.eachText();
     }
 
     @Override
     String getSmallThumbnail() {
         Elements elements = getDoc().select(".gallthumb > img");
-        if (elements.isEmpty()) {
-            return "";
-        } else {
-            return "http://www.gandalf.com.pl" + elements.attr("src");
-        }
+        return elements.isEmpty() ? "" : "http://www.gandalf.com.pl" + elements.attr("src");
     }
 
     @Override

@@ -14,7 +14,14 @@ import java.util.logging.Level;
  */
 public class CzytamScrapper extends JsoupBookScrapper {
 
-    private static final String CZYTAM_URL = "http://www.czytam.pl/ksiazki-promocje,";
+    private static String CZYTAM_URL = "http://www.czytam.pl/ksiazki-promocje,";
+
+    public CzytamScrapper() {
+    }
+
+    CzytamScrapper(String link) {
+        CZYTAM_URL = link;
+    }
 
     @Override
     public Set<BookModel> scrape() {
@@ -58,51 +65,32 @@ public class CzytamScrapper extends JsoupBookScrapper {
     @Override
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("#panel4-2 > p > span:containsOwn(ISBN:)");
-        if (elements.isEmpty()) {
-            return new Random().nextLong();
-        } else {
-            return Long.parseLong(elements.next().text().replace("-", ""));
-        }
+        return elements.isEmpty() ? new Random().nextLong() :
+                Long.parseLong(elements.next().text().replace("-", ""));
     }
 
     @Override
     String getTitle() {
         Elements elements = getDoc().select(".show-for-medium-up > h1");
-        if (elements.isEmpty()) {
-            return "";
-        } else {
-            return elements.text();
-        }
+        return elements.isEmpty() ? "" : elements.text();
     }
 
     @Override
     List<String> getAuthors() {
         Elements elements = getDoc().select("#panel4-2 > p > span:containsOwn(Autor:) + strong > a");
-        if (elements.isEmpty()) {
-            return Collections.singletonList("");
-        } else {
-            return elements.eachText();
-        }
+        return elements.isEmpty() ? Collections.singletonList("") : elements.eachText();
     }
 
     @Override
     List<String> getCategories() {
         Elements elements = getDoc().select(".small-16 > * .current");
-        if (elements.isEmpty()) {
-            return Collections.singletonList("");
-        } else {
-            return elements.eachText().subList(0, elements.size() - 1);
-        }
+        return elements.isEmpty() ? Collections.singletonList("") : elements.eachText().subList(0, elements.size() - 1);
     }
 
     @Override
     String getSmallThumbnail() {
         Elements elements = getDoc().select("#panel3-1 > a > img");
-        if (elements.isEmpty()) {
-            return "";
-        } else {
-            return elements.attr("src");
-        }
+        return elements.isEmpty() ? "" : elements.attr("src");
     }
 
     @Override

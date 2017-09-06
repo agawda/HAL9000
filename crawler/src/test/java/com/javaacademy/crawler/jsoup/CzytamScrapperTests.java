@@ -13,20 +13,16 @@ import org.testng.annotations.Test;
 public class CzytamScrapperTests {
 
     private static final String LINK = "http://www.czytam.pl/k,ks_677631,Przewodnik-wedrowca-Sztuka-odczytywania-znakow-natury-Gooley-Tristan.html";
-    private BookModel bookModel;
 
-    @BeforeMethod
-    public void setUp() throws Exception {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testInvalidUrlScrapping() {
+        CzytamScrapper czytamScrapper = new CzytamScrapper("");
+        Assert.assertNotNull(czytamScrapper.scrape());
+    }
+
+    public void testTitleScrapping() {
         CzytamScrapper czytamScrapper = new CzytamScrapper();
         czytamScrapper.connect(LINK);
-        bookModel = czytamScrapper.parseSinglePage(LINK);
-    }
-
-    public void testIdentifier() {
-        Assert.assertEquals(bookModel.getIndustryIdentifier(), new Long(9788375154450L));
-    }
-
-    public void testTitle() {
-        Assert.assertEquals(bookModel.getTitle(), "Przewodnik wędrowca. Sztuka odczytywania znaków natury");
+        Assert.assertEquals(czytamScrapper.parseSinglePage(LINK).getTitle(), "Przewodnik wędrowca. Sztuka odczytywania znaków natury");
     }
 }

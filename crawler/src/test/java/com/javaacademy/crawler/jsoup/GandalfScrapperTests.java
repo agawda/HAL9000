@@ -13,20 +13,16 @@ import org.testng.annotations.Test;
 public class GandalfScrapperTests {
 
     private static final String LINK = "http://www.gandalf.com.pl/b/co-polske-stanowi/";
-    private BookModel bookModel;
 
-    @BeforeMethod
-    public void setUp() throws Exception {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testInvalidUrlScrapping() {
+        GandalfScrapper gandalfScrapper = new GandalfScrapper("");
+        Assert.assertNotNull(gandalfScrapper.scrape());
+    }
+
+    public void testTitleScrapping() {
         GandalfScrapper gandalfScrapper = new GandalfScrapper();
         gandalfScrapper.connect(LINK);
-        bookModel = gandalfScrapper.parseSinglePage(LINK);
-    }
-
-    public void testIdentifier() {
-        Assert.assertEquals(bookModel.getIndustryIdentifier(), new Long(9788378648338L));
-    }
-
-    public void testTitle() {
-        Assert.assertEquals(bookModel.getTitle(), "Co Polskę stanowi Biografie historyczne");
+        Assert.assertEquals(gandalfScrapper.parseSinglePage(LINK).getTitle(), "Co Polskę stanowi Biografie historyczne");
     }
 }
