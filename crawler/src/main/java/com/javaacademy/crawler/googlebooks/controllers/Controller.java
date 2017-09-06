@@ -8,7 +8,6 @@ import com.javaacademy.crawler.googlebooks.retrofit.RetrofitHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -22,19 +21,19 @@ import java.util.logging.Level;
 public class Controller {
 
     private static final String BASE_GOOGLE_URL = "volumes?q=-&printType=books&filter=ebooks&orderBy=newest";
-    private static String GOOGLE_KEY;
+    private String googleKey;
 
     public Controller() {
         try (InputStream in = getPropertyFile()) {
             Properties properties = new Properties();
             properties.load(in);
-            GOOGLE_KEY = properties.getProperty("GoogleKey");
+            googleKey = properties.getProperty("GoogleKey");
         } catch (IOException | NullPointerException e) {
             AppLogger.logger.log(Level.WARNING, "Could not find file", e);
         }
     }
 
-    private InputStream getPropertyFile() throws FileNotFoundException {
+    private InputStream getPropertyFile() {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         return classloader.getResourceAsStream("key.txt");
     }
@@ -52,10 +51,10 @@ public class Controller {
     }
 
     private String getGoogleNumberOfBooksUrl() {
-        return BASE_GOOGLE_URL + "&fields=totalItems" + GOOGLE_KEY;
+        return BASE_GOOGLE_URL + "&fields=totalItems" + googleKey;
     }
 
     private String generateGoogleRangedUrl(int start, int end) {
-        return BASE_GOOGLE_URL + "&startIndex=" + start + "&maxResults=" + end + GOOGLE_KEY;
+        return BASE_GOOGLE_URL + "&startIndex=" + start + "&maxResults=" + end + googleKey;
     }
 }

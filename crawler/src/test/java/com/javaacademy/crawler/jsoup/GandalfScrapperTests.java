@@ -16,20 +16,16 @@ public class GandalfScrapperTests {
     private BookModel bookModel;
 
     @BeforeMethod
-    public void setUp() throws Exception {
+    public void setUp() {
         GandalfScrapper gandalfScrapper = new GandalfScrapper();
         bookModel = gandalfScrapper.parseLinkAndGetBookModel(LINK);
     }
 
     public void testIdentifier() {
-        Assert.assertEquals(bookModel.getIndustryIdentifier(), new Long(9788378648338L));
+        Assert.assertEquals(bookModel.getIndustryIdentifier(), Long.valueOf(9788378648338L));
     }
 
     public void testTitle() {
         Assert.assertEquals(bookModel.getTitle(), "Co Polskę stanowi Biografie historyczne");
-    }
-
-    public void testSubtitle() {
-        Assert.assertEquals(bookModel.getSubtitle(), "");
     }
 }

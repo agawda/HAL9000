@@ -9,6 +9,7 @@ import com.javaacademy.crawler.googlebooks.model.SaleInfo;
 import com.javaacademy.crawler.googlebooks.model.VolumeInfo;
 
 import java.util.*;
+
 import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
@@ -47,7 +48,7 @@ public class GoogleBookConverter {
                 Long value = Long.valueOf(isbn.getIdentifier());
                 map.put(name, value);
             } catch (NumberFormatException e) {
-                AppLogger.logger.warning("Could not parse ISBN");
+                AppLogger.logger.log(Level.INFO, "Could not parse ISBN", e);
             }
         }
         return map.getOrDefault("ISBN_13", -1L);

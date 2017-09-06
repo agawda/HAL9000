@@ -5,37 +5,46 @@ import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 /**
  * @author devas
- * @since 04.09.17
+ * @since 05.09.17
  */
-public class GandalfScrapper extends JsoupScrapper {
+public class MatrasScrapper extends JsoupScrapper {
 
-    private static final String ENDING_CONDITION = "Brak produktów wybranego dystrybutora";
-    private static final String GANDALF_URL = "http://www.gandalf.com.pl/promocje/";
+    private static final String MATRAS_URL = "http://www.matras.pl/ksiazki/promocje,k,53?p=";
+    private static final int BOOKS_PER_PAGE = 20;
+    private static final int NUMBER_OF_PAGES = 11;
 
     public Set<BookModel> scrape() {
-        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Gandalf");
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Matras");
+        connectAndInitDocument(MATRAS_URL + 0);
+        int lastPageNumber = getNumberOfPages() - 1;
+        AppLogger.logger.log(DEFAULT_LEVEL, Integer.toString(lastPageNumber));
         Set<BookModel> bookModels = new HashSet<>();
         int i = 0;
         while (true) {
-            connectAndInitDocument(GANDALF_URL + i + "/");
-            if (doc.select(".no_products").text().startsWith(ENDING_CONDITION)) {
+            if (i == lastPageNumber) {
                 break;
             }
-            Elements elements = doc.select(".prod");
+            connectAndInitDocument(MATRAS_URL + i);
+            getNumberOfPages();
+            Elements elements = doc.select(".s-item-outer");
+            int booksCounter = 0;
             for (Element element : elements) {
+                if (booksCounter == BOOKS_PER_PAGE) {
+                    break;
+                }
+                booksCounter++;
                 bookModels.add(parseLinkAndGetBookModel(getLink(element)));
             }
-            if (i > 1) break;
+            if (i > 1) {
+                break;
+            }
             i++;
         }
         return bookModels;
@@ -57,24 +66,25 @@ public class GandalfScrapper extends JsoupScrapper {
         setListPrice(bookModel);
         setRetailPrice(bookModel);
 
+        AppLogger.logger.log(DEFAULT_LEVEL, bookModel.toString());
         return bookModel;
     }
 
     private void setIndustryIdentifier(BookModel bookModel) {
-        Elements elements = doc.select("td[itemprop=isbn]");
+        Elements elements = doc.select("label:containsOwn(EAN:)");
         if (elements.size() == 0) {
             bookModel.setIndustryIdentifier(new Random().nextLong());
         } else {
-            bookModel.setIndustryIdentifier(Long.parseLong(elements.text().replace("-", "")));
+            bookModel.setIndustryIdentifier(Long.parseLong(elements.next().text()));
         }
     }
 
     private void setTitle(BookModel bookModel) {
-        Elements elements = doc.select(".gallthumb > img");
+        Elements elements = doc.select("h1[itemprop=name]");
         if (elements.size() == 0) {
             bookModel.setTitle("");
         } else {
-            bookModel.setTitle(elements.attr("alt"));
+            bookModel.setTitle(elements.text());
         }
     }
 
@@ -83,29 +93,29 @@ public class GandalfScrapper extends JsoupScrapper {
     }
 
     private void setAuthors(BookModel bookModel) {
-        Elements elements = doc.select(".persons a");
+        Elements elements = doc.select("label:containsOwn(Autor:)");
         if (elements.size() == 0) {
             bookModel.setAuthors(Collections.singletonList(""));
         } else {
-            bookModel.setAuthors(elements.eachText());
+            bookModel.setAuthors(Arrays.asList(elements.next().text().split(", ")));
         }
     }
 
     private void setCategories(BookModel bookModel) {
-        Elements elements = doc.select(".product_categories > a");
+        Elements elements = doc.select(".categories-product-inner-col");
         if (elements.size() == 0) {
             bookModel.setCategories(Collections.singletonList(""));
         } else {
-            bookModel.setCategories(elements.eachText());
+            bookModel.setCategories(elements.select("span").select("a").select("span").eachText());
         }
     }
 
     private void setSmallThumbnail(BookModel bookModel) {
-        Elements elements = doc.select(".gallthumb > img");
+        Elements elements = doc.select("img");
         if (elements.size() == 0) {
             bookModel.setSmallThumbnail("");
         } else {
-            bookModel.setSmallThumbnail("http://www.gandalf.com.pl" + elements.attr("src"));
+            bookModel.setSmallThumbnail(elements.attr("data-original"));
         }
     }
 
@@ -123,12 +133,12 @@ public class GandalfScrapper extends JsoupScrapper {
     }
 
     private void setListPrice(BookModel bookModel) {
-        Elements elements = doc.select(".old_price");
+        Elements elements = doc.select("div.old-price");
         if (elements.size() == 0) {
             bookModel.setListPriceAmount(0);
         } else {
             try {
-                bookModel.setListPriceAmount(Double.parseDouble(elements.text().replaceAll(",", ".")));
+                bookModel.setListPriceAmount(Double.parseDouble(elements.text().replace("\u00a0zł", "").replace(",", ".")));
             } catch (NumberFormatException e) {
                 AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
             }
@@ -136,12 +146,12 @@ public class GandalfScrapper extends JsoupScrapper {
     }
 
     private void setRetailPrice(BookModel bookModel) {
-        Elements elements = doc.select(".new_price_big > span");
+        Elements elements = doc.select("div.this-main-price");
         if (elements.size() == 0) {
             bookModel.setRetailPriceAmount(0);
         } else {
             try {
-                bookModel.setRetailPriceAmount(Double.parseDouble(elements.text().replaceAll("[a-ż]", "").replaceAll(",", ".")));
+                bookModel.setRetailPriceAmount(Double.parseDouble(elements.text().replace("\u00a0zł", "").replace(",", ".")));
             } catch (NumberFormatException e) {
                 AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
             }
@@ -149,6 +159,10 @@ public class GandalfScrapper extends JsoupScrapper {
     }
 
     private String getLink(Element element) {
-        return "http://www.gandalf.com.pl" + element.select("a").attr("href");
+        return element.select(".cover").select("a").attr("href");
+    }
+
+    private int getNumberOfPages() {
+        return NUMBER_OF_PAGES;
     }
 }

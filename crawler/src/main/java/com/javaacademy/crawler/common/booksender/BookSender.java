@@ -28,7 +28,6 @@ public class BookSender {
         this.booksToSend = new HashMap<>();
         this.booksSendCounter = new HashMap<>();
         List<BookModel> bookModels = googleBookConverter.convertToDtosWithoutNulls(books);
-        System.out.println("bookModels = " + bookModels);
         bookModels.forEach(bookItem ->
                 booksToSend.put(bookItem, false));
     }
@@ -50,9 +49,10 @@ public class BookSender {
         serverResponse.enqueue(new CustomCallback<>(createSuccessfulRequestConsumer(bookModels.getBookDtos())));
     }
 
-    public void sendBooksTo(String serverIp) {
+    public void sendBooksTo(String serverIp, String bookstoreName) {
+        AppLogger.logger.log(DEFAULT_LEVEL, "Sending books to server from " + bookstoreName);
         int maxNumberOfTries = booksToSend.size() * 2 / numberOfBooksSentAtOnce;
-        printOnConsole("Sending scrapped books to server:\n");
+        printOnConsole("Sending scrapped books to server from " + bookstoreName +", number: " +booksToSend.size()  + ":\n");
         for (int i = 0; i < maxNumberOfTries; i++) {
             if (areAllBooksSent()) {
                 break;
@@ -68,6 +68,7 @@ public class BookSender {
                     * 100) / booksToSend.size();
             displayProgress(progress);
         }
+        AppLogger.logger.log(DEFAULT_LEVEL, "Total books sent: " + booksToSend.values().stream().filter(aBoolean -> aBoolean).count());
     }
 
     private Consumer<String> createSuccessfulRequestConsumer(List<BookModel> processedBooks) {
@@ -116,7 +117,7 @@ public class BookSender {
         printOnConsole("[");
         for (int i = 0; i <= 100; i++) {
             c = i > progress ? '-' : '|';
-            printOnConsole(c + "");
+            printOnConsole(Character.toString(c));
         }
         printOnConsole("] " + progress + "%\n");
     }
