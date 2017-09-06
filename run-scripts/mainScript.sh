@@ -1,5 +1,6 @@
-echo "cloning.sh"
-sh cloning.sh
+#!/usr/bin/env bash
+#echo "cloning.sh"
+#sh cloning.sh
 echo "properties.sh"
 sh properties.sh
 echo "keyscript.sh"
