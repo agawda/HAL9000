@@ -2,7 +2,6 @@ package com.javaacademy.crawler.jsoup;
 
 import com.javaacademy.crawler.common.model.BookModel;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -13,19 +12,16 @@ import org.testng.annotations.Test;
 public class BonitoScrapperTests {
 
     private static final String LINK = "https://bonito.pl/k-167304-podreczny-slownik-niemiecko-polski-a-z";
-    private BookModel bookModel;
 
-    @BeforeMethod
-    public void setUp() {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testInvalidUrlScrapping() {
+        BonitoScrapper bonitoScrapper = new BonitoScrapper("");
+        Assert.assertNotNull(bonitoScrapper.scrape());
+    }
+
+    public void testTitleScrapping() {
         BonitoScrapper bonitoScrapper = new BonitoScrapper();
-        bookModel = bonitoScrapper.parseLinkAndGetBookModel(LINK);
-    }
-
-    public void testIdentifier() {
-        Assert.assertEquals(bookModel.getIndustryIdentifier(), Long.valueOf(9788321412955L));
-    }
-
-    public void testTitle() {
-        Assert.assertEquals(bookModel.getTitle(), "Podręczny słownik niemiecko-polski A-Z");
+        bonitoScrapper.connect(LINK);
+        Assert.assertEquals(bonitoScrapper.parseSinglePage(LINK).getTitle(), "Podręczny słownik niemiecko-polski A-Z");
     }
 }

@@ -8,161 +8,143 @@ import org.jsoup.select.Elements;
 import java.util.*;
 import java.util.logging.Level;
 
-import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
-
 /**
  * @author devas
  * @since 05.09.17
  */
-public class MatrasScrapper extends JsoupScrapper {
+public class MatrasScrapper extends JsoupBookScrapper {
 
-    private static final String MATRAS_URL = "http://www.matras.pl/ksiazki/promocje,k,53?p=";
+    private static String MATRAS_URL = "http://www.matras.pl/ksiazki/promocje,k,53?p=";
     private static final int BOOKS_PER_PAGE = 20;
     private static final int NUMBER_OF_PAGES = 11;
+    
+    public MatrasScrapper() {
+    }
 
+    public MatrasScrapper(String link) {
+        MATRAS_URL = link;
+    }
+
+    @Override
     public Set<BookModel> scrape() {
-        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Matras");
-        connectAndInitDocument(MATRAS_URL + 0);
+        connect(MATRAS_URL + 0);
         int lastPageNumber = getNumberOfPages() - 1;
-        AppLogger.logger.log(DEFAULT_LEVEL, Integer.toString(lastPageNumber));
+        System.out.println(lastPageNumber);
         Set<BookModel> bookModels = new HashSet<>();
-        int i = 0;
+        int pageIndex = 0;
         while (true) {
-            if (i == lastPageNumber) {
+            if (pageIndex == lastPageNumber) {
                 break;
             }
-            connectAndInitDocument(MATRAS_URL + i);
+            connect(MATRAS_URL + pageIndex);
             getNumberOfPages();
-            Elements elements = doc.select(".s-item-outer");
+            Elements elements = getDoc().select(".s-item-outer");
             int booksCounter = 0;
             for (Element element : elements) {
                 if (booksCounter == BOOKS_PER_PAGE) {
                     break;
                 }
                 booksCounter++;
-                bookModels.add(parseLinkAndGetBookModel(getLink(element)));
+                String link = getLink(element);
+                connect(link);
+                BookModel bookModel = parseSinglePage(link);
+                bookModels.add(bookModel);
             }
-            if (i > 1) {
+            if (pageIndex > 1) {
                 break;
             }
-            i++;
+            pageIndex++;
         }
         return bookModels;
     }
 
-    BookModel parseLinkAndGetBookModel(String link) {
-        connectAndInitDocument(link);
-
-        BookModel bookModel = new BookModel();
-        setIndustryIdentifier(bookModel);
-        setTitle(bookModel);
-        setSubtitle(bookModel);
-        setAuthors(bookModel);
-        setCategories(bookModel);
-        setSmallThumbnail(bookModel);
-        setCanonicalVolumeLink(bookModel, link);
-        setSaleability(bookModel);
-        setCurrencyCodes(bookModel);
-        setListPrice(bookModel);
-        setRetailPrice(bookModel);
-
-        AppLogger.logger.log(DEFAULT_LEVEL, bookModel.toString());
-        return bookModel;
+    @Override
+    BookModel parseSinglePage(String link) {
+        return new BookModel.Builder(
+                getIndustryIdentifier(),
+                getTitle(),
+                getAuthors(),
+                getCategories(),
+                link,
+                getSmallThumbnail(),
+                getListPrice(),
+                getRetailPrice()
+        ).build();
     }
 
-    private void setIndustryIdentifier(BookModel bookModel) {
-        Elements elements = doc.select("label:containsOwn(EAN:)");
-        if (elements.size() == 0) {
-            bookModel.setIndustryIdentifier(new Random().nextLong());
+    @Override
+    Long getIndustryIdentifier() {
+        Elements elements = getDoc().select("label:containsOwn(EAN:)");
+        return elements.isEmpty() ? new Random().nextLong() : Long.parseLong(elements.next().text());
+    }
+
+    @Override
+    String getTitle() {
+        Elements elements = getDoc().select("h1[itemprop=name]");
+        return elements.isEmpty() ? "" : elements.text();
+    }
+
+    @Override
+    List<String> getAuthors() {
+        Elements elements = getDoc().select("label:containsOwn(Autor:)");
+        return elements.isEmpty() ? Collections.singletonList("") :
+                Arrays.asList(elements.next().text().split(", "));
+    }
+
+    @Override
+    List<String> getCategories() {
+        Elements elements = getDoc().select(".categories-product-inner-col");
+        return elements.isEmpty() ? Collections.singletonList("") :
+                elements.select("span").select("a").select("span").eachText();
+    }
+
+    @Override
+    String getSmallThumbnail() {
+        Elements elements = getDoc().select("img");
+        return elements.isEmpty() ? "" : elements.attr("data-original");
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    double getListPrice() {
+        Elements elements = getDoc().select("div.old-price");
+        if (elements.isEmpty()) {
+            return 0;
         } else {
-            bookModel.setIndustryIdentifier(Long.parseLong(elements.next().text()));
-        }
-    }
-
-    private void setTitle(BookModel bookModel) {
-        Elements elements = doc.select("h1[itemprop=name]");
-        if (elements.size() == 0) {
-            bookModel.setTitle("");
-        } else {
-            bookModel.setTitle(elements.text());
-        }
-    }
-
-    private void setSubtitle(BookModel bookModel) {
-        bookModel.setSubtitle("");
-    }
-
-    private void setAuthors(BookModel bookModel) {
-        Elements elements = doc.select("label:containsOwn(Autor:)");
-        if (elements.size() == 0) {
-            bookModel.setAuthors(Collections.singletonList(""));
-        } else {
-            bookModel.setAuthors(Arrays.asList(elements.next().text().split(", ")));
-        }
-    }
-
-    private void setCategories(BookModel bookModel) {
-        Elements elements = doc.select(".categories-product-inner-col");
-        if (elements.size() == 0) {
-            bookModel.setCategories(Collections.singletonList(""));
-        } else {
-            bookModel.setCategories(elements.select("span").select("a").select("span").eachText());
-        }
-    }
-
-    private void setSmallThumbnail(BookModel bookModel) {
-        Elements elements = doc.select("img");
-        if (elements.size() == 0) {
-            bookModel.setSmallThumbnail("");
-        } else {
-            bookModel.setSmallThumbnail(elements.attr("data-original"));
-        }
-    }
-
-    private void setCanonicalVolumeLink(BookModel bookModel, String link) {
-        bookModel.setCanonicalVolumeLink(link);
-    }
-
-    private void setSaleability(BookModel bookModel) {
-        bookModel.setSaleability("FOR_SALE");
-    }
-
-    private void setCurrencyCodes(BookModel bookModel) {
-        bookModel.setListPriceCurrencyCode("PLN");
-        bookModel.setRetailPriceCurrencyCode("PLN");
-    }
-
-    private void setListPrice(BookModel bookModel) {
-        Elements elements = doc.select("div.old-price");
-        if (elements.size() == 0) {
-            bookModel.setListPriceAmount(0);
-        } else {
+            double price = 0;
             try {
-                bookModel.setListPriceAmount(Double.parseDouble(elements.text().replace("\u00a0zł", "").replace(",", ".")));
+                price = Double.parseDouble(elements.text().replace("\u00a0zł", "").replace(",", "."));
             } catch (NumberFormatException e) {
                 AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
             }
+            return price;
         }
     }
 
-    private void setRetailPrice(BookModel bookModel) {
-        Elements elements = doc.select("div.this-main-price");
-        if (elements.size() == 0) {
-            bookModel.setRetailPriceAmount(0);
+    @SuppressWarnings("Duplicates")
+    @Override
+    double getRetailPrice() {
+        Elements elements = getDoc().select("div.this-main-price");
+        if (elements.isEmpty()) {
+            return 0;
         } else {
+            double price = 0;
             try {
-                bookModel.setRetailPriceAmount(Double.parseDouble(elements.text().replace("\u00a0zł", "").replace(",", ".")));
+                price = Double.parseDouble(elements.text().replace("\u00a0zł", "").replace(",", "."));
             } catch (NumberFormatException e) {
                 AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
             }
+            return price;
         }
     }
 
-    private String getLink(Element element) {
+    @Override
+    String getLink(Element element) {
         return element.select(".cover").select("a").attr("href");
     }
 
     private int getNumberOfPages() {
+//        return Integer.parseInt(connection.select("ul.pagination-list > *").get(7).select("a").text());
         return NUMBER_OF_PAGES;
     }
 }

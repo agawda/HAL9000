@@ -7,6 +7,7 @@ import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.googlebooks.GoogleScrapper;
 import com.javaacademy.crawler.jsoup.BonitoScrapper;
+import com.javaacademy.crawler.jsoup.CzytamScrapper;
 import com.javaacademy.crawler.jsoup.GandalfScrapper;
 import com.javaacademy.crawler.jsoup.MatrasScrapper;
 
@@ -42,6 +43,10 @@ public class App {
         Set<BookModel> matrasBooks = new MatrasScrapper().scrape();
         BookSender matrasBooksSender = new BookSender(matrasBooks);
         matrasBooksSender.sendBooksTo(serverIpAddress, "Matras");
+
+        Set<BookModel> czytamBooks = new CzytamScrapper().scrape();
+        BookSender czytamBooksSender = new BookSender(czytamBooks);
+        czytamBooksSender.sendBooksTo(serverIpAddress, "Czytam");
 
         Set<Book> googleBooks = runGoogleScrapper();
         BookSender googleBookSender = new BookSender(googleBooks, new GoogleBookConverter());
