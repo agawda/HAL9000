@@ -49,7 +49,7 @@ The project contain scripts that can be executed to run the applications. The co
 `sh mainScript.sh` and should be executed from the directory above the HAL9000 directory. 
 
  The application it runs are: the spring application which communicates with the db and works in Tomcat container at
-  port 8080. The other app is executed every 3 hours and scraps the results from following bookstores:
+  port 8080. The other app is executed every 24 hours and scraps the results from following bookstores:
 - Gandalf
 - Matras
 - Bonito

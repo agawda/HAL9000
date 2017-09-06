@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 echo "Checking if the key file exists"
 FILE=`find HAL9000/crawler/src/main/resources/ -name "key.txt"`
 if [ -e "$FILE" ]

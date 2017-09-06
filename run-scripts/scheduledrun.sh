@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 cd HAL9000/crawler/target/
 FILE=crawler-0.0.1-SNAPSHOT.jar
 while true; do
@@ -11,6 +12,6 @@ else
     	echo "File does not exist"
 	return 0;
 fi
-	echo "Sleeping for 3 h"
-   	sleep 3h
+	echo "Sleeping for 24h"
+   	sleep 24h
 done

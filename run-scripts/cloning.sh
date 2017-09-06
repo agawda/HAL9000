@@ -6,4 +6,3 @@ echo "Switching to master"
 cd HAL9000
 git checkout master
 git branch
-
