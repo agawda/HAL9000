@@ -9,10 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Anna Gawda
@@ -33,6 +30,7 @@ public class GreetingController {
 
     @RequestMapping("/bookstores")
     public String bookstore(Model model) {
+        model.addAttribute("id", "Books");
         List<BookDto> books = bookService.getAllBookDtos();
         model.addAttribute(BOOKS_STRING, books);
         return "../static/templates/bookstore";
@@ -65,6 +63,37 @@ public class GreetingController {
             Collections.sort(books, Comparator.comparing(BookDto::getRetailPriceAmount));
         }
         model.addAttribute(BOOKS_STRING, books);
+        return "../static/templates/bookstore";
+    }
+
+    @RequestMapping("/advancedSearch")
+    public String advancedSearchController() {
+        return "../static/templates/advancedSearch";
+    }
+
+    @PostMapping("/advancedSearch")
+    public String advancedSearchPostController(@RequestParam(value = "title") String title,
+                                               @RequestParam(value = "author") String author,
+                                               @RequestParam(value = "category") String category,
+                                               @RequestParam(value = "minPrice") String minPrice,
+                                               @RequestParam(value = "maxPrice") String maxPrice,
+                                               Model model) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("title", title);
+        parameters.put("author", author);
+        parameters.put("category", category);
+
+        parameters.put("minPrice", minPrice);
+        if(minPrice.equals("")) {
+            parameters.put("minPrice", "-1.0");
+        }
+        parameters.put("maxPrice", maxPrice);
+        if(maxPrice.equals("")) {
+            parameters.put("maxPrice", "-1.0");
+        }
+        Set<Book> books = bookSearch.advancedSearch(parameters);
+        model.addAttribute("books", books);
+        model.addAttribute("id", "Search results");
         return "../static/templates/bookstore";
     }
 
