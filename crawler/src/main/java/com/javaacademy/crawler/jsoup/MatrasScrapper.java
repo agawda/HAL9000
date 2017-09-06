@@ -18,9 +18,10 @@ public class MatrasScrapper extends JsoupScrapper {
 
     private static final String MATRAS_URL = "http://www.matras.pl/ksiazki/promocje,k,53?p=";
     private static final int BOOKS_PER_PAGE = 20;
-    public static final int NUMBER_OF_PAGES = 11;
+    private static final int NUMBER_OF_PAGES = 11;
 
     public Set<BookModel> scrape() {
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Matras");
         connectAndInitDocument(MATRAS_URL + 0);
         int lastPageNumber = getNumberOfPages() - 1;
         AppLogger.logger.log(DEFAULT_LEVEL, Integer.toString(lastPageNumber));

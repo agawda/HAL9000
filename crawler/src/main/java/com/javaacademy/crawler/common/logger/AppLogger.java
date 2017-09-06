@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.logging.*;
 
 public class AppLogger {
@@ -21,7 +22,7 @@ public class AppLogger {
             return;
         }
         try {
-            handler = MyFileHandler.createLoggerInstance("Crawler.log", false);
+            handler = MyFileHandler.createLoggerInstance(getFilenameWithSystemTime(), false);
         } catch (IOException e) {
             logger.log(Level.WARNING, "Could not create file", e);
         }
@@ -54,5 +55,9 @@ public class AppLogger {
             File dir = new File(folderName);
             return dir.exists()|| dir.mkdir();
         }
+    }
+
+    private static String getFilenameWithSystemTime() {
+        return "Crawler-" +LocalDateTime.now().toString() +".log";
     }
 }

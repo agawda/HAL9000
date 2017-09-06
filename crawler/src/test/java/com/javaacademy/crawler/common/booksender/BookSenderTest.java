@@ -24,7 +24,7 @@ public class BookSenderTest {
         Call<String> serverResponse = mock(Call.class);
         bookSender.sendingRetrofit = getSendingRetrofitMock(serverResponse);
         BookSender.numberOfBooksSentAtOnce = 1;
-        bookSender.sendBooksTo("IPADDRESS");
+        bookSender.sendBooksTo("IPADDRESS", "");
         verify(serverResponse, times(2)).enqueue(any());
     }
 
