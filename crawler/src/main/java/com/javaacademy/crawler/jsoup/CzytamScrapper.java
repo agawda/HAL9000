@@ -8,42 +8,41 @@ import org.jsoup.select.Elements;
 import java.util.*;
 import java.util.logging.Level;
 
-import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
-
 /**
  * @author devas
- * @since 04.09.17
+ * @since 06.09.17
  */
-public class GandalfScrapper extends JsoupBookScrapper {
+public class CzytamScrapper extends JsoupBookScrapper {
 
-    private static String GANDALF_URL = "http://www.gandalf.com.pl/promocje/";
-    private static final String ENDING_CONDITION = "Brak produktów wybranego dystrybutora";
+    private static String CZYTAM_URL = "http://www.czytam.pl/ksiazki-promocje,";
 
-    public GandalfScrapper() {
+    public CzytamScrapper() {
     }
 
-    public GandalfScrapper(String link) {
-        GANDALF_URL = link;
+    CzytamScrapper(String link) {
+        CZYTAM_URL = link;
     }
 
     @Override
     public Set<BookModel> scrape() {
-        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Gandalf");
         Set<BookModel> bookModels = new HashSet<>();
         int pageIndex = 0;
         while (true) {
-            connect(GANDALF_URL + pageIndex + "/");
-            if (getDoc().select(".no_products").text().startsWith(ENDING_CONDITION)) {
+            connect(CZYTAM_URL + pageIndex + ".html");
+            Elements elements = getDoc().select(".product");
+            if (elements.isEmpty()) {
                 break;
             }
-            Elements elements = getDoc().select(".prod");
             for (Element element : elements) {
-                String link = getLink(element);
+                String link = "http://www.czytam.pl" + element.select("a").attr("href").
+                        replace("\n","").replace("\t","");;
                 connect(link);
                 BookModel bookModel = parseSinglePage(link);
                 bookModels.add(bookModel);
             }
-            if (pageIndex > 1) break;
+            if (pageIndex > 1) {
+                break;
+            }
             pageIndex++;
         }
         return bookModels;
@@ -65,44 +64,45 @@ public class GandalfScrapper extends JsoupBookScrapper {
 
     @Override
     Long getIndustryIdentifier() {
-        Elements elements = getDoc().select("td[itemprop=isbn]");
+        Elements elements = getDoc().select("#panel4-2 > p > span:containsOwn(ISBN:)");
         return elements.isEmpty() ? new Random().nextLong() :
-                Long.parseLong(elements.text().replace("-", ""));
+                Long.parseLong(elements.next().text().replace("-", ""));
     }
 
     @Override
     String getTitle() {
-        Elements elements = getDoc().select(".gallthumb > img");
-        return elements.isEmpty() ? "" : elements.attr("alt");
+        Elements elements = getDoc().select(".show-for-medium-up > h1");
+        return elements.isEmpty() ? "" : elements.text();
     }
 
     @Override
     List<String> getAuthors() {
-        Elements elements = getDoc().select(".persons a");
+        Elements elements = getDoc().select("#panel4-2 > p > span:containsOwn(Autor:) + strong > a");
         return elements.isEmpty() ? Collections.singletonList("") : elements.eachText();
     }
 
     @Override
     List<String> getCategories() {
-        Elements elements = getDoc().select(".product_categories > a");
-        return elements.isEmpty() ? Collections.singletonList("") : elements.eachText();
+        Elements elements = getDoc().select(".small-16 > * .current");
+        return elements.isEmpty() ? Collections.singletonList("") : elements.eachText().subList(0, elements.size() - 1);
     }
 
     @Override
     String getSmallThumbnail() {
-        Elements elements = getDoc().select(".gallthumb > img");
-        return elements.isEmpty() ? "" : "http://www.gandalf.com.pl" + elements.attr("src");
+        Elements elements = getDoc().select("#panel3-1 > a > img");
+        return elements.isEmpty() ? "" : elements.attr("src");
     }
 
     @Override
     double getListPrice() {
-        Elements elements = getDoc().select(".old_price");
+        Elements elements = getDoc().select("div.oldPirce > strong");
         if (elements.isEmpty()) {
             return 0;
         } else {
             double price = 0;
             try {
-                price = Double.parseDouble(elements.text().replaceAll(",", "."));
+                price = Double.parseDouble(elements.first().text().
+                        replace(",", ".").replace(" PLN",""));
             } catch (NumberFormatException e) {
                 AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
             }
@@ -112,13 +112,14 @@ public class GandalfScrapper extends JsoupBookScrapper {
 
     @Override
     double getRetailPrice() {
-        Elements elements = getDoc().select(".new_price_big > span");
+        Elements elements = getDoc().select("div.price > strong");
         if (elements.isEmpty()) {
             return 0;
         } else {
             double price = 0;
             try {
-                price = Double.parseDouble(elements.text().replaceAll("[a-ż]", "").replaceAll(",", "."));
+                price = Double.parseDouble(elements.first().text().
+                        replace(",", ".").replace(" PLN",""));
             } catch (NumberFormatException e) {
                 AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
             }
@@ -128,6 +129,6 @@ public class GandalfScrapper extends JsoupBookScrapper {
 
     @Override
     String getLink(Element element) {
-        return "http://www.gandalf.com.pl" + element.select("a").attr("href");
+        return null;
     }
 }

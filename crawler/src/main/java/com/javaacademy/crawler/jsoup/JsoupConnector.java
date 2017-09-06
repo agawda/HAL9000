@@ -1,6 +1,7 @@
 package com.javaacademy.crawler.jsoup;
 
 import com.javaacademy.crawler.common.logger.AppLogger;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -9,17 +10,22 @@ import java.util.logging.Level;
 
 /**
  * @author devas
- * @since 04.09.17
+ * @since 05.09.17
  */
-class JsoupScrapper {
+class JsoupConnector {
 
-    Document doc;
+    private Connection connection;
 
-    void connectAndInitDocument(String link) {
+    void connect(String link) {
+        connection = Jsoup.connect(link);
+    }
+
+    Document getDoc() {
         try {
-            doc = Jsoup.connect(link).get();
+            return connection.get();
         } catch (IOException e) {
             AppLogger.logger.log(Level.SEVERE, "Exception connecting with Jsoup, ", e);
         }
+        return null;
     }
 }
