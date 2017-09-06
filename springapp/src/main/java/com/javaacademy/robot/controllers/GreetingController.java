@@ -65,7 +65,6 @@ public class GreetingController {
 
     @RequestMapping("/sort")
     public String sortTitleController(@RequestParam(value = "sorting") String sorting, Model model) {
-        model.addAttribute("id", "Books");
         List<BookDto> books = bookService.getAllBookDtos();
         if(sorting.equals("title")) {
             Collections.sort(books, Comparator.comparing(BookDto::getTitle));
