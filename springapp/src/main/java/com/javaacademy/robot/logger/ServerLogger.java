@@ -9,7 +9,7 @@ import java.util.logging.*;
 public class ServerLogger {
     public static final Logger logger = Logger.getLogger(ServerLogger.class.getName());
     public static final Level DEFAULT_LEVEL = Level.CONFIG;
-    private static boolean isInitialized = false;
+    static boolean isInitialized = false;
     private static final String FILE_NAME = "Server.log";
     private static final boolean APPEND_TO_FILE = true;
     public static final String FOLDER_NAME = "serverLogs";
@@ -33,7 +33,7 @@ public class ServerLogger {
         isInitialized = true;
     }
 
-    private ServerLogger() {
+    ServerLogger() {
     }
 
     static class MyFileHandler extends FileHandler {
