@@ -20,7 +20,6 @@ import java.util.List;
  */
 @Controller
 public class GreetingController {
-    private static String bookStoreTemplate = "../static/templates/bookstore";
 
     private final BookService bookService;
     private BookSearch bookSearch;
@@ -43,7 +42,7 @@ public class GreetingController {
     public String bookstore(Model model) {
         List<BookDto> books = bookService.getAllBookDtos();
         model.addAttribute("books", books);
-        return "bookStoreTemplate";
+        return "../static/templates/bookstore";
     }
 
     @RequestMapping("/books/")
@@ -59,7 +58,7 @@ public class GreetingController {
     public String searchController(@RequestParam("content") String content, Model model) {
         List<Book> books = bookSearch.search(content);
         model.addAttribute("books", books);
-        return "bookStoreTemplate";
+        return "../static/templates/bookstore";
     }
 
     @RequestMapping("/sort")
@@ -73,7 +72,7 @@ public class GreetingController {
             Collections.sort(books, Comparator.comparing(BookDto::getRetailPriceAmount));
         }
         model.addAttribute("books", books);
-        return bookStoreTemplate;
+        return "../static/templates/bookstore";
     }
 
     private void setImageZoom(BookDto bookDto, int zoom) {
