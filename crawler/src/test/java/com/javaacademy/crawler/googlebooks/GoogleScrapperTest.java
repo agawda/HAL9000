@@ -35,8 +35,8 @@ public class GoogleScrapperTest {
         GoogleScrapper googleScrapper = new GoogleScrapper();
         Controller controller = mock(Controller.class);
         googleScrapper.controller = controller;
-        GoogleScrapper.SLEEP_TIME = 1;
-        GoogleScrapper.MAX_VALUE = 90;
+        GoogleScrapper.sleepTime = 1;
+        GoogleScrapper.maxValue = 90;
         int numOfBooks = 100;
         googleScrapper.collectAllBooksFromGoogle(numOfBooks);
         verify(controller, times(3)).getLimitedNumberBooksFromGoogle(any(), anyByte(), anyByte());

@@ -28,7 +28,6 @@ public class BookSender {
         this.booksToSend = new HashMap<>();
         this.booksSendCounter = new HashMap<>();
         List<BookModel> bookModels = googleBookConverter.convertToDtosWithoutNulls(books);
-        System.out.println("bookModels = " + bookModels);
         bookModels.forEach(bookItem ->
                 booksToSend.put(bookItem, false));
     }
@@ -116,7 +115,7 @@ public class BookSender {
         printOnConsole("[");
         for (int i = 0; i <= 100; i++) {
             c = i > progress ? '-' : '|';
-            printOnConsole(c + "");
+            printOnConsole(Character.toString(c));
         }
         printOnConsole("] " + progress + "%\n");
     }

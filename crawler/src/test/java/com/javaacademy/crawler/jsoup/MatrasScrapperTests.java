@@ -16,13 +16,13 @@ public class MatrasScrapperTests {
     private BookModel bookModel;
 
     @BeforeMethod
-    public void setUp() throws Exception {
+    public void setUp() {
         MatrasScrapper matrasScrapper = new MatrasScrapper();
         bookModel = matrasScrapper.parseLinkAndGetBookModel(LINK);
     }
 
     public void testIdentifier() {
-        Assert.assertEquals(bookModel.getIndustryIdentifier(), new Long(9788324040957L));
+        Assert.assertEquals(bookModel.getIndustryIdentifier(), Long.valueOf(9788324040957L));
     }
 
     public void testTitle() {

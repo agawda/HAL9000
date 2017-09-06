@@ -8,6 +8,8 @@ import org.jsoup.select.Elements;
 import java.util.*;
 import java.util.logging.Level;
 
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+
 /**
  * @author devas
  * @since 05.09.17
@@ -20,7 +22,7 @@ public class MatrasScrapper extends JsoupScrapper {
     public Set<BookModel> scrape() {
         connectAndInitDocument(MATRAS_URL + 0);
         int lastPageNumber = getNumberOfPages() - 1;
-        System.out.println(lastPageNumber);
+        AppLogger.logger.log(DEFAULT_LEVEL, Integer.toString(lastPageNumber));
         Set<BookModel> bookModels = new HashSet<>();
         int i = 0;
         while (true) {
@@ -62,7 +64,7 @@ public class MatrasScrapper extends JsoupScrapper {
         setListPrice(bookModel);
         setRetailPrice(bookModel);
 
-        System.out.println(bookModel);
+        AppLogger.logger.log(DEFAULT_LEVEL, bookModel.toString());
         return bookModel;
     }
 
@@ -159,7 +161,6 @@ public class MatrasScrapper extends JsoupScrapper {
     }
 
     private int getNumberOfPages() {
-//        return Integer.parseInt(doc.select("ul.pagination-list > *").get(7).select("a").text());
         return 11;
     }
 }
