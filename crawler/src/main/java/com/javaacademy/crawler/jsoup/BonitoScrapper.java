@@ -35,17 +35,10 @@ public class BonitoScrapper extends JsoupBookScrapper {
     }
 
     @Override
-    Set<BookModel> parseSingleGrid() {
+    Set<String> getLinksFromGrid() {
         Elements elements = getDoc().getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-        Set<String> links = new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
-        Set<BookModel> bookModels = new HashSet<>();
-        for (String link : links) {
-            connect(link);
-            BookModel bookModel = parseSinglePage(link);
-            bookModels.add(bookModel);
-        }
-        return bookModels;
+        return new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
     }
 
     @Override
@@ -97,10 +90,5 @@ public class BonitoScrapper extends JsoupBookScrapper {
     double getRetailPrice() {
         Elements prices = getDoc().select("b:contains(zł)");
         return prices.isEmpty() ? 0 : parsePrice(prices.get(0).html().split(" ")[0].replace(',', '.'));
-    }
-
-    @Override
-    String getLink(Element element) {
-        return null;
     }
 }

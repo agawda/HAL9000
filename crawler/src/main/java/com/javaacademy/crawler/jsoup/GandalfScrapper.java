@@ -34,17 +34,10 @@ public class GandalfScrapper extends JsoupBookScrapper {
     }
 
     @Override
-    Set<BookModel> parseSingleGrid() {
+    Set<String> getLinksFromGrid() {
         Elements elements = getDoc().select("div.prod p.h2 > a");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-        Set<String> links = new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
-        Set<BookModel> bookModels = new HashSet<>();
-        for (String link : links) {
-            connect(link);
-            BookModel bookModel = parseSinglePage(link);
-            bookModels.add(bookModel);
-        }
-        return bookModels;
+        return new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
     }
 
     @Override
@@ -89,10 +82,5 @@ public class GandalfScrapper extends JsoupBookScrapper {
         Elements elements = getDoc().select(".new_price_big > span");
         return elements.isEmpty() ? 0 :
                 parsePrice(elements.text().replaceAll("[a-ż]", "").replaceAll(",", "."));
-    }
-
-    @Override
-    String getLink(Element element) {
-        return BASE_URL + element.select("a").attr("href");
     }
 }
