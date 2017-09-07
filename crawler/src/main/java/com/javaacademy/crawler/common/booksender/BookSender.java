@@ -13,9 +13,9 @@ import retrofit2.Call;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.*;
+import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
 
 public class BookSender {
 
@@ -60,12 +60,7 @@ public class BookSender {
                 break;
             }
             sendBooksTo(serverIp, numberOfBooksSentAtOnce);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                logger.log(Level.WARNING, "Interrupted waiting when sending books to book server: ", e);
-                Thread.currentThread().interrupt();
-            }
+            sleepFor(1000, "when sending books to book server");
             long progress = (booksToSend.values().stream().filter(aBoolean -> aBoolean).count()
                     * 100) / booksToSend.size();
             displayProgress(progress);

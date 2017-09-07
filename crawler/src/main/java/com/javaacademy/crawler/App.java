@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 import static com.javaacademy.crawler.common.logger.AppLogger.logger;
+import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
 
 /**
  * @author devas
@@ -58,13 +58,7 @@ public class App {
         googleScrapper.runScrapping();
 
         while (!googleScrapper.areAllCallbacksDone()) {
-            try {
-                AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks not done, waiting...");
-                Thread.sleep(6000);
-            } catch (InterruptedException e) {
-                AppLogger.logger.log(Level.WARNING, "Exception while waiting", e);
-                Thread.currentThread().interrupt();
-            }
+            sleepFor(6000, "");
         }
 
         Set<Book> books = googleScrapper.getBooks();

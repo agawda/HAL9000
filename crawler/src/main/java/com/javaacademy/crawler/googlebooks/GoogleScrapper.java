@@ -13,16 +13,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
 import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsole;
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 import static com.javaacademy.crawler.common.logger.AppLogger.statistics;
+import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
 
 public class GoogleScrapper {
     static int sleepTime = 2000;
-    static int maxValue = 100; //Should not be greater than 1000
+    static int maxValue = 1_000; //Should not be greater than 1000
     Set<Book> books = new HashSet<>();
     Set<BookAddingCallback> callbacks = new HashSet<>();
     boolean isLoopDone = false;
@@ -62,12 +62,7 @@ public class GoogleScrapper {
                 break;
             }
             getGoogleBooks(i, end, bookItemBookAddingCallback);
-            try {
-                Thread.sleep(sleepTime);
-            } catch (InterruptedException e) {
-                AppLogger.logger.log(Level.WARNING, "Exception while waiting, ", e);
-                Thread.currentThread().interrupt();
-            }
+            sleepFor(sleepTime, "");
         }
         displayProgress(100);
         AppLogger.logger.log(DEFAULT_LEVEL, "All callbacks done!");
