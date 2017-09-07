@@ -25,15 +25,15 @@ public class BookSender {
     SendingRetrofit sendingRetrofit = new SendingRetrofit();
 
     public BookSender(Set<Book> books, GoogleBookConverter googleBookConverter) {
-        this.booksToSend = new HashMap<>();
-        this.booksSendCounter = new HashMap<>();
+        booksToSend = new HashMap<>();
+        booksSendCounter = new HashMap<>();
         List<BookModel> bookModels = googleBookConverter.convertToDtosWithoutNulls(books);
         bookModels.forEach(bookItem -> booksToSend.put(bookItem, false));
     }
 
     public BookSender(Set<BookModel> books) {
-        this.booksToSend = new HashMap<>();
-        this.booksSendCounter = new HashMap<>();
+        booksToSend = new HashMap<>();
+        booksSendCounter = new HashMap<>();
         books.forEach(bookItem -> booksToSend.put(bookItem, false));
     }
 
@@ -59,8 +59,7 @@ public class BookSender {
             }
             sendBooksTo(serverIp, numberOfBooksSentAtOnce);
             sleepFor(1000, "when sending books to book server");
-            long progress = (booksToSend.values().stream().filter(aBoolean -> aBoolean).count()
-                    * 100) / booksToSend.size();
+            long progress = (booksToSend.values().stream().filter(aBoolean -> aBoolean).count() * 100) / booksToSend.size();
             displayProgress(progress);
         }
         long numberOfSentBooks = booksToSend.values().stream().filter(aBoolean -> aBoolean).count();
@@ -99,7 +98,7 @@ public class BookSender {
         logger.log(DEFAULT_LEVEL, "How many times books were sent: " + booksSendCounter.values());
     }
 
-    boolean areAllBooksSent() {
+    private boolean areAllBooksSent() {
         boolean areAllBooksSent = booksToSend.values().stream().allMatch(aBoolean -> aBoolean);
         logger.log(DEFAULT_LEVEL, "Are all books sent: " + areAllBooksSent);
         return areAllBooksSent;
