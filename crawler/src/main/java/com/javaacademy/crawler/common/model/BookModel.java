@@ -61,26 +61,6 @@ public class BookModel implements Book {
             this.retailPriceAmount = retailPriceAmount;
         }
 
-        public Builder subtitle(String subtitle) {
-            this.subtitle = subtitle;
-            return this;
-        }
-
-        public Builder setSaleability(String saleability) {
-            this.saleability = saleability;
-            return this;
-        }
-
-        public Builder setListPriceCurrencyCode(String listPriceCurrencyCode) {
-            this.listPriceCurrencyCode = listPriceCurrencyCode;
-            return this;
-        }
-
-        public Builder setRetailPriceCurrencyCode(String retailPriceCurrencyCode) {
-            this.retailPriceCurrencyCode = retailPriceCurrencyCode;
-            return this;
-        }
-
         public BookModel build() {
             return new BookModel(this);
         }

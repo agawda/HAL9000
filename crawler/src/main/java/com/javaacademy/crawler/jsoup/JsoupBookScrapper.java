@@ -16,31 +16,29 @@ import java.util.logging.Level;
  */
 abstract class JsoupBookScrapper {
 
+    private JsoupConnector jsoupConnector = new JsoupConnector();
+    private boolean shouldDataBeScrapped = true;
     int pageStartIndex = 0;
     int pageEndIndex = 5;
-    boolean shouldDataBeScrapped = true;
     String scrapperName;
     String BASE_URL;
     String PROMOS_URL;
-    private JsoupConnector jsoupConnector = new JsoupConnector();
 
     static long parseIsbn(String s) {
-        long isbn = 0;
+        long isbn;
         try {
             isbn = Long.parseLong(s);
         } catch (NumberFormatException e) {
-            AppLogger.logger.log(Level.WARNING, "Exception while parsing ISBN, ", e);
             return new Random().nextLong();
         }
         return isbn;
     }
 
     static double parsePrice(String s) {
-        double price = 0;
+        double price;
         try {
             price = Double.parseDouble(s);
         } catch (NumberFormatException e) {
-            AppLogger.logger.log(Level.WARNING, "Exception while parsing price, ", e);
             return 0;
         }
         return price;
@@ -64,7 +62,21 @@ abstract class JsoupBookScrapper {
 
     public abstract Set<BookModel> scrape();
 
-    abstract BookModel parseSinglePage(String link);
+    abstract Set<BookModel> parseSingleGrid();
+
+    BookModel parseSinglePage(String link) {
+        if (!shouldDataBeScrapped) return new BookModel();
+        return new BookModel.Builder(
+                getIndustryIdentifier(),
+                getTitle(),
+                getAuthors(),
+                getCategories(),
+                link,
+                getSmallThumbnail(),
+                getListPrice(),
+                getRetailPrice()
+        ).build();
+    }
 
     abstract Long getIndustryIdentifier();
 
