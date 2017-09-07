@@ -69,6 +69,13 @@ public class GoogleScrapperTest {
         verify(controller, times(1)).getHowManyBooksThereAre(any());
     }
 
+    @Test
+    public void sleepForTest() {
+        GoogleScrapper googleScrapper = new GoogleScrapper();
+        Thread.currentThread().interrupt();
+        googleScrapper.sleepFor(10);
+    }
+
     private Set<BookAddingCallback> getBookCallbacksSet(int number) {
         Set<BookAddingCallback> callbacks = new HashSet<>();
         for (int i = 0; i < number; i++) {

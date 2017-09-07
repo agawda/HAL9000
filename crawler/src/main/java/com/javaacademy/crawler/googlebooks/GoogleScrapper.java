@@ -57,12 +57,7 @@ public class GoogleScrapper {
                 break;
             }
             getGoogleBooks(i, end, bookItemBookAddingCallback);
-            try {
-                Thread.sleep(sleepTime);
-            } catch (InterruptedException e) {
-                AppLogger.logger.log(Level.WARNING, "Exception while waiting, ", e);
-                Thread.currentThread().interrupt();
-            }
+            sleepFor(sleepTime);
         }
         displayProgress(100);
         AppLogger.logger.log(DEFAULT_LEVEL, "All callbacks done!");
@@ -86,5 +81,14 @@ public class GoogleScrapper {
 
     public Set<Book> getBooks() {
         return books;
+    }
+
+    void sleepFor(int sleepTime) {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException e) {
+            AppLogger.logger.log(Level.WARNING, "Exception while waiting, ", e);
+            Thread.currentThread().interrupt();
+        }
     }
 }
