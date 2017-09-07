@@ -34,10 +34,15 @@ public class  BookAddingCallback<T extends BooksWrapper> implements Callback<T> 
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
         if (response.isSuccessful()) {
-            BooksWrapper bw = response.body();
-            books.addAll(bw.getItems());
-            AppLogger.logger.log(DEFAULT_LEVEL, "Callback completed");
-            requestStatus = RequestStatus.COMPLETED;
+            try {
+                BooksWrapper bw = response.body();
+                books.addAll(bw.getItems());
+                AppLogger.logger.log(DEFAULT_LEVEL, "Callback completed");
+                requestStatus = RequestStatus.COMPLETED;
+            } catch (Exception e) {
+                AppLogger.logger.log(Level.WARNING, "Exception during response conversion: ", e);
+
+            }
         } else {
             AppLogger.logger.log(Level.WARNING, "error " + response.code());
             requestStatus = RequestStatus.ERROR;
