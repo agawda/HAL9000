@@ -11,12 +11,14 @@ import com.javaacademy.crawler.googlebooks.model.TotalItemsWrapper;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
 import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsole;
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+import static com.javaacademy.crawler.common.logger.AppLogger.statistics;
+import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
 
 public class GoogleScrapper {
     static int sleepTime = 2000;
@@ -25,6 +27,7 @@ public class GoogleScrapper {
     Set<BookAddingCallback> callbacks = new HashSet<>();
     boolean isLoopDone = false;
     Controller controller = new Controller();
+    private long googleScrappingStartTime;
 
     public void runScrapping() {
         Consumer<TotalItemsWrapper> consumer =
@@ -41,6 +44,8 @@ public class GoogleScrapper {
 
     void collectAllBooksFromGoogle(int numOfBooks) {
         int step = 40;
+        statistics.info("Google books scrapping started");
+        googleScrappingStartTime = System.nanoTime();
         printOnConsole("Scrapping books from google:\n");
         for (int i = 0; i < numOfBooks; i += step) {
             long progress = i * 100 / maxValue;
@@ -57,7 +62,7 @@ public class GoogleScrapper {
                 break;
             }
             getGoogleBooks(i, end, bookItemBookAddingCallback);
-            sleepFor(sleepTime);
+            sleepFor(sleepTime, "");
         }
         displayProgress(100);
         AppLogger.logger.log(DEFAULT_LEVEL, "All callbacks done!");
@@ -75,20 +80,15 @@ public class GoogleScrapper {
             AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks loop done");
             areCallbacksDone = callbacks.stream().noneMatch(bookAddingCallback -> bookAddingCallback.getRequestStatus() == RequestStatus.STARTED);
             AppLogger.logger.log(DEFAULT_LEVEL, "areCallbacksDone: " + areCallbacksDone);
+            if (areCallbacksDone) {
+                statistics.info("Google scrapping complete, took: " + TimeUnit.SECONDS.convert((System.nanoTime() - googleScrappingStartTime), TimeUnit.NANOSECONDS) +"s");
+                statistics.info("Books scrapped from Google REST API: " + books.size());
+            }
         }
         return isLoopDone && areCallbacksDone;
     }
 
     public Set<Book> getBooks() {
         return books;
-    }
-
-    void sleepFor(int sleepTime) {
-        try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException e) {
-            AppLogger.logger.log(Level.WARNING, "Exception while waiting, ", e);
-            Thread.currentThread().interrupt();
-        }
     }
 }
