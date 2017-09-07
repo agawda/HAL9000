@@ -19,9 +19,10 @@ import java.util.logging.Level;
  * @since 24.08.17
  */
 public class Controller {
-
     private static final String BASE_GOOGLE_URL = "volumes?q=-&printType=books&filter=ebooks&orderBy=newest";
     private String googleKey;
+    static String keyfileName = "key.txt";
+    RetrofitHelper retrofitHelper = new RetrofitHelper();
 
     public Controller() {
         try (InputStream in = getPropertyFile()) {
@@ -35,17 +36,17 @@ public class Controller {
 
     private InputStream getPropertyFile() {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        return classloader.getResourceAsStream("key.txt");
+        return classloader.getResourceAsStream(keyfileName);
     }
 
     public void getLimitedNumberBooksFromGoogle(Callback<GoogleBooksWrapper> callback, int start, int end) {
-        GoogleBookEndpoint endpoint = new RetrofitHelper().getGoogleBooksEndpoint();
+        GoogleBookEndpoint endpoint = retrofitHelper.getGoogleBooksEndpoint();
         Call<GoogleBooksWrapper> fortyGoogleBooks = endpoint.getFortyGoogleBooks(generateGoogleRangedUrl(start, end));
         fortyGoogleBooks.enqueue(callback);
     }
 
     public void getHowManyBooksThereAre(Callback<TotalItemsWrapper> callback) {
-        GoogleBookEndpoint endpoint = new RetrofitHelper().getGoogleBooksEndpoint();
+        GoogleBookEndpoint endpoint = retrofitHelper.getGoogleBooksEndpoint();
         Call<TotalItemsWrapper> fortyGoogleBooks = endpoint.getNumberOfGoogleBooks(getGoogleNumberOfBooksUrl());
         fortyGoogleBooks.enqueue(callback);
     }
