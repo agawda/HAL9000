@@ -21,3 +21,4 @@ addons:
       - scrapper-tests
       - new_scrapper
       - increasing-test-cov
+      - fixes_for_demo
