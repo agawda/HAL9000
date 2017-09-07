@@ -1,14 +1,13 @@
 package com.javaacademy.crawler.jsoup;
 
-import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.logging.Level;
 
 /**
  * @author devas
@@ -62,7 +61,17 @@ abstract class JsoupBookScrapper {
 
     public abstract Set<BookModel> scrape();
 
-    abstract Set<BookModel> parseSingleGrid();
+    abstract Set<String> getLinksFromGrid();
+
+    Set<BookModel> parseSingleGrid() {
+        Set<BookModel> bookModels = new HashSet<>();
+        for (String link : getLinksFromGrid()) {
+            connect(link);
+            BookModel bookModel = parseSinglePage(link);
+            bookModels.add(bookModel);
+        }
+        return bookModels;
+    }
 
     BookModel parseSinglePage(String link) {
         if (!shouldDataBeScrapped) return new BookModel();
@@ -93,6 +102,4 @@ abstract class JsoupBookScrapper {
 
     @SuppressWarnings("Duplicates")
     abstract double getRetailPrice();
-
-    abstract String getLink(Element element);
 }
