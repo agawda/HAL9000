@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -60,6 +61,12 @@ public class Book {
 
     @Column(name = "retailPriceCurrencyCode")
     String retailPriceCurrencyCode;
+
+    @Column(name = "shopName")
+    String shoName;
+
+    @Column(name = "dateAdded")
+    LocalDateTime dateAdded;
 
     public Book() {
         //required for ORM
