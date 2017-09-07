@@ -6,11 +6,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
-import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsole;
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 /**
@@ -20,7 +17,7 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 public class BonitoScrapper extends JsoupBookScrapper {
 
     private static String BONITO_BASE_URL = "https://bonito.pl";
-    private static final String BONITO_PROMOS_LINK = "https://bonito.pl/wyprzedaz";
+    private static final String BONITO_PROMOS_URL = "https://bonito.pl/wyprzedaz";
 
     public BonitoScrapper() {
     }
@@ -29,8 +26,10 @@ public class BonitoScrapper extends JsoupBookScrapper {
         BONITO_BASE_URL = link;
     }
 
+    @Override
     public Set<BookModel> scrape() {
-        connect(BONITO_PROMOS_LINK);
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Gandalf");
+        connect(BONITO_PROMOS_URL);
 
         Elements elements = getDoc().getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
@@ -66,7 +65,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("td:containsOwn(Kod paskowy (EAN):)");
         return elements.isEmpty() ? new Random().nextLong() :
-                Long.parseLong(elements.next().first().child(0).html().replace("-", ""));
+                parseIsbn(elements.next().first().child(0).html().replace("-", ""));
     }
 
     @Override
@@ -104,33 +103,13 @@ public class BonitoScrapper extends JsoupBookScrapper {
     @Override
     double getListPrice() {
         Elements prices = getDoc().select("b:contains(zł)");
-        if (prices.isEmpty()) {
-            return 0;
-        } else {
-            double price = 0;
-            try {
-                price = Double.parseDouble(prices.get(1).html().split(" ")[0].replace(',', '.'));
-            } catch (NumberFormatException e) {
-                AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
-            }
-            return price;
-        }
+        return prices.isEmpty() ? 0 : parsePrice(prices.get(1).html().split(" ")[0].replace(',', '.'));
     }
 
     @Override
     double getRetailPrice() {
         Elements prices = getDoc().select("b:contains(zł)");
-        if (prices.isEmpty()) {
-            return 0;
-        } else {
-            double price = 0;
-            try {
-                price = Double.parseDouble(prices.get(0).html().split(" ")[0].replace(',', '.'));
-            } catch (NumberFormatException e) {
-                AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
-            }
-            return price;
-        }
+        return prices.isEmpty() ? 0 : parsePrice(prices.get(0).html().split(" ")[0].replace(',', '.'));
     }
 
     @Override

@@ -1,11 +1,14 @@
 package com.javaacademy.crawler.jsoup;
 
+import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * @author devas
@@ -44,4 +47,26 @@ abstract class JsoupBookScrapper {
     abstract double getRetailPrice();
 
     abstract String getLink(Element element);
+
+    static long parseIsbn(String s) {
+        long isbn = 0;
+        try {
+            isbn = Long.parseLong(s);
+        } catch (NumberFormatException e) {
+            AppLogger.logger.log(Level.WARNING, "Exception while parsing ISBN, ", e);
+            return new Random().nextLong();
+        }
+        return isbn;
+    }
+
+    static double parsePrice(String s) {
+        double price = 0;
+        try {
+            price = Double.parseDouble(s);
+        } catch (NumberFormatException e) {
+            AppLogger.logger.log(Level.WARNING, "Exception while parsing price, ", e);
+            return 0;
+        }
+        return price;
+    }
 }
