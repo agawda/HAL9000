@@ -17,7 +17,7 @@ import java.util.List;
 @Table(name = "books")
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"shopName", "dateAdded"})
 @ToString
 public class Book {
 
@@ -63,7 +63,7 @@ public class Book {
     String retailPriceCurrencyCode;
 
     @Column(name = "shopName")
-    String shoName;
+    String shopName;
 
     @Column(name = "dateAdded")
     LocalDateTime dateAdded;

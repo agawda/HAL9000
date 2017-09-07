@@ -28,6 +28,8 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         bookDto.setListPriceCurrencyCode(entity.getListPriceCurrencyCode());
         bookDto.setRetailPriceAmount(entity.getRetailPriceAmount());
         bookDto.setRetailPriceCurrencyCode(entity.getRetailPriceCurrencyCode());
+        bookDto.setDateAdded(entity.getDateAdded());
+        bookDto.setShopName(entity.getShopName());
         return bookDto;
     }
 
@@ -47,7 +49,7 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         book.setRetailPriceAmount(dto.getRetailPriceAmount());
         book.setRetailPriceCurrencyCode(dto.getRetailPriceCurrencyCode());
         book.setDateAdded(LocalDateTime.now());
-        book.setShoName(recognizeShopName(dto));
+        book.setShopName(recognizeShopName(dto));
         return book;
     }
 
@@ -61,14 +63,18 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         return entities.stream().map(this::toDto).collect(Collectors.toList());
     }
 
-    private String recognizeShopName(BookDto bookDto) {
+    String recognizeShopName(BookDto bookDto) {
         String link = bookDto.getCanonicalVolumeLink();
-        if(link.contains("//")) {
-            String shopLinkFirstPart = bookDto.getCanonicalVolumeLink().split("//")[1];
-            String shopAddress = shopLinkFirstPart.split("/")[0];
-            return Shop.getStoreName(shopAddress).toString();
+        System.out.println(link);
+        if(link != null && link.contains("//")) {
+            String[] linkParts = bookDto.getCanonicalVolumeLink().split("/");
+            if(linkParts.length > 1) {
+                String shopLinkFirstPart = bookDto.getCanonicalVolumeLink().split("/")[2];
+                return Shop.getStoreName(shopLinkFirstPart).toString();
+            }
+            return Shop.UNKNOWN.toString();
         }
-        return "";
+        return Shop.UNKNOWN.toString();
     }
 
     enum Shop {
@@ -85,6 +91,10 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         }
 
         private String storeAddress;
+
+        public String getStoreAddress() {
+            return storeAddress;
+        }
 
         Shop(String storeAddress) {
             this.storeAddress = storeAddress;
