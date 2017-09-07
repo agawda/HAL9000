@@ -32,6 +32,7 @@ public class MatrasScrapperTests {
     public void testScrapeSomePages() {
         MatrasScrapper matrasScrapper = new MatrasScrapper();
         matrasScrapper.setPagesToScrap(2);
+        matrasScrapper.setShouldDataBeScrapped(false);
         Assert.assertNotNull(matrasScrapper.scrape());
     }
 }
