@@ -86,7 +86,6 @@ public class AppLogger {
             StringBuilder builder = new StringBuilder();
             builder.append(df.format(new Date(record.getMillis()))).append(":");
             if(!formatMessage(record).equals("")) {
-                builder.append("\n");
                 builder.append(formatMessage(record));
             }
             builder.append("\n");
