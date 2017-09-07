@@ -11,11 +11,11 @@ import com.javaacademy.crawler.common.retrofit.SendingRetrofit;
 import retrofit2.Call;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.logging.Level;
 
-import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
-import static com.javaacademy.crawler.common.logger.AppLogger.logger;
+import static com.javaacademy.crawler.common.logger.AppLogger.*;
+import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
 
 public class BookSender {
 
@@ -23,6 +23,7 @@ public class BookSender {
     Map<BookModel, Integer> booksSendCounter;
     static int numberOfBooksSentAtOnce = 20;
     SendingRetrofit sendingRetrofit = new SendingRetrofit();
+    private long millisWhenStaredSending;
 
     public BookSender(Set<Book> books, GoogleBookConverter googleBookConverter) {
         this.booksToSend = new HashMap<>();
@@ -52,23 +53,22 @@ public class BookSender {
     public void sendBooksTo(String serverIp, String bookstoreName) {
         AppLogger.logger.log(DEFAULT_LEVEL, "Sending books to server from " + bookstoreName);
         int maxNumberOfTries = booksToSend.size() * 2 / numberOfBooksSentAtOnce;
-        printOnConsole("Sending scrapped books to server from " + bookstoreName +", number: " +booksToSend.size()  + ":\n");
+        printOnConsole("Sending scrapped books to server from " + bookstoreName + ", number: " + booksToSend.size() + ":\n");
+        millisWhenStaredSending = System.nanoTime();
         for (int i = 0; i < maxNumberOfTries; i++) {
             if (areAllBooksSent()) {
                 break;
             }
             sendBooksTo(serverIp, numberOfBooksSentAtOnce);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                logger.log(Level.WARNING, "Interrupted waiting when sending books to book server: ", e);
-                Thread.currentThread().interrupt();
-            }
+            sleepFor(1000, "when sending books to book server");
             long progress = (booksToSend.values().stream().filter(aBoolean -> aBoolean).count()
                     * 100) / booksToSend.size();
             displayProgress(progress);
         }
-        AppLogger.logger.log(DEFAULT_LEVEL, "Total books sent: " + booksToSend.values().stream().filter(aBoolean -> aBoolean).count());
+        long numberOfSentBooks = booksToSend.values().stream().filter(aBoolean -> aBoolean).count();
+        statistics.info("Sending books scrapped from Google to server complete, took: "
+                + TimeUnit.SECONDS.convert((System.nanoTime() - millisWhenStaredSending), TimeUnit.NANOSECONDS) + "s");
+        logAndAddStat("Total books sent: " + numberOfSentBooks);
     }
 
     private Consumer<String> createSuccessfulRequestConsumer(List<BookModel> processedBooks) {
@@ -94,12 +94,10 @@ public class BookSender {
     }
 
     void markBooksAsSent(List<BookModel> sentBooks) {
-        logger.log(DEFAULT_LEVEL, "Number of sent books before update = " + booksToSend.values().stream().filter(aBoolean -> aBoolean).count());
         for (BookModel bookModel : sentBooks) {
             booksToSend.put(bookModel, true);
             booksSendCounter.merge(bookModel, 1, (integer, integer2) -> integer + 1);
         }
-        logger.log(DEFAULT_LEVEL, "Number of sent books after update = " + booksToSend.values().stream().filter(aBoolean -> aBoolean).count());
         logger.log(DEFAULT_LEVEL, "How many times books were sent: " + booksSendCounter.values());
     }
 

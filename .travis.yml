@@ -18,7 +18,3 @@ addons:
     branches:
       - master
       - development
-      - scrapper-tests
-      - new_scrapper
-      - increasing-test-cov
-      - fixes_for_demo
