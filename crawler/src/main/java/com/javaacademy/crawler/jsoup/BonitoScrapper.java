@@ -20,49 +20,32 @@ public class BonitoScrapper extends JsoupBookScrapper {
         scrapperName = "Bonito";
         BASE_URL = "https://bonito.pl";
         PROMOS_URL = BASE_URL + "/wyprzedaz";
-    }
-
-    BonitoScrapper(String link) {
-        scrapperName = "Bonito";
-        BASE_URL = "https://bonito.pl";
-        PROMOS_URL = BASE_URL + "/wyprzedaz";
-        BASE_URL = link;
+        pageEndIndex = 1;
     }
 
     @Override
     public Set<BookModel> scrape() {
         AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
-        connect(PROMOS_URL);
+        Set<BookModel> bookModels = new HashSet<>();
+        for (int i = pageStartIndex; i < pageEndIndex; i++) {
+            connect(PROMOS_URL);
+            bookModels.addAll(parseSingleGrid());
+        }
+        return bookModels;
+    }
 
+    @Override
+    Set<BookModel> parseSingleGrid() {
         Elements elements = getDoc().getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-
         Set<String> links = new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
-
         Set<BookModel> bookModels = new HashSet<>();
-
         for (String link : links) {
             connect(link);
             BookModel bookModel = parseSinglePage(link);
             bookModels.add(bookModel);
         }
-
         return bookModels;
-    }
-
-    @Override
-    BookModel parseSinglePage(String link) {
-        if (!shouldDataBeScrapped) return new BookModel();
-        return new BookModel.Builder(
-                getIndustryIdentifier(),
-                getTitle(),
-                getAuthors(),
-                getCategories(),
-                link,
-                getSmallThumbnail(),
-                getListPrice(),
-                getRetailPrice()
-        ).build();
     }
 
     @Override
