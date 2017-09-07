@@ -56,14 +56,14 @@ public class BookModelTest {
         BookModel bookModel = new BookModel();
         BookModel bookModel1 = new BookModel();
         assertTrue(bookModel.equals(bookModel1));
-        bookModel.retailPriceCurrencyCode = "Dummy";
+        bookModel.setTitle("Java");
         assertFalse(bookModel.equals(bookModel1));
     }
 
     public void toStringTest() {
         BookModel bookModel = new BookModel();
         assertEquals(bookModel.toString(),
-                "BookModel(industryIdentifier=null, subtitle=null, title=null, categories=null, authors=null, canonicalVolumeLink=null, saleability=null, smallThumbnail=null, listPriceAmount=0.0, retailPriceAmount=0.0, listPriceCurrencyCode=null, retailPriceCurrencyCode=null)");
+                "BookModel(industryIdentifier=null, title=null, subtitle=null, authors=null, categories=null, canonicalVolumeLink=null, saleability=null, smallThumbnail=null, listPriceAmount=0.0, retailPriceAmount=0.0, listPriceCurrencyCode=null, retailPriceCurrencyCode=null)");
     }
 
     @Test

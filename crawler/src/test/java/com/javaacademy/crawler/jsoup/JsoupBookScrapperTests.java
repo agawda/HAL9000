@@ -8,13 +8,13 @@ import org.testng.annotations.Test;
  * @since 05.09.17
  */
 @Test
-public class JsoupScrapperTests {
+public class JsoupBookScrapperTests {
 
     private static final String GANDALF_URL = "http://www.gandalf.com.pl";
 
     public void testValidLink() {
-        JsoupScrapper jsoupScrapper = new JsoupScrapper();
-        jsoupScrapper.connectAndInitDocument(GANDALF_URL);
-        Assert.assertNotNull(jsoupScrapper.doc);
+        JsoupConnector jsoupConnector = new JsoupConnector();
+        jsoupConnector.connect(GANDALF_URL);
+        Assert.assertNotNull(jsoupConnector.getDoc());
     }
 }

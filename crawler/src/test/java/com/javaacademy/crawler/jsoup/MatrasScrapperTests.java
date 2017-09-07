@@ -13,19 +13,16 @@ import org.testng.annotations.Test;
 public class MatrasScrapperTests {
 
     private static final String LINK = "http://www.matras.pl/wampir-z-zaglebia,p,243818";
-    private BookModel bookModel;
 
-    @BeforeMethod
-    public void setUp() {
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testInvalidUrlScrapping() {
+        MatrasScrapper matrasScrapper = new MatrasScrapper("");
+        Assert.assertNotNull(matrasScrapper.scrape());
+    }
+
+    public void testTitleScrapping() {
         MatrasScrapper matrasScrapper = new MatrasScrapper();
-        bookModel = matrasScrapper.parseLinkAndGetBookModel(LINK);
-    }
-
-    public void testIdentifier() {
-        Assert.assertEquals(bookModel.getIndustryIdentifier(), Long.valueOf(9788324040957L));
-    }
-
-    public void testTitle() {
-        Assert.assertEquals(bookModel.getTitle(), "Wampir z Zagłębia");
+        matrasScrapper.connect(LINK);
+        Assert.assertEquals(matrasScrapper.parseSinglePage(LINK).getTitle(), "Wampir z Zagłębia");
     }
 }
