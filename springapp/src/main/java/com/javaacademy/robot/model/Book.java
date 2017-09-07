@@ -71,9 +71,4 @@ public class Book {
     public Book() {
         //required for ORM
     }
-
-    public Book(long id, String title) {
-        this.industryIdentifier = id;
-        this.title = title;
-    }
 }
