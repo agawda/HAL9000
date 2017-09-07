@@ -9,7 +9,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
-import static javax.management.Query.attr;
 
 /**
  * @author devas
@@ -29,7 +28,7 @@ public class CzytamScrapper extends JsoupBookScrapper {
     public Set<BookModel> scrape() {
         AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Czytam");
         Set<BookModel> bookModels = new HashSet<>();
-        for(int i = 0; i < pagesToScrap; i++) {
+        for (int i = 0; i < pagesToScrap; i++) {
             connect(CZYTAM_PROMOS_URL + i + ".html");
             bookModels.addAll(parseSingleGrid());
         }
@@ -51,6 +50,7 @@ public class CzytamScrapper extends JsoupBookScrapper {
 
     @Override
     BookModel parseSinglePage(String link) {
+        if (!shouldDataBeScrapped) return new BookModel();
         return new BookModel.Builder(
                 getIndustryIdentifier(),
                 getTitle(),

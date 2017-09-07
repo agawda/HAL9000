@@ -32,6 +32,7 @@ public class CzytamScrapperTests {
     public void testScrapeSomePages() {
         CzytamScrapper czytamScrapper = new CzytamScrapper();
         czytamScrapper.setPagesToScrap(1);
+        czytamScrapper.setShouldDataBeScrapped(false);
         Assert.assertNotNull(czytamScrapper.scrape());
     }
 }

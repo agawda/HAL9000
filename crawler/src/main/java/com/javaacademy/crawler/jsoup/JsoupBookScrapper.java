@@ -17,6 +17,11 @@ import java.util.logging.Level;
 abstract class JsoupBookScrapper {
 
     private JsoupConnector jsoupConnector = new JsoupConnector();
+    boolean shouldDataBeScrapped = true;
+
+    void setShouldDataBeScrapped(boolean shouldDataBeScrapped) {
+        this.shouldDataBeScrapped = shouldDataBeScrapped;
+    }
 
     void connect(String link) {
         jsoupConnector.connect(link);

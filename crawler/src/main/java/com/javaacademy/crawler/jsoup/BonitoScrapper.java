@@ -49,6 +49,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
 
     @Override
     BookModel parseSinglePage(String link) {
+        if (!shouldDataBeScrapped) return new BookModel();
         return new BookModel.Builder(
                 getIndustryIdentifier(),
                 getTitle(),

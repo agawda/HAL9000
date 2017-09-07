@@ -32,6 +32,7 @@ public class GandalfScrapperTests {
     public void testScrapeSomePages() {
         GandalfScrapper gandalfScrapper = new GandalfScrapper();
         gandalfScrapper.setPagesToScrap(1);
+        gandalfScrapper.setShouldDataBeScrapped(false);
         Assert.assertNotNull(gandalfScrapper.scrape());
     }
 }
