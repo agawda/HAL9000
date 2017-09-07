@@ -19,7 +19,7 @@ import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
 
 public class BookSender {
 
-    Map<BookModel, Boolean> booksToSend; // a map which holds info about whether the book was successfully sent to server
+    Map<BookModel, Boolean> booksToSend; // holds info about whether the book was successfully sent to server
     Map<BookModel, Integer> booksSendCounter;
     static int numberOfBooksSentAtOnce = 20;
     SendingRetrofit sendingRetrofit = new SendingRetrofit();
@@ -28,8 +28,7 @@ public class BookSender {
         this.booksToSend = new HashMap<>();
         this.booksSendCounter = new HashMap<>();
         List<BookModel> bookModels = googleBookConverter.convertToDtosWithoutNulls(books);
-        bookModels.forEach(bookItem ->
-                booksToSend.put(bookItem, false));
+        bookModels.forEach(bookItem -> booksToSend.put(bookItem, false));
     }
 
     public BookSender(Set<BookModel> books) {

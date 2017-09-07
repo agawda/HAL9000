@@ -64,7 +64,21 @@ abstract class JsoupBookScrapper {
 
     public abstract Set<BookModel> scrape();
 
-    abstract BookModel parseSinglePage(String link);
+    abstract Set<BookModel> parseSingleGrid();
+
+    BookModel parseSinglePage(String link) {
+        if (!shouldDataBeScrapped) return new BookModel();
+        return new BookModel.Builder(
+                getIndustryIdentifier(),
+                getTitle(),
+                getAuthors(),
+                getCategories(),
+                link,
+                getSmallThumbnail(),
+                getListPrice(),
+                getRetailPrice()
+        ).build();
+    }
 
     abstract Long getIndustryIdentifier();
 

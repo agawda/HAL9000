@@ -33,7 +33,8 @@ public class GandalfScrapper extends JsoupBookScrapper {
         return bookModels;
     }
 
-    private Set<BookModel> parseSingleGrid() {
+    @Override
+    Set<BookModel> parseSingleGrid() {
         Elements elements = getDoc().select("div.prod p.h2 > a");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
         Set<String> links = new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
@@ -44,21 +45,6 @@ public class GandalfScrapper extends JsoupBookScrapper {
             bookModels.add(bookModel);
         }
         return bookModels;
-    }
-
-    @Override
-    BookModel parseSinglePage(String link) {
-        if (!shouldDataBeScrapped) return new BookModel();
-        return new BookModel.Builder(
-                getIndustryIdentifier(),
-                getTitle(),
-                getAuthors(),
-                getCategories(),
-                link,
-                getSmallThumbnail(),
-                getListPrice(),
-                getRetailPrice()
-        ).build();
     }
 
     @Override
