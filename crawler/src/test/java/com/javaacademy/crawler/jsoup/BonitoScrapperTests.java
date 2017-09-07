@@ -19,7 +19,7 @@ public class BonitoScrapperTests {
         Assert.assertNotNull(bonitoScrapper.scrape());
     }
 
-    public void testTitleScrapping() {
+    public void shouldScrapeTitle() {
         BonitoScrapper bonitoScrapper = new BonitoScrapper();
         bonitoScrapper.connect(LINK);
         Assert.assertEquals(bonitoScrapper.parseSinglePage(LINK).getTitle(), "Podręczny słownik niemiecko-polski A-Z");

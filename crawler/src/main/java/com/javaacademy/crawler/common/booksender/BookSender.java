@@ -23,7 +23,6 @@ public class BookSender {
     Map<BookModel, Integer> booksSendCounter;
     static int numberOfBooksSentAtOnce = 20;
     SendingRetrofit sendingRetrofit = new SendingRetrofit();
-    private long millisWhenStaredSending;
 
     public BookSender(Set<Book> books, GoogleBookConverter googleBookConverter) {
         this.booksToSend = new HashMap<>();
@@ -54,7 +53,7 @@ public class BookSender {
         AppLogger.logger.log(DEFAULT_LEVEL, "Sending books to server from " + bookstoreName);
         int maxNumberOfTries = booksToSend.size() * 2 / numberOfBooksSentAtOnce;
         printOnConsole("Sending scrapped books to server from " + bookstoreName + ", number: " + booksToSend.size() + ":\n");
-        millisWhenStaredSending = System.nanoTime();
+        long millisWhenStaredSending = System.nanoTime();
         for (int i = 0; i < maxNumberOfTries; i++) {
             if (areAllBooksSent()) {
                 break;
@@ -66,7 +65,7 @@ public class BookSender {
             displayProgress(progress);
         }
         long numberOfSentBooks = booksToSend.values().stream().filter(aBoolean -> aBoolean).count();
-        statistics.info("Sending books scrapped from Google to server complete, took: "
+        statistics.info("Sending books scrapped from " + bookstoreName + " to server complete, took: "
                 + TimeUnit.SECONDS.convert((System.nanoTime() - millisWhenStaredSending), TimeUnit.NANOSECONDS) + "s");
         logAndAddStat("Total books sent: " + numberOfSentBooks);
     }

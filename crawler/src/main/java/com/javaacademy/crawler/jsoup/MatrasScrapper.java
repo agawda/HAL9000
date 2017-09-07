@@ -6,7 +6,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
@@ -16,20 +15,22 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
  */
 public class MatrasScrapper extends JsoupBookScrapper {
 
-    private static String MATRAS_BASE_URL = "http://www.matras.pl";
-    private static String MATRAS_PROMOS_URL = MATRAS_BASE_URL + "/ksiazki/promocje,k,53?p=";
-    private int pagesToScrap = 10;
-
-    void setPagesToScrap(int pagesToScrap) {
-        this.pagesToScrap = pagesToScrap;
+    /**
+     * It starts from 1 to avoid duplicates, because 0 and 1 is the same.
+     */
+    public MatrasScrapper() {
+        scrapperName = "Matras";
+        BASE_URL = "http://www.matras.pl";
+        PROMOS_URL = BASE_URL + "/ksiazki/promocje,k,53?p=";
+        pageStartIndex = 1;
     }
 
     @Override
     public Set<BookModel> scrape() {
-        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Matras");
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
         Set<BookModel> bookModels = new HashSet<>();
-        for(int i = 1; i < pagesToScrap; i++) {
-            connect(MATRAS_PROMOS_URL + i);
+        for (int i = pageStartIndex; i < pageEndIndex; i++) {
+            connect(PROMOS_URL + i);
             bookModels.addAll(parseSingleGrid());
         }
         return bookModels;
@@ -38,7 +39,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
     private Set<BookModel> parseSingleGrid() {
         Elements elements = getDoc().select("div.row.row-items span.right-side a");
         Set<String> links = new HashSet<>(elements.eachAttr("href"));
-        links.removeIf(s -> s.startsWith("http://www.matras.pl/szukaj/"));
+        links.removeIf(s -> s.startsWith(BASE_URL + "/szukaj/"));
         Set<BookModel> bookModels = new HashSet<>();
         for (String link : links) {
             connect(link);
@@ -65,8 +66,13 @@ public class MatrasScrapper extends JsoupBookScrapper {
 
     @Override
     Long getIndustryIdentifier() {
-        Elements elements = getDoc().select("label:containsOwn(EAN:)");
-        return elements.isEmpty() ? new Random().nextLong() : parseIsbn(elements.next().text());
+        Elements elements = getDoc().select("label:containsOwn(ISBN:)");
+        if (elements.isEmpty()) {
+            return new Random().nextLong();
+        } else {
+            String[] split = elements.next().text().split(", ");
+            return parseIsbn(split[split.length - 1].replace("-", ""));
+        }
     }
 
     @Override
@@ -95,7 +101,6 @@ public class MatrasScrapper extends JsoupBookScrapper {
         return elements.isEmpty() ? "" : elements.attr("data-original");
     }
 
-    @SuppressWarnings("Duplicates")
     @Override
     double getListPrice() {
         Elements elements = getDoc().select("div.old-price");
@@ -103,12 +108,10 @@ public class MatrasScrapper extends JsoupBookScrapper {
                 parsePrice(elements.text().replace("\u00a0zł", "").replace(",", "."));
     }
 
-    @SuppressWarnings("Duplicates")
     @Override
     double getRetailPrice() {
         Elements elements = getDoc().select("div.this-main-price");
-        return elements.isEmpty() ? 0 :
-                parsePrice(elements.text().replace("\u00a0zł", "").replace(",", "."));
+        return elements.isEmpty() ? 0 : parsePrice(elements.attr("content"));
     }
 
     @Override

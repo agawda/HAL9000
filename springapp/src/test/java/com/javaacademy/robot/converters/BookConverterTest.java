@@ -72,4 +72,26 @@ public class BookConverterTest {
         List<Book> convertedBooks = bookConverter.toEntities(dtos);
         assertEquals(convertedBooks, books);
     }
+
+    @Test
+    public void recognizeShopNameTest() {
+        BookConverter bookConverter = new BookConverter();
+        BookConverter.Shop[] shops = BookConverter.Shop.values();
+        for (BookConverter.Shop shop :shops) {
+            System.out.println("For " +shop.toString());
+            BookDto bookDto = new BookDto();
+            bookDto.setCanonicalVolumeLink("http://" + shop.getStoreAddress() + "/");
+            assertEquals(shop.toString(), bookConverter.recognizeShopName(bookDto));
+        }
+    }
+
+    @Test
+    public void recognizeShopNameTestEmptyString() {
+        BookConverter bookConverter = new BookConverter();
+        String s = "";
+        BookDto bookDto = new BookDto();
+        bookDto.setCanonicalVolumeLink(s);
+        String result = bookConverter.recognizeShopName(bookDto);
+        assertEquals(result, "UNKNOWN");
+    }
 }
