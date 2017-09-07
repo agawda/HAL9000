@@ -14,6 +14,7 @@ import java.util.*;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 
 public class BookSenderTest {
@@ -36,6 +37,12 @@ public class BookSenderTest {
         bookSender.markBooksAsSent(new ArrayList<>(bookSender.booksToSend.keySet()));
         assertFalse(bookSender.booksSendCounter.containsValue(0));
         assertFalse(bookSender.booksToSend.containsValue(false));
+    }
+
+    @Test
+    public void testConstruct() {
+        BookSender bookSender = new BookSender(getBookModelsMap().keySet());
+        assertEquals(bookSender.booksToSend.size(), getBookModelsMap().keySet().size());
     }
 
     private GoogleBookConverter getConverterMock() {
