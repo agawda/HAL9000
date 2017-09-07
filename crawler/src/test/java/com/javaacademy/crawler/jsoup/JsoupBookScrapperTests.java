@@ -22,19 +22,19 @@ public class JsoupBookScrapperTests {
         Assert.assertNotNull(jsoupConnector.getDoc());
     }
 
-    public void testParsingValidIsbn() {
+    public void shouldParseValidIsbn() {
         Assert.assertEquals(JsoupBookScrapper.parseIsbn("123456789"), 123456789L);
     }
 
-    public void testParsingInvalidIsbn() {
+    public void shouldParseInvalidIsbn() {
         Assert.assertNotNull(JsoupBookScrapper.parseIsbn("123456789X"));
     }
 
-    public void testParsingValidPrice() {
+    public void shouldParseValidPrice() {
         Assert.assertEquals(JsoupBookScrapper.parsePrice("9.99"), 9.99);
     }
 
-    public void testParsingInvalidPrice() {
+    public void shouldParseInvalidPrice() {
         Assert.assertEquals(JsoupBookScrapper.parsePrice("9.99 PLN"), 0.0);
     }
 }

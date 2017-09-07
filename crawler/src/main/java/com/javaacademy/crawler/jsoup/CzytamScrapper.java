@@ -16,20 +16,18 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
  */
 public class CzytamScrapper extends JsoupBookScrapper {
 
-    private static String CZYTAM_BASE_URL = "http://www.czytam.pl";
-    private static String CZYTAM_PROMOS_URL = CZYTAM_BASE_URL + "/ksiazki-promocje,";
-    private int pagesToScrap = 10;
-
-    void setPagesToScrap(int pagesToScrap) {
-        this.pagesToScrap = pagesToScrap;
+    public CzytamScrapper() {
+        scrapperName = "Czytam";
+        BASE_URL = "http://www.czytam.pl";
+        PROMOS_URL = BASE_URL + "/ksiazki-promocje,";
     }
 
     @Override
     public Set<BookModel> scrape() {
-        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Czytam");
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
         Set<BookModel> bookModels = new HashSet<>();
-        for (int i = 0; i < pagesToScrap; i++) {
-            connect(CZYTAM_PROMOS_URL + i + ".html");
+        for (int i = pageStartIndex; i < pageEndIndex; i++) {
+            connect(PROMOS_URL + i + ".html");
             bookModels.addAll(parseSingleGrid());
         }
         return bookModels;
@@ -38,7 +36,7 @@ public class CzytamScrapper extends JsoupBookScrapper {
     private Set<BookModel> parseSingleGrid() {
         Elements elements = getDoc().select("h3.product-title > a");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-        Set<String> links = new HashSet<>(sublinks.stream().map(CZYTAM_BASE_URL::concat).collect(Collectors.toSet()));
+        Set<String> links = new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
         Set<BookModel> bookModels = new HashSet<>();
         for (String link : links) {
             connect(link);
@@ -66,6 +64,9 @@ public class CzytamScrapper extends JsoupBookScrapper {
     @Override
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("#panel4-2 > p > span:containsOwn(ISBN:)");
+        if (elements.isEmpty()) {
+            elements = getDoc().select("#panel4-2 > p > span:containsOwn(Kod paskowy:)");
+        }
         return elements.isEmpty() ? new Random().nextLong() :
                 parseIsbn(elements.next().text().replace("-", ""));
     }

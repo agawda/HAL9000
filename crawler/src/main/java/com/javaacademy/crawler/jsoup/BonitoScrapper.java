@@ -16,25 +16,28 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
  */
 public class BonitoScrapper extends JsoupBookScrapper {
 
-    private static String BONITO_BASE_URL = "https://bonito.pl";
-    private static final String BONITO_PROMOS_URL = "https://bonito.pl/wyprzedaz";
-
     public BonitoScrapper() {
+        scrapperName = "Bonito";
+        BASE_URL = "https://bonito.pl";
+        PROMOS_URL = BASE_URL + "/wyprzedaz";
     }
 
     BonitoScrapper(String link) {
-        BONITO_BASE_URL = link;
+        scrapperName = "Bonito";
+        BASE_URL = "https://bonito.pl";
+        PROMOS_URL = BASE_URL + "/wyprzedaz";
+        BASE_URL = link;
     }
 
     @Override
     public Set<BookModel> scrape() {
-        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Gandalf");
-        connect(BONITO_PROMOS_URL);
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
+        connect(PROMOS_URL);
 
         Elements elements = getDoc().getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
 
-        Set<String> links = new HashSet<>(sublinks.stream().map(BONITO_BASE_URL::concat).collect(Collectors.toSet()));
+        Set<String> links = new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
 
         Set<BookModel> bookModels = new HashSet<>();
 

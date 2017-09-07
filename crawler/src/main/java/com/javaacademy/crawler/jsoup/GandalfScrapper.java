@@ -16,20 +16,18 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
  */
 public class GandalfScrapper extends JsoupBookScrapper {
 
-    private static String GANDALF_BASE_URL = "http://www.gandalf.com.pl";
-    private static String GANDALF_PROMOS_URL = GANDALF_BASE_URL + "/promocje/";
-    private int pagesToScrap = 10;
-
-    void setPagesToScrap(int pagesToScrap) {
-        this.pagesToScrap = pagesToScrap;
+    public GandalfScrapper() {
+        scrapperName = "Gandalf";
+        BASE_URL = "http://www.gandalf.com.pl";
+        PROMOS_URL = BASE_URL + "/promocje/";
     }
 
     @Override
     public Set<BookModel> scrape() {
-        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Gandalf");
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
         Set<BookModel> bookModels = new HashSet<>();
-        for(int i = 0; i < pagesToScrap; i++) {
-            connect(GANDALF_PROMOS_URL + i + "/");
+        for (int i = pageStartIndex; i < pageEndIndex; i++) {
+            connect(PROMOS_URL + i + "/");
             bookModels.addAll(parseSingleGrid());
         }
         return bookModels;
@@ -38,7 +36,7 @@ public class GandalfScrapper extends JsoupBookScrapper {
     private Set<BookModel> parseSingleGrid() {
         Elements elements = getDoc().select("div.prod p.h2 > a");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-        Set<String> links = new HashSet<>(sublinks.stream().map(GANDALF_BASE_URL::concat).collect(Collectors.toSet()));
+        Set<String> links = new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
         Set<BookModel> bookModels = new HashSet<>();
         for (String link : links) {
             connect(link);
@@ -67,7 +65,7 @@ public class GandalfScrapper extends JsoupBookScrapper {
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("td[itemprop=isbn]");
         return elements.isEmpty() ? new Random().nextLong() :
-                parseIsbn(elements.text().replace("-", ""));
+                parseIsbn(elements.text().replace("-", "").replace("X", ""));
     }
 
     @Override
@@ -91,7 +89,7 @@ public class GandalfScrapper extends JsoupBookScrapper {
     @Override
     String getSmallThumbnail() {
         Elements elements = getDoc().select(".gallthumb > img");
-        return elements.isEmpty() ? "" : GANDALF_BASE_URL + elements.attr("src");
+        return elements.isEmpty() ? "" : BASE_URL + elements.attr("src");
     }
 
     @Override
@@ -109,6 +107,6 @@ public class GandalfScrapper extends JsoupBookScrapper {
 
     @Override
     String getLink(Element element) {
-        return GANDALF_BASE_URL + element.select("a").attr("href");
+        return BASE_URL + element.select("a").attr("href");
     }
 }

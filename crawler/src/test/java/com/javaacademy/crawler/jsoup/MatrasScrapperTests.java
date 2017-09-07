@@ -1,8 +1,6 @@
 package com.javaacademy.crawler.jsoup;
 
-import com.javaacademy.crawler.common.model.BookModel;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -17,21 +15,21 @@ public class MatrasScrapperTests {
     private static final String LINK = "http://www.matras.pl/wampir-z-zaglebia,p,243818";
     private static final String TITLE = "Wampir z Zagłębia";
 
-    public void testTitleScrapping() {
+    public void shouldScrapeTitle() {
         MatrasScrapper matrasScrapper = new MatrasScrapper();
         matrasScrapper.connect(LINK);
         Assert.assertEquals(matrasScrapper.parseSinglePage(LINK).getTitle(), TITLE);
     }
 
-    public void testScrapeNoPages() {
+    public void shouldScrapeNothing() {
         MatrasScrapper matrasScrapper = new MatrasScrapper();
-        matrasScrapper.setPagesToScrap(0);
+        matrasScrapper.setPageEndIndex(0);
         Assert.assertEquals(matrasScrapper.scrape(), Collections.emptySet());
     }
 
-    public void testScrapeSomePages() {
+    public void shouldScrapeSomePages() {
         MatrasScrapper matrasScrapper = new MatrasScrapper();
-        matrasScrapper.setPagesToScrap(2);
+        matrasScrapper.setPageEndIndex(2);
         matrasScrapper.setShouldDataBeScrapped(false);
         Assert.assertNotNull(matrasScrapper.scrape());
     }
