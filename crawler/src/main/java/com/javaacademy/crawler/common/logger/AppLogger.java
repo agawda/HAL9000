@@ -79,7 +79,7 @@ public class AppLogger {
     }
 
     static class MyFormatter extends Formatter {
-        private static final DateFormat df = new SimpleDateFormat("dd-MM-YY hh:mm:ss");
+        private final DateFormat df = new SimpleDateFormat("dd-MM-yy hh:mm:ss");
 
         public String format(LogRecord record) {
             StringBuilder builder = new StringBuilder();
