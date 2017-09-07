@@ -1,8 +1,6 @@
 package com.javaacademy.crawler.jsoup;
 
-import com.javaacademy.crawler.common.model.BookModel;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -17,21 +15,21 @@ public class GandalfScrapperTests {
     private static final String LINK = "http://www.gandalf.com.pl/b/co-polske-stanowi/";
     private static final String TITLE = "Co Polskę stanowi Biografie historyczne";
 
-    public void testTitleScrapping() {
+    public void shouldScrapeTitle() {
         GandalfScrapper gandalfScrapper = new GandalfScrapper();
         gandalfScrapper.connect(LINK);
         Assert.assertEquals(gandalfScrapper.parseSinglePage(LINK).getTitle(), TITLE);
     }
 
-    public void testScrapeNoPages() {
+    public void shouldScrapeNothing() {
         GandalfScrapper gandalfScrapper = new GandalfScrapper();
-        gandalfScrapper.setPagesToScrap(0);
+        gandalfScrapper.setPageEndIndex(0);
         Assert.assertEquals(gandalfScrapper.scrape(), Collections.emptySet());
     }
 
-    public void testScrapeSomePages() {
+    public void shouldScrapeSomePages() {
         GandalfScrapper gandalfScrapper = new GandalfScrapper();
-        gandalfScrapper.setPagesToScrap(1);
+        gandalfScrapper.setPageEndIndex(1);
         gandalfScrapper.setShouldDataBeScrapped(false);
         Assert.assertNotNull(gandalfScrapper.scrape());
     }
