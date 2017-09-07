@@ -8,7 +8,10 @@ import org.jsoup.select.Elements;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
+import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsole;
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+import static com.javaacademy.crawler.common.logger.AppLogger.logScrappingInfo;
 
 /**
  * @author devas
@@ -24,12 +27,16 @@ public class GandalfScrapper extends JsoupBookScrapper {
 
     @Override
     public Set<BookModel> scrape() {
+        long scrapperStartTime = System.nanoTime();
         AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
+        printOnConsole("Scrapping from Gandalf\n");
         Set<BookModel> bookModels = new HashSet<>();
         for (int i = pageStartIndex; i < pageEndIndex; i++) {
             connect(PROMOS_URL + i + "/");
             bookModels.addAll(parseSingleGrid());
+            displayProgress(i+1, pageEndIndex);
         }
+        logScrappingInfo(scrapperName, scrapperStartTime, bookModels.size());
         return bookModels;
     }
 

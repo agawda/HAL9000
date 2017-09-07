@@ -60,9 +60,7 @@ public class BookSender {
             }
             sendBooksTo(serverIp, numberOfBooksSentAtOnce);
             sleepFor(1000, "when sending books to book server");
-            long progress = (booksToSend.values().stream().filter(aBoolean -> aBoolean).count()
-                    * 100) / booksToSend.size();
-            displayProgress(progress);
+            displayProgress(booksToSend.values().stream().filter(aBoolean -> aBoolean).count(), booksToSend.size());
         }
         long numberOfSentBooks = booksToSend.values().stream().filter(aBoolean -> aBoolean).count();
         statistics.info("Sending books scrapped from " + bookstoreName + " to server complete, took: "
@@ -106,7 +104,8 @@ public class BookSender {
         return areAllBooksSent;
     }
 
-    public static void displayProgress(long progress) {
+    public static void displayProgress(long loopIndex, long maxLooppIndex) {
+        long progress = loopIndex * 100 / maxLooppIndex;
         if (progress > 100) {
             return;
         }

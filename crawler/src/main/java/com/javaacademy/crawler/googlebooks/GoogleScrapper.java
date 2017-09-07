@@ -11,13 +11,11 @@ import com.javaacademy.crawler.googlebooks.model.TotalItemsWrapper;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
 import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsole;
-import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
-import static com.javaacademy.crawler.common.logger.AppLogger.statistics;
+import static com.javaacademy.crawler.common.logger.AppLogger.*;
 import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
 
 public class GoogleScrapper {
@@ -48,8 +46,7 @@ public class GoogleScrapper {
         googleScrappingStartTime = System.nanoTime();
         printOnConsole("Scrapping books from google:\n");
         for (int i = 0; i < numOfBooks; i += step) {
-            long progress = i * 100 / maxValue;
-            displayProgress(progress);
+            displayProgress(i, maxValue);
             BookAddingCallback<GoogleBooksWrapper> bookItemBookAddingCallback =
                     new BookAddingCallback<>(books,
                             "Google Bookstore " + i + " - " + (i + step));
@@ -64,7 +61,7 @@ public class GoogleScrapper {
             getGoogleBooks(i, end, bookItemBookAddingCallback);
             sleepFor(sleepTime, "");
         }
-        displayProgress(100);
+        displayProgress(100, 100);
         AppLogger.logger.log(DEFAULT_LEVEL, "All callbacks done!");
         isLoopDone = true;
     }
@@ -81,8 +78,7 @@ public class GoogleScrapper {
             areCallbacksDone = callbacks.stream().noneMatch(bookAddingCallback -> bookAddingCallback.getRequestStatus() == RequestStatus.STARTED);
             AppLogger.logger.log(DEFAULT_LEVEL, "areCallbacksDone: " + areCallbacksDone);
             if (areCallbacksDone) {
-                statistics.info("Google scrapping complete, took: " + TimeUnit.SECONDS.convert((System.nanoTime() - googleScrappingStartTime), TimeUnit.NANOSECONDS) +"s");
-                statistics.info("Books scrapped from Google REST API: " + books.size());
+                logScrappingInfo("Google Market", googleScrappingStartTime, books.size());
             }
         }
         return isLoopDone && areCallbacksDone;

@@ -8,7 +8,10 @@ import org.jsoup.select.Elements;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
+import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsole;
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+import static com.javaacademy.crawler.common.logger.AppLogger.logScrappingInfo;
 
 /**
  * @author devas
@@ -31,7 +34,9 @@ public class BonitoScrapper extends JsoupBookScrapper {
 
     @Override
     public Set<BookModel> scrape() {
+        long scrapperStartTime = System.nanoTime();
         AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
+        printOnConsole("Scrapping from Bonito\n");
         connect(PROMOS_URL);
 
         Elements elements = getDoc().getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
@@ -40,13 +45,15 @@ public class BonitoScrapper extends JsoupBookScrapper {
         Set<String> links = new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
 
         Set<BookModel> bookModels = new HashSet<>();
-
+        int index = 0;
         for (String link : links) {
             connect(link);
             BookModel bookModel = parseSinglePage(link);
             bookModels.add(bookModel);
+            index++;
+            displayProgress(index, links.size());
         }
-
+        logScrappingInfo(scrapperName, scrapperStartTime, bookModels.size());
         return bookModels;
     }
 

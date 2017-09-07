@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.*;
 
 public class AppLogger {
@@ -91,5 +92,10 @@ public class AppLogger {
             builder.append("\n");
             return builder.toString();
         }
+    }
+
+    public static void logScrappingInfo(String scrapperName, long startTime, long booksSize) {
+        statistics.info(scrapperName+ " scrapping complete, took: " + TimeUnit.SECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS) +"s");
+        statistics.info("Books scrapped from " + scrapperName +": " + booksSize);
     }
 }

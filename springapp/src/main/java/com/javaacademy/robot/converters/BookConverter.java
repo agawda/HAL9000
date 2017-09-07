@@ -65,7 +65,6 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
 
     String recognizeShopName(BookDto bookDto) {
         String link = bookDto.getCanonicalVolumeLink();
-        System.out.println(link);
         if(link != null && link.contains("//")) {
             String[] linkParts = bookDto.getCanonicalVolumeLink().split("/");
             if(linkParts.length > 1) {
