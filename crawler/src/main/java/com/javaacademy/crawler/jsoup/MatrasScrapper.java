@@ -6,7 +6,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
-import java.util.logging.Level;
+import java.util.stream.Collectors;
+
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 /**
  * @author devas
@@ -14,52 +16,41 @@ import java.util.logging.Level;
  */
 public class MatrasScrapper extends JsoupBookScrapper {
 
-    private static String MATRAS_URL = "http://www.matras.pl/ksiazki/promocje,k,53?p=";
-    private static final int BOOKS_PER_PAGE = 20;
-    private static final int NUMBER_OF_PAGES = 11;
-    
-    public MatrasScrapper() {
-    }
+    private static String MATRAS_BASE_URL = "http://www.matras.pl";
+    private static String MATRAS_PROMOS_URL = MATRAS_BASE_URL + "/ksiazki/promocje,k,53?p=";
+    private int pagesToScrap = 10;
 
-    public MatrasScrapper(String link) {
-        MATRAS_URL = link;
+    void setPagesToScrap(int pagesToScrap) {
+        this.pagesToScrap = pagesToScrap;
     }
 
     @Override
     public Set<BookModel> scrape() {
-        connect(MATRAS_URL + 0);
-        int lastPageNumber = getNumberOfPages() - 1;
-        System.out.println(lastPageNumber);
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Matras");
         Set<BookModel> bookModels = new HashSet<>();
-        int pageIndex = 0;
-        while (true) {
-            if (pageIndex == lastPageNumber) {
-                break;
-            }
-            connect(MATRAS_URL + pageIndex);
-            getNumberOfPages();
-            Elements elements = getDoc().select(".s-item-outer");
-            int booksCounter = 0;
-            for (Element element : elements) {
-                if (booksCounter == BOOKS_PER_PAGE) {
-                    break;
-                }
-                booksCounter++;
-                String link = getLink(element);
-                connect(link);
-                BookModel bookModel = parseSinglePage(link);
-                bookModels.add(bookModel);
-            }
-            if (pageIndex > 1) {
-                break;
-            }
-            pageIndex++;
+        for(int i = 1; i < pagesToScrap; i++) {
+            connect(MATRAS_PROMOS_URL + i);
+            bookModels.addAll(parseSingleGrid());
+        }
+        return bookModels;
+    }
+
+    private Set<BookModel> parseSingleGrid() {
+        Elements elements = getDoc().select("div.row.row-items span.right-side a");
+        Set<String> links = new HashSet<>(elements.eachAttr("href"));
+        links.removeIf(s -> s.startsWith("http://www.matras.pl/szukaj/"));
+        Set<BookModel> bookModels = new HashSet<>();
+        for (String link : links) {
+            connect(link);
+            BookModel bookModel = parseSinglePage(link);
+            bookModels.add(bookModel);
         }
         return bookModels;
     }
 
     @Override
     BookModel parseSinglePage(String link) {
+        if (!shouldDataBeScrapped) return new BookModel();
         return new BookModel.Builder(
                 getIndustryIdentifier(),
                 getTitle(),
@@ -75,7 +66,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
     @Override
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("label:containsOwn(EAN:)");
-        return elements.isEmpty() ? new Random().nextLong() : Long.parseLong(elements.next().text());
+        return elements.isEmpty() ? new Random().nextLong() : parseIsbn(elements.next().text());
     }
 
     @Override
@@ -108,43 +99,20 @@ public class MatrasScrapper extends JsoupBookScrapper {
     @Override
     double getListPrice() {
         Elements elements = getDoc().select("div.old-price");
-        if (elements.isEmpty()) {
-            return 0;
-        } else {
-            double price = 0;
-            try {
-                price = Double.parseDouble(elements.text().replace("\u00a0zł", "").replace(",", "."));
-            } catch (NumberFormatException e) {
-                AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
-            }
-            return price;
-        }
+        return elements.isEmpty() ? 0 :
+                parsePrice(elements.text().replace("\u00a0zł", "").replace(",", "."));
     }
 
     @SuppressWarnings("Duplicates")
     @Override
     double getRetailPrice() {
         Elements elements = getDoc().select("div.this-main-price");
-        if (elements.isEmpty()) {
-            return 0;
-        } else {
-            double price = 0;
-            try {
-                price = Double.parseDouble(elements.text().replace("\u00a0zł", "").replace(",", "."));
-            } catch (NumberFormatException e) {
-                AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
-            }
-            return price;
-        }
+        return elements.isEmpty() ? 0 :
+                parsePrice(elements.text().replace("\u00a0zł", "").replace(",", "."));
     }
 
     @Override
     String getLink(Element element) {
         return element.select(".cover").select("a").attr("href");
-    }
-
-    private int getNumberOfPages() {
-//        return Integer.parseInt(connection.select("ul.pagination-list > *").get(7).select("a").text());
-        return NUMBER_OF_PAGES;
     }
 }

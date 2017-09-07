@@ -6,7 +6,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
-import java.util.logging.Level;
+import java.util.stream.Collectors;
+
+import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 
 /**
  * @author devas
@@ -14,42 +16,41 @@ import java.util.logging.Level;
  */
 public class CzytamScrapper extends JsoupBookScrapper {
 
-    private static String CZYTAM_URL = "http://www.czytam.pl/ksiazki-promocje,";
+    private static String CZYTAM_BASE_URL = "http://www.czytam.pl";
+    private static String CZYTAM_PROMOS_URL = CZYTAM_BASE_URL + "/ksiazki-promocje,";
+    private int pagesToScrap = 10;
 
-    public CzytamScrapper() {
-    }
-
-    CzytamScrapper(String link) {
-        CZYTAM_URL = link;
+    void setPagesToScrap(int pagesToScrap) {
+        this.pagesToScrap = pagesToScrap;
     }
 
     @Override
     public Set<BookModel> scrape() {
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Czytam");
         Set<BookModel> bookModels = new HashSet<>();
-        int pageIndex = 0;
-        while (true) {
-            connect(CZYTAM_URL + pageIndex + ".html");
-            Elements elements = getDoc().select(".product");
-            if (elements.isEmpty()) {
-                break;
-            }
-            for (Element element : elements) {
-                String link = "http://www.czytam.pl" + element.select("a").attr("href").
-                        replace("\n","").replace("\t","");;
-                connect(link);
-                BookModel bookModel = parseSinglePage(link);
-                bookModels.add(bookModel);
-            }
-            if (pageIndex > 1) {
-                break;
-            }
-            pageIndex++;
+        for (int i = 0; i < pagesToScrap; i++) {
+            connect(CZYTAM_PROMOS_URL + i + ".html");
+            bookModels.addAll(parseSingleGrid());
+        }
+        return bookModels;
+    }
+
+    private Set<BookModel> parseSingleGrid() {
+        Elements elements = getDoc().select("h3.product-title > a");
+        Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
+        Set<String> links = new HashSet<>(sublinks.stream().map(CZYTAM_BASE_URL::concat).collect(Collectors.toSet()));
+        Set<BookModel> bookModels = new HashSet<>();
+        for (String link : links) {
+            connect(link);
+            BookModel bookModel = parseSinglePage(link);
+            bookModels.add(bookModel);
         }
         return bookModels;
     }
 
     @Override
     BookModel parseSinglePage(String link) {
+        if (!shouldDataBeScrapped) return new BookModel();
         return new BookModel.Builder(
                 getIndustryIdentifier(),
                 getTitle(),
@@ -66,7 +67,7 @@ public class CzytamScrapper extends JsoupBookScrapper {
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("#panel4-2 > p > span:containsOwn(ISBN:)");
         return elements.isEmpty() ? new Random().nextLong() :
-                Long.parseLong(elements.next().text().replace("-", ""));
+                parseIsbn(elements.next().text().replace("-", ""));
     }
 
     @Override
@@ -96,35 +97,15 @@ public class CzytamScrapper extends JsoupBookScrapper {
     @Override
     double getListPrice() {
         Elements elements = getDoc().select("div.oldPirce > strong");
-        if (elements.isEmpty()) {
-            return 0;
-        } else {
-            double price = 0;
-            try {
-                price = Double.parseDouble(elements.first().text().
-                        replace(",", ".").replace(" PLN",""));
-            } catch (NumberFormatException e) {
-                AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
-            }
-            return price;
-        }
+        return elements.isEmpty() ? 0 :
+                parsePrice(elements.first().text().replace(",", ".").replace(" PLN", ""));
     }
 
     @Override
     double getRetailPrice() {
         Elements elements = getDoc().select("div.price > strong");
-        if (elements.isEmpty()) {
-            return 0;
-        } else {
-            double price = 0;
-            try {
-                price = Double.parseDouble(elements.first().text().
-                        replace(",", ".").replace(" PLN",""));
-            } catch (NumberFormatException e) {
-                AppLogger.logger.log(Level.WARNING, "Exception while parsing, ", e);
-            }
-            return price;
-        }
+        return elements.isEmpty() ? 0 :
+                parsePrice(elements.first().text().replace(",", ".").replace(" PLN", ""));
     }
 
     @Override
