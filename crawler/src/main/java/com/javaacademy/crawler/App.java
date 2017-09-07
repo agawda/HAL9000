@@ -61,9 +61,6 @@ public class App {
             try {
                 AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks not done, waiting...");
                 Thread.sleep(6000);
-                AppLogger.logger.log(DEFAULT_LEVEL, "googleScrapper.areAllCallbacksDone(): "
-                        + googleScrapper.areAllCallbacksDone());
-
             } catch (InterruptedException e) {
                 AppLogger.logger.log(Level.WARNING, "Exception while waiting", e);
                 Thread.currentThread().interrupt();
