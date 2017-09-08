@@ -2,7 +2,6 @@ package com.javaacademy.crawler.jsoup;
 
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
@@ -31,21 +30,11 @@ public class BonitoScrapper extends JsoupBookScrapper {
         long scrapperStartTime = System.nanoTime();
         AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
         printOnConsole("Scrapping from Bonito\n");
-        connect(PROMOS_URL);
-
-        Elements elements = getDoc().getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
-        Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-
-        Set<String> links = new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
-
         Set<BookModel> bookModels = new HashSet<>();
-        int index = 0;
-        for (String link : links) {
-            connect(link);
-            BookModel bookModel = parseSinglePage(link);
-            bookModels.add(bookModel);
-            index++;
-            displayProgress(index, links.size());
+        for (int i = pageStartIndex; i < pageEndIndex; i++) {
+            connect(PROMOS_URL);
+            bookModels.addAll(parseSingleGrid());
+            displayProgress(i, pageEndIndex);
         }
         logScrappingInfo(scrapperName, scrapperStartTime, bookModels.size());
         return bookModels;
