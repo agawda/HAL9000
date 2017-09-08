@@ -97,4 +97,9 @@ public class AppLogger {
         statistics.info(scrapperName+ " scrapping complete, took: " + TimeUnit.SECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS) +"s");
         statistics.info("Books scrapped from " + scrapperName +": " + booksSize);
     }
+
+    public static void logSendingBooks(String bookstoreName, long millisWhenStaredSending) {
+        statistics.info("Sending books scrapped from " + bookstoreName + " to server complete, took: "
+                + TimeUnit.SECONDS.convert((System.nanoTime() - millisWhenStaredSending), TimeUnit.NANOSECONDS) + "s");
+    }
 }

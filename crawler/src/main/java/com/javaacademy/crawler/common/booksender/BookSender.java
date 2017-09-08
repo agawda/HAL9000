@@ -11,7 +11,6 @@ import com.javaacademy.crawler.common.retrofit.SendingRetrofit;
 import retrofit2.Call;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.*;
@@ -49,7 +48,7 @@ public class BookSender {
         serverResponse.enqueue(new CustomCallback<>(createSuccessfulRequestConsumer(bookModels.getBookDtos())));
     }
 
-    public void sendBooksTo(String serverIp, String bookstoreName) {
+    public long sendBooksTo(String serverIp, String bookstoreName) {
         AppLogger.logger.log(DEFAULT_LEVEL, "Sending books to server from " + bookstoreName);
         int maxNumberOfTries = booksToSend.size() * 2 / numberOfBooksSentAtOnce;
         printOnConsole("Sending scrapped books to server from " + bookstoreName + ", number: " + booksToSend.size() + ":\n");
@@ -63,9 +62,9 @@ public class BookSender {
             displayProgress(booksToSend.values().stream().filter(aBoolean -> aBoolean).count(), booksToSend.size());
         }
         long numberOfSentBooks = booksToSend.values().stream().filter(aBoolean -> aBoolean).count();
-        statistics.info("Sending books scrapped from " + bookstoreName + " to server complete, took: "
-                + TimeUnit.SECONDS.convert((System.nanoTime() - millisWhenStaredSending), TimeUnit.NANOSECONDS) + "s");
+        logSendingBooks(bookstoreName, millisWhenStaredSending);
         logAndAddStat("Total books sent: " + numberOfSentBooks);
+        return numberOfSentBooks;
     }
 
     private Consumer<String> createSuccessfulRequestConsumer(List<BookModel> processedBooks) {
