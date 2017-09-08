@@ -40,6 +40,11 @@ public class CzytamScrapper extends JsoupBookScrapper {
         return bookModels;
     }
 
+    @Override
+    public String getName() {
+        return scrapperName;
+    }
+
     private Set<BookModel> parseSingleGrid() {
         Elements elements = getDoc().select("h3.product-title > a");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));

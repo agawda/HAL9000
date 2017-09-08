@@ -54,8 +54,8 @@ public class GoogleBookConverter {
         return map.getOrDefault("ISBN_13", -1L);
     }
 
-    public List<BookModel> convertToDtosWithoutNulls(Set<Book> bookItems) {
-        List<BookModel> models = new ArrayList<>();
+    public Set<BookModel> convertToDtosWithoutNulls(Set<Book> bookItems) {
+        Set<BookModel> models = new HashSet<>();
         for (Book bookItem :
                 bookItems) {
             try {

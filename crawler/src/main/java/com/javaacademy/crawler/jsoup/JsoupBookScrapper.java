@@ -1,5 +1,6 @@
 package com.javaacademy.crawler.jsoup;
 
+import com.javaacademy.crawler.Scrapper;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.nodes.Document;
@@ -7,14 +8,13 @@ import org.jsoup.nodes.Element;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.logging.Level;
 
 /**
  * @author devas
  * @since 04.09.17
  */
-abstract class JsoupBookScrapper {
+abstract class JsoupBookScrapper implements Scrapper {
 
     int pageStartIndex = 0;
     int pageEndIndex = 5;
@@ -61,8 +61,6 @@ abstract class JsoupBookScrapper {
     Document getDoc() {
         return jsoupConnector.getDoc();
     }
-
-    public abstract Set<BookModel> scrape();
 
     abstract BookModel parseSinglePage(String link);
 

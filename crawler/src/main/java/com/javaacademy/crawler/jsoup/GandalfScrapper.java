@@ -40,6 +40,11 @@ public class GandalfScrapper extends JsoupBookScrapper {
         return bookModels;
     }
 
+    @Override
+    public String getName() {
+        return scrapperName;
+    }
+
     private Set<BookModel> parseSingleGrid() {
         Elements elements = getDoc().select("div.prod p.h2 > a");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));

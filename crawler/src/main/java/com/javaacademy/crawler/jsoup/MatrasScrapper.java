@@ -43,6 +43,11 @@ public class MatrasScrapper extends JsoupBookScrapper {
         return bookModels;
     }
 
+    @Override
+    public String getName() {
+        return scrapperName;
+    }
+
     private Set<BookModel> parseSingleGrid() {
         Elements elements = getDoc().select("div.row.row-items span.right-side a");
         Set<String> links = new HashSet<>(elements.eachAttr("href"));

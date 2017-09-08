@@ -1,10 +1,13 @@
 package com.javaacademy.crawler.googlebooks;
 
+import com.javaacademy.crawler.Scrapper;
 import com.javaacademy.crawler.common.BookAddingCallback;
 import com.javaacademy.crawler.common.CustomCallback;
 import com.javaacademy.crawler.common.RequestStatus;
+import com.javaacademy.crawler.common.converters.GoogleBookConverter;
 import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
+import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.googlebooks.controllers.Controller;
 import com.javaacademy.crawler.googlebooks.model.GoogleBooksWrapper;
 import com.javaacademy.crawler.googlebooks.model.TotalItemsWrapper;
@@ -18,21 +21,29 @@ import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsol
 import static com.javaacademy.crawler.common.logger.AppLogger.*;
 import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
 
-public class GoogleScrapper {
+public class GoogleScrapper implements Scrapper {
     static int sleepTime = 2000;
     static int maxValue = 1_000; //Should not be greater than 1000
+    static int completionWaitingInterval = 6000;
     Set<Book> books = new HashSet<>();
     Set<BookAddingCallback> callbacks = new HashSet<>();
     boolean isLoopDone = false;
     Controller controller = new Controller();
     private long googleScrappingStartTime;
 
-    public void runScrapping() {
+    public Set<BookModel> scrape() {
         Consumer<TotalItemsWrapper> consumer =
                 totalItemsWrapper -> collectAllBooksFromGoogle(
                         totalItemsWrapper.getTotalItems()
                 );
         getNumberOfBooksAndStartCollection(consumer);
+        Set<Book> scrappedBooks =  waitForCallbacksToComplete(completionWaitingInterval);
+        return new GoogleBookConverter().convertToDtosWithoutNulls(scrappedBooks);
+    }
+
+    @Override
+    public String getName() {
+        return "Google";
     }
 
     void getNumberOfBooksAndStartCollection(Consumer<TotalItemsWrapper> consumer) {
@@ -73,6 +84,7 @@ public class GoogleScrapper {
 
     public boolean areAllCallbacksDone() {
         boolean areCallbacksDone = false;
+        System.out.println("is loop done " +isLoopDone);
         if (isLoopDone) {
             AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks loop done");
             areCallbacksDone = callbacks.stream().noneMatch(bookAddingCallback -> bookAddingCallback.getRequestStatus() == RequestStatus.STARTED);
@@ -85,6 +97,16 @@ public class GoogleScrapper {
     }
 
     public Set<Book> getBooks() {
+        return books;
+    }
+
+    private Set<Book> waitForCallbacksToComplete(int sleepTimeMillis) {
+        while (!areAllCallbacksDone()) {
+            sleepFor(sleepTimeMillis, "");
+        }
+
+        Set<Book> books = getBooks();
+        AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
         return books;
     }
 }

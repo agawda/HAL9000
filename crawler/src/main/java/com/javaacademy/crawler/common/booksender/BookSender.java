@@ -1,8 +1,6 @@
 package com.javaacademy.crawler.common.booksender;
 
 import com.javaacademy.crawler.common.CustomCallback;
-import com.javaacademy.crawler.common.converters.GoogleBookConverter;
-import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.common.model.BookModels;
@@ -22,14 +20,6 @@ public class BookSender {
     Map<BookModel, Integer> booksSendCounter;
     static int numberOfBooksSentAtOnce = 20;
     SendingRetrofit sendingRetrofit = new SendingRetrofit();
-
-    public BookSender(Set<Book> books, GoogleBookConverter googleBookConverter) {
-        this.booksToSend = new HashMap<>();
-        this.booksSendCounter = new HashMap<>();
-        List<BookModel> bookModels = googleBookConverter.convertToDtosWithoutNulls(books);
-        bookModels.forEach(bookItem ->
-                booksToSend.put(bookItem, false));
-    }
 
     public BookSender(Set<BookModel> books) {
         this.booksToSend = new HashMap<>();
