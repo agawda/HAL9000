@@ -84,7 +84,6 @@ public class GoogleScrapper implements Scrapper {
 
     public boolean areAllCallbacksDone() {
         boolean areCallbacksDone = false;
-        System.out.println("is loop done " +isLoopDone);
         if (isLoopDone) {
             AppLogger.logger.log(DEFAULT_LEVEL, "Callbacks loop done");
             areCallbacksDone = callbacks.stream().noneMatch(bookAddingCallback -> bookAddingCallback.getRequestStatus() == RequestStatus.STARTED);
