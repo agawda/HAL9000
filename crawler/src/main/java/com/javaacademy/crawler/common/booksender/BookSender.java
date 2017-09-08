@@ -19,12 +19,14 @@ public class BookSender {
     Map<BookModel, Boolean> booksToSend; // a map which holds info about whether the book was successfully sent to server
     Map<BookModel, Integer> booksSendCounter;
     static int numberOfBooksSentAtOnce = 20;
+    static int sendingTimeInterval = 1000;
     SendingRetrofit sendingRetrofit = new SendingRetrofit();
 
     public BookSender(Set<BookModel> books) {
         this.booksToSend = new HashMap<>();
         this.booksSendCounter = new HashMap<>();
         books.forEach(bookItem -> booksToSend.put(bookItem, false));
+        System.out.println(booksToSend);
     }
 
     private void sendBooksTo(String serverIp, int numberOfBooks) {
@@ -48,7 +50,7 @@ public class BookSender {
                 break;
             }
             sendBooksTo(serverIp, numberOfBooksSentAtOnce);
-            sleepFor(1000, "when sending books to book server");
+            sleepFor(sendingTimeInterval, "when sending books to book server");
             displayProgress(booksToSend.values().stream().filter(aBoolean -> aBoolean).count(), booksToSend.size());
         }
         long numberOfSentBooks = booksToSend.values().stream().filter(aBoolean -> aBoolean).count();
@@ -58,6 +60,7 @@ public class BookSender {
     }
 
     private Consumer<String> createSuccessfulRequestConsumer(List<BookModel> processedBooks) {
+        System.out.println("Creating request consumer for books: " +processedBooks );
         return bookServerResponse -> markBooksAsSent(processedBooks);
     }
 
@@ -80,6 +83,7 @@ public class BookSender {
     }
 
     void markBooksAsSent(List<BookModel> sentBooks) {
+        System.out.println("Marking books as sent: " +sentBooks);
         for (BookModel bookModel : sentBooks) {
             booksToSend.put(bookModel, true);
             booksSendCounter.merge(bookModel, 1, (integer, integer2) -> integer + 1);

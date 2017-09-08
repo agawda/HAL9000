@@ -19,15 +19,16 @@ import static org.testng.Assert.assertFalse;
 
 public class BookSenderTest {
 
-//    @Test
-//    public void testSendingBooks() {
-//        BookSender bookSender = new BookSender(getBooks(), getConverterMock());
-//        Call<String> serverResponse = mock(Call.class);
-//        bookSender.sendingRetrofit = getSendingRetrofitMock(serverResponse);
-//        BookSender.numberOfBooksSentAtOnce = 1;
-//        bookSender.sendBooksTo("IPADDRESS", "");
-//        verify(serverResponse, times(2)).enqueue(any());
-//    }
+    @Test
+    public void testSendingBooks() {
+        BookSender bookSender = new BookSender(getBookModelsMap().keySet());
+        Call<String> serverResponse = mock(Call.class);
+        bookSender.sendingRetrofit = getSendingRetrofitMock(serverResponse);
+        BookSender.numberOfBooksSentAtOnce = 1;
+        BookSender.sendingTimeInterval = 10;
+        bookSender.sendBooksTo("IPADDRESS", "");
+        verify(serverResponse, times(8)).enqueue(any());
+    }
 
     @Test
     public void testMarkBooks() {
