@@ -1,15 +1,12 @@
 package com.javaacademy.crawler.jsoup;
 
 import com.javaacademy.crawler.Scrapper;
-import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.Set;
 
 /**
@@ -23,8 +20,8 @@ abstract class JsoupBookScrapper implements Scrapper {
     int pageStartIndex = 0;
     int pageEndIndex = 5;
     String scrapperName;
-    String BASE_URL;
-    String PROMOS_URL;
+    String baseUrl;
+    String promosUrl;
 
     static long parseIsbn(String s) {
         long isbn;

@@ -2,7 +2,6 @@ package com.javaacademy.crawler.jsoup;
 
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
@@ -21,8 +20,8 @@ public class CzytamScrapper extends JsoupBookScrapper {
 
     public CzytamScrapper() {
         scrapperName = "Czytam";
-        BASE_URL = "http://www.czytam.pl";
-        PROMOS_URL = BASE_URL + "/ksiazki-promocje,";
+        baseUrl = "http://www.czytam.pl";
+        promosUrl = baseUrl + "/ksiazki-promocje,";
     }
 
     @Override
@@ -32,7 +31,7 @@ public class CzytamScrapper extends JsoupBookScrapper {
         printOnConsole("Scrapping from Czytam\n");
         Set<BookModel> bookModels = new HashSet<>();
         for (int i = pageStartIndex; i < pageEndIndex; i++) {
-            connect(PROMOS_URL + i + ".html");
+            connect(promosUrl + i + ".html");
             bookModels.addAll(parseSingleGrid());
             displayProgress(i+1, pageEndIndex);
         }
@@ -49,7 +48,7 @@ public class CzytamScrapper extends JsoupBookScrapper {
     Set<String> getLinksFromGrid() {
         Elements elements = getDoc().select("h3.product-title > a");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-        return new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
+        return new HashSet<>(sublinks.stream().map(baseUrl::concat).collect(Collectors.toSet()));
     }
 
     @Override

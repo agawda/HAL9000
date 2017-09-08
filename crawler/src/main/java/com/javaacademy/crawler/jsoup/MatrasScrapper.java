@@ -2,7 +2,6 @@ package com.javaacademy.crawler.jsoup;
 
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
@@ -23,8 +22,8 @@ public class MatrasScrapper extends JsoupBookScrapper {
      */
     public MatrasScrapper() {
         scrapperName = "Matras";
-        BASE_URL = "http://www.matras.pl";
-        PROMOS_URL = BASE_URL + "/ksiazki/promocje,k,53?p=";
+        baseUrl = "http://www.matras.pl";
+        promosUrl = baseUrl + "/ksiazki/promocje,k,53?p=";
         pageStartIndex = 1;
     }
 
@@ -35,7 +34,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
         printOnConsole("Scrapping from Matras\n");
         Set<BookModel> bookModels = new HashSet<>();
         for (int i = pageStartIndex; i < pageEndIndex; i++) {
-            connect(PROMOS_URL + i);
+            connect(promosUrl + i);
             bookModels.addAll(parseSingleGrid());
             displayProgress(i+1, pageEndIndex);
         }
@@ -52,7 +51,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
     Set<String> getLinksFromGrid() {
         Elements elements = getDoc().select("div.row.row-items span.right-side a");
         Set<String> links = new HashSet<>(elements.eachAttr("href"));
-        links.removeIf(s -> s.startsWith(BASE_URL + "/szukaj/"));
+        links.removeIf(s -> s.startsWith(baseUrl + "/szukaj/"));
         return links;
     }
 

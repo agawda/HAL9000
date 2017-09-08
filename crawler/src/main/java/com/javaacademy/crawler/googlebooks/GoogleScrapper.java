@@ -104,8 +104,8 @@ public class GoogleScrapper implements Scrapper {
             sleepFor(sleepTimeMillis, "");
         }
 
-        Set<Book> books = getBooks();
-        AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
-        return books;
+        Set<Book> scrappedBooks = getBooks();
+        AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + scrappedBooks.size());
+        return scrappedBooks;
     }
 }

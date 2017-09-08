@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.*;
 
+import static java.util.logging.Level.INFO;
+
 public class AppLogger {
     public static final Logger logger = Logger.getLogger(AppLogger.class.getName());
     public static final Logger statistics = Logger.getLogger(App.class.getName());
@@ -41,7 +43,7 @@ public class AppLogger {
         logger.addHandler(handler);
         statistics.addHandler(statsHandler);
         logger.setLevel(Level.ALL);
-        statistics.setLevel(Level.INFO);
+        statistics.setLevel(INFO);
         isInitialized = true;
         logger.log(Level.FINEST, "Logger initialized");
     }
@@ -94,12 +96,12 @@ public class AppLogger {
     }
 
     public static void logScrappingInfo(String scrapperName, long startTime, long booksSize) {
-        statistics.info(scrapperName+ " scrapping complete, took: " + TimeUnit.SECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS) +"s");
-        statistics.info("Books scrapped from " + scrapperName +": " + booksSize);
+        statistics.info(() -> scrapperName+ " scrapping complete, took: " + TimeUnit.SECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS) +"s");
+        statistics.info(() -> "Books scrapped from " + scrapperName +": " + booksSize);
     }
 
     public static void logSendingBooks(String bookstoreName, long millisWhenStaredSending) {
-        statistics.info("Sending books scrapped from " + bookstoreName + " to server complete, took: "
+        statistics.info(() -> "Sending books scrapped from " + bookstoreName + " to server complete, took: "
                 + TimeUnit.SECONDS.convert((System.nanoTime() - millisWhenStaredSending), TimeUnit.NANOSECONDS) + "s");
     }
 }

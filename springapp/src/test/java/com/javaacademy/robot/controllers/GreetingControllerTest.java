@@ -23,6 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class GreetingControllerTest {
+    private String mediaTypeTextUtf8 = "text/html;charset=UTF-8";
+    private String urlTemplateSort = "/sort";
+    private String sortingString = "sorting";
 
     private MockMvc mockMvc;
 
@@ -33,43 +36,43 @@ public class GreetingControllerTest {
     public void shouldReturnStatusOkForBookstoresMapping() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
         this.mockMvc.perform(get("/bookstores/?id=Books")
-                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+                .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void shouldReturnStatusOkForBooksMapping() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
-        this.mockMvc.perform(get("/books")
+        this.mockMvc.perform(get(urlTemplateSort)
                 .param("id", "")
-                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+                .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     public void shouldReturnStatusOkForSortTitleMapping() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
-        this.mockMvc.perform(get("/sort")
-                .param("sorting", "title")
-                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+        this.mockMvc.perform(get(urlTemplateSort)
+                .param(sortingString, "title")
+                .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void shouldReturnStatusOkForSortRegularPriceMapping() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
-        this.mockMvc.perform(get("/sort")
-                .param("sorting", "regularPrice")
-                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+        this.mockMvc.perform(get(urlTemplateSort)
+                .param(sortingString, "regularPrice")
+                .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void shouldReturnStatusOkForSortNewPriceMapping() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
-        this.mockMvc.perform(get("/sort")
-                .param("sorting", "newPrice")
-                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+        this.mockMvc.perform(get(urlTemplateSort)
+                .param(sortingString, "newPrice")
+                .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                 .andExpect(status().isOk());
     }
 
@@ -78,7 +81,7 @@ public class GreetingControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(greetingController).build();
         this.mockMvc.perform(post("/search")
                 .param("content", "")
-                .accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+                .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                 .andExpect(status().isOk());
     }
 
@@ -87,9 +90,9 @@ public class GreetingControllerTest {
         BookDto bookDto = new BookDto();
         String smallThumbnail = "&zoom=5";
         bookDto.setSmallThumbnail(smallThumbnail);
-        GreetingController greetingController = new GreetingController(null, null);
+        GreetingController greetingControllerNotAutowired = new GreetingController(null, null);
         int newZoom = 1;
-        greetingController.setImageZoom(bookDto, newZoom);
+        greetingControllerNotAutowired.setImageZoom(bookDto, newZoom);
         assertTrue(bookDto.getSmallThumbnail().contains("&zoom=" + newZoom));
     }
 
@@ -98,9 +101,9 @@ public class GreetingControllerTest {
         BookDto bookDto = new BookDto();
         String smallThumbnail = "";
         bookDto.setSmallThumbnail(smallThumbnail);
-        GreetingController greetingController = new GreetingController(null, null);
+        GreetingController greetingControllerNotAutowired = new GreetingController(null, null);
         int newZoom = 1;
-        greetingController.setImageZoom(bookDto, newZoom);
+        greetingControllerNotAutowired.setImageZoom(bookDto, newZoom);
         assertFalse(bookDto.getSmallThumbnail().contains("&zoom=" + newZoom));
     }
 }

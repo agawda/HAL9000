@@ -1,16 +1,15 @@
 package com.javaacademy.crawler.common.booksender;
 
-import com.javaacademy.crawler.common.converters.GoogleBookConverter;
-import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.common.retrofit.BookServerEndpoint;
 import com.javaacademy.crawler.common.retrofit.SendingRetrofit;
-import com.javaacademy.crawler.googlebooks.model.BookItem;
 import org.testng.annotations.Test;
 import retrofit2.Call;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -46,32 +45,12 @@ public class BookSenderTest {
         assertEquals(bookSender.booksToSend.size(), getBookModelsMap().keySet().size());
     }
 
-    private GoogleBookConverter getConverterMock() {
-        GoogleBookConverter googleBookConverter = mock(GoogleBookConverter.class);
-        when(googleBookConverter.convertToDto(any())).thenReturn(mock(BookModel.class));
-        when(googleBookConverter.convertToDtosWithoutNulls(any())).thenCallRealMethod();
-        return googleBookConverter;
-    }
-
     private SendingRetrofit getSendingRetrofitMock(Call<String> serverResponse) {
         SendingRetrofit sendingRetrofit = mock(SendingRetrofit.class);
         BookServerEndpoint endpoint = mock(BookServerEndpoint.class);
         when(sendingRetrofit.getBookBookServerEndpoint(any())).thenReturn(endpoint);
         when(endpoint.putBooksToServer(any())).thenReturn(serverResponse);
         return sendingRetrofit;
-    }
-
-    private Set<Book> getBooks() {
-        Set<Book> books = new HashSet<>();
-        BookItem bookModel = mock(BookItem.class);
-        BookItem bookModel2 = mock(BookItem.class);
-        BookItem bookModel3 = mock(BookItem.class);
-        BookItem bookModel4 = mock(BookItem.class);
-        books.add(bookModel);
-        books.add(bookModel2);
-        books.add(bookModel3);
-        books.add(bookModel4);
-        return books;
     }
 
     private Map<BookModel, Boolean> getBookModelsMap() {

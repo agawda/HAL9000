@@ -6,6 +6,8 @@ import java.util.logging.Level;
 
 public class CrawlerUtils {
 
+    private CrawlerUtils() {}
+
     public static void sleepFor(int sleepTime, String messageWhenInterrupted) {
         try {
             Thread.sleep(sleepTime);
