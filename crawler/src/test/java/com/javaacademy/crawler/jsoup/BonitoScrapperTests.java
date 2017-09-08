@@ -1,6 +1,5 @@
 package com.javaacademy.crawler.jsoup;
 
-import com.javaacademy.crawler.common.model.BookModel;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

@@ -12,7 +12,7 @@ public class ServerLogger {
     static boolean isInitialized = false;
     private static final String FILE_NAME = "Server.log";
     private static final boolean APPEND_TO_FILE = true;
-    public static final String FOLDER_NAME = "serverLogs";
+    static final String FOLDER_NAME = "serverLogs";
 
     /**
      * This method will initialize the logger with the path and a name of the logfile, level of the logging info and
@@ -32,6 +32,8 @@ public class ServerLogger {
         }
         isInitialized = true;
     }
+
+    private ServerLogger() {}
 
     static class MyFileHandler extends FileHandler {
 

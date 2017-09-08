@@ -2,7 +2,6 @@ package com.javaacademy.crawler.jsoup;
 
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
@@ -21,8 +20,8 @@ public class GandalfScrapper extends JsoupBookScrapper {
 
     public GandalfScrapper() {
         scrapperName = "Gandalf";
-        BASE_URL = "http://www.gandalf.com.pl";
-        PROMOS_URL = BASE_URL + "/promocje/";
+        baseUrl = "http://www.gandalf.com.pl";
+        promosUrl = baseUrl + "/promocje/";
     }
 
     @Override
@@ -32,7 +31,7 @@ public class GandalfScrapper extends JsoupBookScrapper {
         printOnConsole("Scrapping from Gandalf\n");
         Set<BookModel> bookModels = new HashSet<>();
         for (int i = pageStartIndex; i < pageEndIndex; i++) {
-            connect(PROMOS_URL + i + "/");
+            connect(promosUrl + i + "/");
             bookModels.addAll(parseSingleGrid());
             displayProgress(i+1, pageEndIndex);
         }
@@ -49,7 +48,7 @@ public class GandalfScrapper extends JsoupBookScrapper {
     Set<String> getLinksFromGrid() {
         Elements elements = getDoc().select("div.prod p.h2 > a");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-        return new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
+        return new HashSet<>(sublinks.stream().map(baseUrl::concat).collect(Collectors.toSet()));
     }
 
     @Override
@@ -80,7 +79,7 @@ public class GandalfScrapper extends JsoupBookScrapper {
     @Override
     String getSmallThumbnail() {
         Elements elements = getDoc().select(".gallthumb > img");
-        return elements.isEmpty() ? "" : BASE_URL + elements.attr("src");
+        return elements.isEmpty() ? "" : baseUrl + elements.attr("src");
     }
 
     @Override

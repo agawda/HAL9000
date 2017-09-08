@@ -20,8 +20,8 @@ public class BonitoScrapper extends JsoupBookScrapper {
 
     public BonitoScrapper() {
         scrapperName = "Bonito";
-        BASE_URL = "https://bonito.pl";
-        PROMOS_URL = BASE_URL + "/wyprzedaz";
+        baseUrl = "https://bonito.pl";
+        promosUrl = baseUrl + "/wyprzedaz";
         pageEndIndex = 1;
     }
 
@@ -32,7 +32,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
         printOnConsole("Scrapping from Bonito\n");
         Set<BookModel> bookModels = new HashSet<>();
         for (int i = pageStartIndex; i < pageEndIndex; i++) {
-            connect(PROMOS_URL);
+            connect(promosUrl);
             bookModels.addAll(parseSingleGrid());
             displayProgress(i, pageEndIndex);
         }
@@ -49,7 +49,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
     Set<String> getLinksFromGrid() {
         Elements elements = getDoc().getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-        return new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
+        return new HashSet<>(sublinks.stream().map(baseUrl::concat).collect(Collectors.toSet()));
     }
 
     @Override
