@@ -43,11 +43,6 @@ public class MatrasScrapper extends JsoupBookScrapper {
     }
 
     @Override
-    public String getName() {
-        return scrapperName;
-    }
-
-    @Override
     Set<String> getLinksFromGrid() {
         Elements elements = getDoc().select("div.row.row-items span.right-side a");
         Set<String> links = new HashSet<>(elements.eachAttr("href"));
@@ -88,8 +83,8 @@ public class MatrasScrapper extends JsoupBookScrapper {
 
     @Override
     String getSmallThumbnail() {
-        Elements elements = getDoc().select("img");
-        return elements.isEmpty() ? "" : elements.attr("data-original");
+        Elements elements = getDoc().select(".main-cover-inner-col img");
+        return elements.isEmpty() ? "" : elements.attr("src");
     }
 
     @Override

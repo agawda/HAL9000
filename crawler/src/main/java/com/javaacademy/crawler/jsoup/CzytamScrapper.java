@@ -38,11 +38,6 @@ public class CzytamScrapper extends JsoupBookScrapper {
         logScrappingInfo(scrapperName, scrapperStartTime, bookModels.size());
         return bookModels;
     }
-
-    @Override
-    public String getName() {
-        return scrapperName;
-    }
   
     @Override
     Set<String> getLinksFromGrid() {
