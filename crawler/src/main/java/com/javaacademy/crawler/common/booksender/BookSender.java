@@ -26,7 +26,6 @@ public class BookSender {
         this.booksToSend = new HashMap<>();
         this.booksSendCounter = new HashMap<>();
         books.forEach(bookItem -> booksToSend.put(bookItem, false));
-        System.out.println(booksToSend);
     }
 
     private void sendBooksTo(String serverIp, int numberOfBooks) {
@@ -60,7 +59,6 @@ public class BookSender {
     }
 
     private Consumer<String> createSuccessfulRequestConsumer(List<BookModel> processedBooks) {
-        System.out.println("Creating request consumer for books: " +processedBooks );
         return bookServerResponse -> markBooksAsSent(processedBooks);
     }
 
@@ -83,7 +81,6 @@ public class BookSender {
     }
 
     void markBooksAsSent(List<BookModel> sentBooks) {
-        System.out.println("Marking books as sent: " +sentBooks);
         for (BookModel bookModel : sentBooks) {
             booksToSend.put(bookModel, true);
             booksSendCounter.merge(bookModel, 1, (integer, integer2) -> integer + 1);
