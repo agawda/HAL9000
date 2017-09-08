@@ -16,15 +16,15 @@ import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
 
 public class BookSender {
 
-    Map<BookModel, Boolean> booksToSend; // a map which holds info about whether the book was successfully sent to server
+    Map<BookModel, Boolean> booksToSend; // holds info about whether the book was successfully sent to server
     Map<BookModel, Integer> booksSendCounter;
     static int numberOfBooksSentAtOnce = 20;
     static int sendingTimeInterval = 1000;
     SendingRetrofit sendingRetrofit = new SendingRetrofit();
 
     public BookSender(Set<BookModel> books) {
-        this.booksToSend = new HashMap<>();
-        this.booksSendCounter = new HashMap<>();
+        booksToSend = new HashMap<>();
+        booksSendCounter = new HashMap<>();
         books.forEach(bookItem -> booksToSend.put(bookItem, false));
     }
 
@@ -88,7 +88,7 @@ public class BookSender {
         logger.log(DEFAULT_LEVEL, "How many times books were sent: " + booksSendCounter.values());
     }
 
-    boolean areAllBooksSent() {
+    private boolean areAllBooksSent() {
         boolean areAllBooksSent = booksToSend.values().stream().allMatch(aBoolean -> aBoolean);
         logger.log(DEFAULT_LEVEL, "Are all books sent: " + areAllBooksSent);
         return areAllBooksSent;

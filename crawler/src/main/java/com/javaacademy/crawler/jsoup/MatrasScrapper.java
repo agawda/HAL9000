@@ -48,32 +48,12 @@ public class MatrasScrapper extends JsoupBookScrapper {
         return scrapperName;
     }
 
-    private Set<BookModel> parseSingleGrid() {
+    @Override
+    Set<String> getLinksFromGrid() {
         Elements elements = getDoc().select("div.row.row-items span.right-side a");
         Set<String> links = new HashSet<>(elements.eachAttr("href"));
         links.removeIf(s -> s.startsWith(BASE_URL + "/szukaj/"));
-        Set<BookModel> bookModels = new HashSet<>();
-        for (String link : links) {
-            connect(link);
-            BookModel bookModel = parseSinglePage(link);
-            bookModels.add(bookModel);
-        }
-        return bookModels;
-    }
-
-    @Override
-    BookModel parseSinglePage(String link) {
-        if (!shouldDataBeScrapped) return new BookModel();
-        return new BookModel.Builder(
-                getIndustryIdentifier(),
-                getTitle(),
-                getAuthors(),
-                getCategories(),
-                link,
-                getSmallThumbnail(),
-                getListPrice(),
-                getRetailPrice()
-        ).build();
+        return links;
     }
 
     @Override
@@ -124,10 +104,5 @@ public class MatrasScrapper extends JsoupBookScrapper {
     double getRetailPrice() {
         Elements elements = getDoc().select("div.this-main-price");
         return elements.isEmpty() ? 0 : parsePrice(elements.attr("content"));
-    }
-
-    @Override
-    String getLink(Element element) {
-        return element.select(".cover").select("a").attr("href");
     }
 }

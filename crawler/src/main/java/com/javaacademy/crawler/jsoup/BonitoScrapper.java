@@ -23,13 +23,7 @@ public class BonitoScrapper extends JsoupBookScrapper {
         scrapperName = "Bonito";
         BASE_URL = "https://bonito.pl";
         PROMOS_URL = BASE_URL + "/wyprzedaz";
-    }
-
-    BonitoScrapper(String link) {
-        scrapperName = "Bonito";
-        BASE_URL = "https://bonito.pl";
-        PROMOS_URL = BASE_URL + "/wyprzedaz";
-        BASE_URL = link;
+        pageEndIndex = 1;
     }
 
     @Override
@@ -63,18 +57,10 @@ public class BonitoScrapper extends JsoupBookScrapper {
     }
 
     @Override
-    BookModel parseSinglePage(String link) {
-        if (!shouldDataBeScrapped) return new BookModel();
-        return new BookModel.Builder(
-                getIndustryIdentifier(),
-                getTitle(),
-                getAuthors(),
-                getCategories(),
-                link,
-                getSmallThumbnail(),
-                getListPrice(),
-                getRetailPrice()
-        ).build();
+    Set<String> getLinksFromGrid() {
+        Elements elements = getDoc().getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
+        Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
+        return new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
     }
 
     @Override
@@ -126,10 +112,5 @@ public class BonitoScrapper extends JsoupBookScrapper {
     double getRetailPrice() {
         Elements prices = getDoc().select("b:contains(zł)");
         return prices.isEmpty() ? 0 : parsePrice(prices.get(0).html().split(" ")[0].replace(',', '.'));
-    }
-
-    @Override
-    String getLink(Element element) {
-        return null;
     }
 }

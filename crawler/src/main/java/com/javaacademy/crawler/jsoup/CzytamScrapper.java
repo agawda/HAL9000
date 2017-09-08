@@ -44,33 +44,12 @@ public class CzytamScrapper extends JsoupBookScrapper {
     public String getName() {
         return scrapperName;
     }
-
-    private Set<BookModel> parseSingleGrid() {
+  
+    @Override
+    Set<String> getLinksFromGrid() {
         Elements elements = getDoc().select("h3.product-title > a");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-        Set<String> links = new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
-        Set<BookModel> bookModels = new HashSet<>();
-        for (String link : links) {
-            connect(link);
-            BookModel bookModel = parseSinglePage(link);
-            bookModels.add(bookModel);
-        }
-        return bookModels;
-    }
-
-    @Override
-    BookModel parseSinglePage(String link) {
-        if (!shouldDataBeScrapped) return new BookModel();
-        return new BookModel.Builder(
-                getIndustryIdentifier(),
-                getTitle(),
-                getAuthors(),
-                getCategories(),
-                link,
-                getSmallThumbnail(),
-                getListPrice(),
-                getRetailPrice()
-        ).build();
+        return new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
     }
 
     @Override
@@ -119,10 +98,5 @@ public class CzytamScrapper extends JsoupBookScrapper {
         Elements elements = getDoc().select("div.price > strong");
         return elements.isEmpty() ? 0 :
                 parsePrice(elements.first().text().replace(",", ".").replace(" PLN", ""));
-    }
-
-    @Override
-    String getLink(Element element) {
-        return null;
     }
 }
