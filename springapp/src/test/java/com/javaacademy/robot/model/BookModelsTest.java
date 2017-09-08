@@ -28,7 +28,7 @@ public class BookModelsTest {
         List<BookDto> books = new ArrayList<>();
         books.add(bookDto);
         bookModels.bookDtos = books;
-        assertEquals("BookModels(bookDtos=[BookDto(industryIdentifier=null, title=null, subtitle=null, authors=null, categories=null, smallThumbnail=null, canonicalVolumeLink=null, saleability=null, listPriceAmount=0.0, listPriceCurrencyCode=null, retailPriceAmount=0.0, retailPriceCurrencyCode=null)])",
+        assertEquals("BookModels(bookDtos=[BookDto(industryIdentifier=null, title=null, subtitle=null, authors=null, categories=null, smallThumbnail=null, canonicalVolumeLink=null, saleability=null, listPriceAmount=0.0, listPriceCurrencyCode=null, retailPriceAmount=0.0, retailPriceCurrencyCode=null, shopName=null, dateAdded=null)])",
                 bookModels.toString());
     }
 

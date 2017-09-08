@@ -21,18 +21,19 @@ public class BookSenderTest {
 
     @Test
     public void testSendingBooks() {
-        BookSender bookSender = new BookSender(getBooks(), getConverterMock());
+        BookSender bookSender = new BookSender(getBookModelsMap().keySet());
         Call<String> serverResponse = mock(Call.class);
         bookSender.sendingRetrofit = getSendingRetrofitMock(serverResponse);
         BookSender.numberOfBooksSentAtOnce = 1;
+        BookSender.sendingTimeInterval = 10;
         bookSender.sendBooksTo("IPADDRESS", "");
-        verify(serverResponse, times(2)).enqueue(any());
+        verify(serverResponse, times(8)).enqueue(any());
     }
 
     @Test
     public void testMarkBooks() {
         AppLogger.initializeLogger();
-        BookSender bookSender = new BookSender(getBooks(), getConverterMock());
+        BookSender bookSender = new BookSender(getBookModelsMap().keySet());
         bookSender.booksToSend = getBookModelsMap();
         bookSender.markBooksAsSent(new ArrayList<>(bookSender.booksToSend.keySet()));
         assertFalse(bookSender.booksSendCounter.containsValue(0));

@@ -19,8 +19,9 @@ import java.util.*;
  */
 @Controller
 public class GreetingController {
-    private static final String BOOKS_STRING = "books";
 
+    private static final String BOOKS_STRING = "books";
+    private static final String STATIC_TEMPLATES_BOOKSTORE = "../static/templates/bookstore";
     private final BookService bookService;
     private BookSearch bookSearch;
 
@@ -35,7 +36,7 @@ public class GreetingController {
         model.addAttribute("id", "Books");
         List<BookDto> books = bookService.getAllBookDtos();
         model.addAttribute(BOOKS_STRING, books);
-        return "../static/templates/bookstore";
+        return STATIC_TEMPLATES_BOOKSTORE;
     }
 
     @RequestMapping("/books/")
@@ -51,21 +52,21 @@ public class GreetingController {
     public String searchController(@RequestParam("content") String content, Model model) {
         List<Book> books = bookSearch.search(content);
         model.addAttribute(BOOKS_STRING, books);
-        return "../static/templates/bookstore";
+        return STATIC_TEMPLATES_BOOKSTORE;
     }
 
     @RequestMapping("/sort")
     public String sortTitleController(@RequestParam(value = "sorting") String sorting, Model model) {
         List<BookDto> books = bookService.getAllBookDtos();
         if(sorting.equals("title")) {
-            Collections.sort(books, Comparator.comparing(BookDto::getTitle));
+            books.sort(Comparator.comparing(BookDto::getTitle));
         } else if(sorting.equals("regularPrice")) {
-            Collections.sort(books, Comparator.comparing(BookDto::getListPriceAmount));
+            books.sort(Comparator.comparing(BookDto::getListPriceAmount));
         } else if(sorting.equals("newPrice")) {
-            Collections.sort(books, Comparator.comparing(BookDto::getRetailPriceAmount));
+            books.sort(Comparator.comparing(BookDto::getRetailPriceAmount));
         }
         model.addAttribute(BOOKS_STRING, books);
-        return "../static/templates/bookstore";
+        return STATIC_TEMPLATES_BOOKSTORE;
     }
 
     @RequestMapping("/advancedSearch")
@@ -96,7 +97,7 @@ public class GreetingController {
         Set<Book> books = bookSearch.advancedSearch(parameters);
         model.addAttribute("books", books);
         model.addAttribute("id", "Search results");
-        return "../static/templates/bookstore";
+        return STATIC_TEMPLATES_BOOKSTORE;
     }
 
     void setImageZoom(BookDto bookDto, int zoom) {

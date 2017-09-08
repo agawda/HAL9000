@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.*;
 
 public class AppLogger {
@@ -85,11 +86,20 @@ public class AppLogger {
             StringBuilder builder = new StringBuilder();
             builder.append(df.format(new Date(record.getMillis()))).append(":");
             if(!formatMessage(record).equals("")) {
-                builder.append("\n");
                 builder.append(formatMessage(record));
             }
             builder.append("\n");
             return builder.toString();
         }
+    }
+
+    public static void logScrappingInfo(String scrapperName, long startTime, long booksSize) {
+        statistics.info(scrapperName+ " scrapping complete, took: " + TimeUnit.SECONDS.convert((System.nanoTime() - startTime), TimeUnit.NANOSECONDS) +"s");
+        statistics.info("Books scrapped from " + scrapperName +": " + booksSize);
+    }
+
+    public static void logSendingBooks(String bookstoreName, long millisWhenStaredSending) {
+        statistics.info("Sending books scrapped from " + bookstoreName + " to server complete, took: "
+                + TimeUnit.SECONDS.convert((System.nanoTime() - millisWhenStaredSending), TimeUnit.NANOSECONDS) + "s");
     }
 }

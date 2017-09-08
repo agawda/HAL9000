@@ -25,8 +25,12 @@ public class BookServiceTestIT {
 
     @Test
     public void testGetAllBooks() {
-        Book book = new Book(1L, "DummyName");
-        Book book1 = new Book(2L, "DummyName1");
+        Book book = new Book();
+        book.setIndustryIdentifier(1L);
+        book.setTitle("DummyName");
+        Book book1 = new Book();
+        book1.setIndustryIdentifier(2L);
+        book1.setTitle("DummyName1");
         bookService.saveBook(book);
         bookService.saveBook(book1);
         List<Book> books = bookService.getAllBooks();

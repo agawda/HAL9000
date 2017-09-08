@@ -1,8 +1,6 @@
 package com.javaacademy.crawler;
 
 import com.javaacademy.crawler.common.booksender.BookSender;
-import com.javaacademy.crawler.common.converters.GoogleBookConverter;
-import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.googlebooks.GoogleScrapper;
@@ -13,12 +11,10 @@ import com.javaacademy.crawler.jsoup.MatrasScrapper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 import static com.javaacademy.crawler.common.logger.AppLogger.logger;
-import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
 
 /**
  * @author devas
@@ -26,44 +22,38 @@ import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
  * @since 24.08.17
  */
 public class App {
+    private static Map<String, Long> crawlersSendBooksStats = new HashMap<>();
+    private static String serverIpAddress;
 
     public static void main(String[] args) {
         AppLogger.initializeLogger();
-        String serverIpAddress = loadIpAddress();
+        serverIpAddress = loadIpAddress();
         if (serverIpAddress.equals("")) return;
-
-        Set<BookModel> bonitoBooks = new BonitoScrapper().scrape();
-        BookSender bonitoBookSender = new BookSender(bonitoBooks);
-        bonitoBookSender.sendBooksTo(serverIpAddress, "Bonito");
-
-        Set<BookModel> gandalfBooks = new GandalfScrapper().scrape();
-        BookSender gandalfBooksSender = new BookSender(gandalfBooks);
-        gandalfBooksSender.sendBooksTo(serverIpAddress, "Gandalf");
-
-        Set<BookModel> matrasBooks = new MatrasScrapper().scrape();
-        BookSender matrasBooksSender = new BookSender(matrasBooks);
-        matrasBooksSender.sendBooksTo(serverIpAddress, "Matras");
-
-        Set<BookModel> czytamBooks = new CzytamScrapper().scrape();
-        BookSender czytamBooksSender = new BookSender(czytamBooks);
-        czytamBooksSender.sendBooksTo(serverIpAddress, "Czytam");
-
-        Set<Book> googleBooks = runGoogleScrapper();
-        BookSender googleBookSender = new BookSender(googleBooks, new GoogleBookConverter());
-        googleBookSender.sendBooksTo(serverIpAddress, "Google");
+        App app = new App();
+        Set<Scrapper> scrappers = new HashSet<>();
+        scrappers.add(new BonitoScrapper());
+        scrappers.add(new GandalfScrapper());
+        scrappers.add(new MatrasScrapper());
+        scrappers.add(new CzytamScrapper());
+        scrappers.add(new GoogleScrapper());
+        app.runApp(scrappers);
     }
 
-    private static Set<Book> runGoogleScrapper() {
-        GoogleScrapper googleScrapper = new GoogleScrapper();
-        googleScrapper.runScrapping();
-
-        while (!googleScrapper.areAllCallbacksDone()) {
-            sleepFor(6000, "");
+    void runApp(Set<Scrapper> scrappers) {
+        for (Scrapper scrapper : scrappers) {
+            Set<BookModel> books = scrapper.scrape();
+            sendScrappedBooks(books, scrapper.getName());
         }
+    }
 
-        Set<Book> books = googleScrapper.getBooks();
-        AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + books.size());
-        return books;
+    private void sendScrappedBooks(Set<BookModel> scrappedBooks, String bookStoreName) {
+        BookSender bookSender = new BookSender(scrappedBooks);
+        sendBookSAndLogInfo(bookSender, bookStoreName);
+    }
+
+    private void sendBookSAndLogInfo(BookSender bookSender, String bookStoreName) {
+        long numberOfSentBooks = bookSender.sendBooksTo(serverIpAddress, bookStoreName);
+        crawlersSendBooksStats.put(bookStoreName, numberOfSentBooks);
     }
 
     private static String loadIpAddress() {

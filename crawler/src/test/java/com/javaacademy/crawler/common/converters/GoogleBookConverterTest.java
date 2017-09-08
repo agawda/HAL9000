@@ -23,7 +23,7 @@ public class GoogleBookConverterTest {
         GoogleBookConverter googleBookConverter = new GoogleBookConverter();
         Set<Book> bookItems = new HashSet<>();
         bookItems.add(bookItem);
-        List<BookModel> convertedBooks = googleBookConverter.convertToDtosWithoutNulls(bookItems);
+        Set<BookModel> convertedBooks = googleBookConverter.convertToDtosWithoutNulls(bookItems);
         assertEquals(convertedBooks.size(), 0);
     }
 

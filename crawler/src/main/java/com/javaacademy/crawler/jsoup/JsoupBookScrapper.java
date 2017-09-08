@@ -1,23 +1,54 @@
 package com.javaacademy.crawler.jsoup;
 
+import com.javaacademy.crawler.Scrapper;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.logging.Level;
+import java.util.Set;
 
 /**
  * @author devas
  * @since 04.09.17
  */
-abstract class JsoupBookScrapper {
+abstract class JsoupBookScrapper implements Scrapper {
 
     private JsoupConnector jsoupConnector = new JsoupConnector();
-    boolean shouldDataBeScrapped = true;
+    private boolean shouldDataBeScrapped = true;
+    int pageStartIndex = 0;
+    int pageEndIndex = 5;
+    String scrapperName;
+    String BASE_URL;
+    String PROMOS_URL;
+
+    static long parseIsbn(String s) {
+        long isbn;
+        try {
+            isbn = Long.parseLong(s);
+        } catch (NumberFormatException e) {
+            return new Random().nextLong();
+        }
+        return isbn;
+    }
+
+    static double parsePrice(String s) {
+        double price;
+        try {
+            price = Double.parseDouble(s);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+        return price;
+    }
+
+    void setPageEndIndex(int pageEndIndex) {
+        this.pageEndIndex = pageEndIndex;
+    }
 
     void setShouldDataBeScrapped(boolean shouldDataBeScrapped) {
         this.shouldDataBeScrapped = shouldDataBeScrapped;
@@ -31,9 +62,31 @@ abstract class JsoupBookScrapper {
         return jsoupConnector.getDoc();
     }
 
-    public abstract Set<BookModel> scrape();
+    abstract Set<String> getLinksFromGrid();
 
-    abstract BookModel parseSinglePage(String link);
+    Set<BookModel> parseSingleGrid() {
+        Set<BookModel> bookModels = new HashSet<>();
+        for (String link : getLinksFromGrid()) {
+            connect(link);
+            BookModel bookModel = parseSinglePage(link);
+            bookModels.add(bookModel);
+        }
+        return bookModels;
+    }
+
+    BookModel parseSinglePage(String link) {
+        if (!shouldDataBeScrapped) return new BookModel();
+        return new BookModel.Builder(
+                getIndustryIdentifier(),
+                getTitle(),
+                getAuthors(),
+                getCategories(),
+                link,
+                getSmallThumbnail(),
+                getListPrice(),
+                getRetailPrice()
+        ).build();
+    }
 
     abstract Long getIndustryIdentifier();
 
@@ -50,28 +103,4 @@ abstract class JsoupBookScrapper {
 
     @SuppressWarnings("Duplicates")
     abstract double getRetailPrice();
-
-    abstract String getLink(Element element);
-
-    static long parseIsbn(String s) {
-        long isbn = 0;
-        try {
-            isbn = Long.parseLong(s);
-        } catch (NumberFormatException e) {
-            AppLogger.logger.log(Level.WARNING, "Exception while parsing ISBN, ", e);
-            return new Random().nextLong();
-        }
-        return isbn;
-    }
-
-    static double parsePrice(String s) {
-        double price = 0;
-        try {
-            price = Double.parseDouble(s);
-        } catch (NumberFormatException e) {
-            AppLogger.logger.log(Level.WARNING, "Exception while parsing price, ", e);
-            return 0;
-        }
-        return price;
-    }
 }

@@ -8,7 +8,10 @@ import org.jsoup.select.Elements;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
+import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsole;
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+import static com.javaacademy.crawler.common.logger.AppLogger.logScrappingInfo;
 
 /**
  * @author devas
@@ -16,56 +19,45 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
  */
 public class CzytamScrapper extends JsoupBookScrapper {
 
-    private static String CZYTAM_BASE_URL = "http://www.czytam.pl";
-    private static String CZYTAM_PROMOS_URL = CZYTAM_BASE_URL + "/ksiazki-promocje,";
-    private int pagesToScrap = 10;
-
-    void setPagesToScrap(int pagesToScrap) {
-        this.pagesToScrap = pagesToScrap;
+    public CzytamScrapper() {
+        scrapperName = "Czytam";
+        BASE_URL = "http://www.czytam.pl";
+        PROMOS_URL = BASE_URL + "/ksiazki-promocje,";
     }
 
     @Override
     public Set<BookModel> scrape() {
-        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Czytam");
+        long scrapperStartTime = System.nanoTime();
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
+        printOnConsole("Scrapping from Czytam\n");
         Set<BookModel> bookModels = new HashSet<>();
-        for (int i = 0; i < pagesToScrap; i++) {
-            connect(CZYTAM_PROMOS_URL + i + ".html");
+        for (int i = pageStartIndex; i < pageEndIndex; i++) {
+            connect(PROMOS_URL + i + ".html");
             bookModels.addAll(parseSingleGrid());
+            displayProgress(i+1, pageEndIndex);
         }
-        return bookModels;
-    }
-
-    private Set<BookModel> parseSingleGrid() {
-        Elements elements = getDoc().select("h3.product-title > a");
-        Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-        Set<String> links = new HashSet<>(sublinks.stream().map(CZYTAM_BASE_URL::concat).collect(Collectors.toSet()));
-        Set<BookModel> bookModels = new HashSet<>();
-        for (String link : links) {
-            connect(link);
-            BookModel bookModel = parseSinglePage(link);
-            bookModels.add(bookModel);
-        }
+        logScrappingInfo(scrapperName, scrapperStartTime, bookModels.size());
         return bookModels;
     }
 
     @Override
-    BookModel parseSinglePage(String link) {
-        if (!shouldDataBeScrapped) return new BookModel();
-        return new BookModel.Builder(
-                getIndustryIdentifier(),
-                getTitle(),
-                getAuthors(),
-                getCategories(),
-                link,
-                getSmallThumbnail(),
-                getListPrice(),
-                getRetailPrice()
-        ).build();
+    public String getName() {
+        return scrapperName;
+    }
+  
+    @Override
+    Set<String> getLinksFromGrid() {
+        Elements elements = getDoc().select("h3.product-title > a");
+        Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
+        return new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
     }
 
     @Override
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("#panel4-2 > p > span:containsOwn(ISBN:)");
+        if (elements.isEmpty()) {
+            elements = getDoc().select("#panel4-2 > p > span:containsOwn(Kod paskowy:)");
+        }
         return elements.isEmpty() ? new Random().nextLong() :
                 parseIsbn(elements.next().text().replace("-", ""));
     }
@@ -106,10 +98,5 @@ public class CzytamScrapper extends JsoupBookScrapper {
         Elements elements = getDoc().select("div.price > strong");
         return elements.isEmpty() ? 0 :
                 parsePrice(elements.first().text().replace(",", ".").replace(" PLN", ""));
-    }
-
-    @Override
-    String getLink(Element element) {
-        return null;
     }
 }

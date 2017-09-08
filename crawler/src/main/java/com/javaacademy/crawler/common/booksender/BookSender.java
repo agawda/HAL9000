@@ -1,8 +1,6 @@
 package com.javaacademy.crawler.common.booksender;
 
 import com.javaacademy.crawler.common.CustomCallback;
-import com.javaacademy.crawler.common.converters.GoogleBookConverter;
-import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.common.model.BookModels;
@@ -11,7 +9,6 @@ import com.javaacademy.crawler.common.retrofit.SendingRetrofit;
 import retrofit2.Call;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.*;
@@ -19,23 +16,15 @@ import static com.javaacademy.crawler.common.util.CrawlerUtils.sleepFor;
 
 public class BookSender {
 
-    Map<BookModel, Boolean> booksToSend; // a map which holds info about whether the book was successfully sent to server
+    Map<BookModel, Boolean> booksToSend; // holds info about whether the book was successfully sent to server
     Map<BookModel, Integer> booksSendCounter;
     static int numberOfBooksSentAtOnce = 20;
+    static int sendingTimeInterval = 1000;
     SendingRetrofit sendingRetrofit = new SendingRetrofit();
-    private long millisWhenStaredSending;
-
-    public BookSender(Set<Book> books, GoogleBookConverter googleBookConverter) {
-        this.booksToSend = new HashMap<>();
-        this.booksSendCounter = new HashMap<>();
-        List<BookModel> bookModels = googleBookConverter.convertToDtosWithoutNulls(books);
-        bookModels.forEach(bookItem ->
-                booksToSend.put(bookItem, false));
-    }
 
     public BookSender(Set<BookModel> books) {
-        this.booksToSend = new HashMap<>();
-        this.booksSendCounter = new HashMap<>();
+        booksToSend = new HashMap<>();
+        booksSendCounter = new HashMap<>();
         books.forEach(bookItem -> booksToSend.put(bookItem, false));
     }
 
@@ -50,25 +39,23 @@ public class BookSender {
         serverResponse.enqueue(new CustomCallback<>(createSuccessfulRequestConsumer(bookModels.getBookDtos())));
     }
 
-    public void sendBooksTo(String serverIp, String bookstoreName) {
+    public long sendBooksTo(String serverIp, String bookstoreName) {
         AppLogger.logger.log(DEFAULT_LEVEL, "Sending books to server from " + bookstoreName);
         int maxNumberOfTries = booksToSend.size() * 2 / numberOfBooksSentAtOnce;
         printOnConsole("Sending scrapped books to server from " + bookstoreName + ", number: " + booksToSend.size() + ":\n");
-        millisWhenStaredSending = System.nanoTime();
+        long millisWhenStaredSending = System.nanoTime();
         for (int i = 0; i < maxNumberOfTries; i++) {
             if (areAllBooksSent()) {
                 break;
             }
             sendBooksTo(serverIp, numberOfBooksSentAtOnce);
-            sleepFor(1000, "when sending books to book server");
-            long progress = (booksToSend.values().stream().filter(aBoolean -> aBoolean).count()
-                    * 100) / booksToSend.size();
-            displayProgress(progress);
+            sleepFor(sendingTimeInterval, "when sending books to book server");
+            displayProgress(booksToSend.values().stream().filter(aBoolean -> aBoolean).count(), booksToSend.size());
         }
         long numberOfSentBooks = booksToSend.values().stream().filter(aBoolean -> aBoolean).count();
-        statistics.info("Sending books scrapped from Google to server complete, took: "
-                + TimeUnit.SECONDS.convert((System.nanoTime() - millisWhenStaredSending), TimeUnit.NANOSECONDS) + "s");
+        logSendingBooks(bookstoreName, millisWhenStaredSending);
         logAndAddStat("Total books sent: " + numberOfSentBooks);
+        return numberOfSentBooks;
     }
 
     private Consumer<String> createSuccessfulRequestConsumer(List<BookModel> processedBooks) {
@@ -101,13 +88,14 @@ public class BookSender {
         logger.log(DEFAULT_LEVEL, "How many times books were sent: " + booksSendCounter.values());
     }
 
-    boolean areAllBooksSent() {
+    private boolean areAllBooksSent() {
         boolean areAllBooksSent = booksToSend.values().stream().allMatch(aBoolean -> aBoolean);
         logger.log(DEFAULT_LEVEL, "Are all books sent: " + areAllBooksSent);
         return areAllBooksSent;
     }
 
-    public static void displayProgress(long progress) {
+    public static void displayProgress(long loopIndex, long maxLooppIndex) {
+        long progress = loopIndex * 100 / maxLooppIndex;
         if (progress > 100) {
             return;
         }

@@ -2,13 +2,15 @@ package com.javaacademy.crawler.jsoup;
 
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
+import static com.javaacademy.crawler.common.booksender.BookSender.printOnConsole;
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
+import static com.javaacademy.crawler.common.logger.AppLogger.logScrappingInfo;
 
 /**
  * @author devas
@@ -16,50 +18,38 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
  */
 public class BonitoScrapper extends JsoupBookScrapper {
 
-    private static String BONITO_BASE_URL = "https://bonito.pl";
-    private static final String BONITO_PROMOS_URL = "https://bonito.pl/wyprzedaz";
-
     public BonitoScrapper() {
-    }
-
-    BonitoScrapper(String link) {
-        BONITO_BASE_URL = link;
+        scrapperName = "Bonito";
+        BASE_URL = "https://bonito.pl";
+        PROMOS_URL = BASE_URL + "/wyprzedaz";
+        pageEndIndex = 1;
     }
 
     @Override
     public Set<BookModel> scrape() {
-        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from Gandalf");
-        connect(BONITO_PROMOS_URL);
-
-        Elements elements = getDoc().getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
-        Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
-
-        Set<String> links = new HashSet<>(sublinks.stream().map(BONITO_BASE_URL::concat).collect(Collectors.toSet()));
-
+        long scrapperStartTime = System.nanoTime();
+        AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
+        printOnConsole("Scrapping from Bonito\n");
         Set<BookModel> bookModels = new HashSet<>();
-
-        for (String link : links) {
-            connect(link);
-            BookModel bookModel = parseSinglePage(link);
-            bookModels.add(bookModel);
+        for (int i = pageStartIndex; i < pageEndIndex; i++) {
+            connect(PROMOS_URL);
+            bookModels.addAll(parseSingleGrid());
+            displayProgress(i, pageEndIndex);
         }
-
+        logScrappingInfo(scrapperName, scrapperStartTime, bookModels.size());
         return bookModels;
     }
 
     @Override
-    BookModel parseSinglePage(String link) {
-        if (!shouldDataBeScrapped) return new BookModel();
-        return new BookModel.Builder(
-                getIndustryIdentifier(),
-                getTitle(),
-                getAuthors(),
-                getCategories(),
-                link,
-                getSmallThumbnail(),
-                getListPrice(),
-                getRetailPrice()
-        ).build();
+    public String getName() {
+        return "Bonito";
+    }
+
+    @Override
+    Set<String> getLinksFromGrid() {
+        Elements elements = getDoc().getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
+        Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
+        return new HashSet<>(sublinks.stream().map(BASE_URL::concat).collect(Collectors.toSet()));
     }
 
     @Override
@@ -111,10 +101,5 @@ public class BonitoScrapper extends JsoupBookScrapper {
     double getRetailPrice() {
         Elements prices = getDoc().select("b:contains(zł)");
         return prices.isEmpty() ? 0 : parsePrice(prices.get(0).html().split(" ")[0].replace(',', '.'));
-    }
-
-    @Override
-    String getLink(Element element) {
-        return null;
     }
 }
