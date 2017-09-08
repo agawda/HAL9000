@@ -63,9 +63,11 @@ public class GoogleScrapperTest {
     @Test
     public void runScrappingTest() {
         GoogleScrapper googleScrapper = new GoogleScrapper();
+        GoogleScrapper.completionWaitingInterval = 1;
+        googleScrapper.isLoopDone = true;
         Controller controller = mock(Controller.class);
         googleScrapper.controller = controller;
-        googleScrapper.runScrapping();
+        googleScrapper.scrape();
         verify(controller, times(1)).getHowManyBooksThereAre(any());
     }
 
