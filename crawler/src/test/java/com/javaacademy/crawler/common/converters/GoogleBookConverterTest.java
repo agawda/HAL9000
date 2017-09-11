@@ -4,6 +4,8 @@ import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.googlebooks.model.BookItem;
 import com.javaacademy.crawler.googlebooks.model.Isbn;
+import org.mockito.Matchers;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -33,9 +35,9 @@ public class GoogleBookConverterTest {
         List<Isbn> isbnList = new ArrayList<>();
         Isbn isbn = mock(Isbn.class);
         isbnList.add(isbn);
-        when(isbn.getIdentifier()).thenReturn("c");
+        when(isbn.getIdentifier()).thenReturn("123123123123");
         Long result = googleBookConverter.getIsbn(isbnList);
-        assertEquals(result, Long.valueOf(-1L));
+        Assert.assertNotNull(result);
     }
 
 }

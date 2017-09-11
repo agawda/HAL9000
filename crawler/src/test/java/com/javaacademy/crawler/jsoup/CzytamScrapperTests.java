@@ -13,7 +13,7 @@ import java.util.Collections;
 public class CzytamScrapperTests {
 
     private static final String LINK = "http://www.czytam.pl/k,ks_677631,Przewodnik-wedrowca-Sztuka-odczytywania-znakow-natury-Gooley-Tristan.html";
-    private static final String TITLE = "Przewodnik wędrowca. Sztuka odczytywania znaków natury";
+    private static final String TITLE = "Przewodnik wędrowca";
 
     public void shouldScrapeTitle() {
         CzytamScrapper czytamScrapper = new CzytamScrapper();

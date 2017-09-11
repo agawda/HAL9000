@@ -9,7 +9,6 @@ import com.javaacademy.crawler.googlebooks.model.SaleInfo;
 import com.javaacademy.crawler.googlebooks.model.VolumeInfo;
 
 import java.util.*;
-
 import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
@@ -41,27 +40,25 @@ public class GoogleBookConverter {
 
     Long getIsbn(List<Isbn> list) {
         Map<String, Long> map = new HashMap<>();
-        for (Isbn isbn :
-                list) {
+        for (Isbn isbn : list) {
             try {
                 String name = isbn.getType();
-                Long value = Long.valueOf(isbn.getIdentifier());
+                Long value = Long.valueOf(isbn.getIdentifier().replaceAll("[^0-9]",""));
                 map.put(name, value);
             } catch (NumberFormatException e) {
                 AppLogger.logger.log(Level.INFO, "Could not parse ISBN", e);
             }
         }
-        return map.getOrDefault("ISBN_13", -1L);
+        return map.getOrDefault("ISBN_13", new Random().nextLong());
     }
 
     public Set<BookModel> convertToDtosWithoutNulls(Set<Book> bookItems) {
         Set<BookModel> models = new HashSet<>();
-        for (Book bookItem :
-                bookItems) {
+        for (Book bookItem : bookItems) {
             try {
                 models.add(convertToDto((BookItem) bookItem));
             } catch (Exception e) {
-                AppLogger.logger.log(Level.WARNING, "Could not convert BookItem: " +bookItem, e);
+                AppLogger.logger.log(Level.WARNING, "Could not convert BookItem: " + bookItem, e);
             }
         }
         return models;
