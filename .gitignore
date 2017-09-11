@@ -123,12 +123,9 @@ npm-debug.log
 testem.log
 /typings
 *.json
-assets
 *.conf.js
 *.d.ts
-.editorconfig
-environments
-polyfills.ts
+
 
 # e2e
 e2e
