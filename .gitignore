@@ -123,9 +123,9 @@ npm-debug.log
 testem.log
 /typings
 *.json
+
 *.conf.js
 *.d.ts
-
 
 # e2e
 e2e
