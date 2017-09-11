@@ -19,3 +19,4 @@ addons:
       - master
       - development
       - code-smells-fixes
+      - jsoup_subtitles
