@@ -14,7 +14,6 @@ import java.util.List;
  * 08.09.2017
  */
 @RestController
-//@Controller
 public class BookRestAPIController {
 
     private BookService bookService;
