@@ -122,13 +122,10 @@ node_modules
 npm-debug.log
 testem.log
 /typings
-*.json
-assets
+package-lock.json
+
 *.conf.js
 *.d.ts
-.editorconfig
-environments
-polyfills.ts
 
 # e2e
 e2e
