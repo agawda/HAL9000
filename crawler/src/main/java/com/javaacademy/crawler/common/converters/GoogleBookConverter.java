@@ -49,7 +49,7 @@ public class GoogleBookConverter {
                 AppLogger.logger.log(Level.INFO, "Could not parse ISBN", e);
             }
         }
-        return map.getOrDefault("ISBN_13", new Random().nextLong());
+        return map.getOrDefault("ISBN_13", Math.abs(new Random().nextLong()));
     }
 
     public Set<BookModel> convertToDtosWithoutNulls(Set<Book> bookItems) {
