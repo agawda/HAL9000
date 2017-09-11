@@ -43,13 +43,14 @@ public class GoogleBookConverter {
         for (Isbn isbn : list) {
             try {
                 String name = isbn.getType();
-                Long value = Long.valueOf(isbn.getIdentifier().replaceAll("[^0-9]",""));
+                Long value = Long.valueOf(isbn.getIdentifier().replaceAll("[^0-9]", ""));
                 map.put(name, value);
             } catch (NumberFormatException e) {
                 AppLogger.logger.log(Level.INFO, "Could not parse ISBN", e);
             }
         }
-        return map.getOrDefault("ISBN_13", new Random().nextLong());
+        long randomLong = new Random().nextLong();
+        return randomLong < 0 ? map.getOrDefault("ISBN_13", -randomLong) : map.getOrDefault("ISBN_13", randomLong);
     }
 
     public Set<BookModel> convertToDtosWithoutNulls(Set<Book> bookItems) {

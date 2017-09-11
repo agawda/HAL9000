@@ -13,8 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
-import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
-import static com.javaacademy.crawler.common.logger.AppLogger.logger;
+import static com.javaacademy.crawler.common.logger.AppLogger.*;
 
 /**
  * @author devas
@@ -43,6 +42,14 @@ public class App {
         for (Scrapper scrapper : scrappers) {
             Set<BookModel> books = scrapper.scrape();
             sendScrappedBooks(books, scrapper.getName());
+        }
+        logResults();
+    }
+
+    private void logResults() {
+        for (String storeName :
+                crawlersSendBooksStats.keySet()) {
+            statistics.info(() -> "Total books from " + storeName + ": " +crawlersSendBooksStats.get(storeName));
         }
     }
 
