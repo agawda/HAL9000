@@ -1,0 +1,12 @@
+img {
+  height: 400px;
+  width: 300px;
+}
+
+#book-container {
+  margin: 40px;
+}
+
+#list-price {
+  margin-left: 2px;
+}
