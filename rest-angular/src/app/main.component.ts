@@ -29,6 +29,10 @@ export class MainComponent {
     this.isSortedByPromo = true;
   }
 
+  search(param: string) {
+    this.books = this.books.filter(book => param in book);
+  }
+
   sortBy(param: string) {
     this.bookService.getBooksSorted(param).subscribe(books => this.books = books);
   }

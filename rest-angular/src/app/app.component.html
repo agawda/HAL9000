@@ -8,12 +8,13 @@
       <input type="checkbox" style="display: none" id="cb">
       <div id="menu">
         <button for="sort-title-ascending">Sort ascending by Title</button>
+        <h1>XD</h1>
       </div>
     </div>
     <div class="col-sm-4">
     <form class="form-inline">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+      <input #searchBox id="search-box" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-info my-2 my-sm-0" (click)="search(searchBox.value)">Search</button>
     </form>
   </div>
   </div>
