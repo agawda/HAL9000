@@ -122,6 +122,7 @@ node_modules
 npm-debug.log
 testem.log
 /typings
+package-lock.json
 
 *.conf.js
 *.d.ts
