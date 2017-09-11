@@ -1,0 +1,37 @@
+<div class="container" id="body">
+  <div class="container">
+    <div class="row text-primary">
+        <span class="col-sm-2">Sort by:</span>
+        <button class="col-sm-2" (click)="sortByTitle()">Title</button>
+        <button class="col-md-2" (click)="sortByAuthor()">Author</button>
+        <button class="col-md-2" (click)="sortByPrice()">Price</button>
+        <button class="col-md-2" (click)="sortByPromo()">Promo</button>
+        <button class="col-sm-2" (click)="reset()">Reset</button>
+    </div>
+  </div>
+  <ol class="list-group">
+    <li class="list-group-item" *ngFor="let book of books">
+      <div class="row justify-content-center">
+        <div class="col-sm-2">
+          <img src="{{book.smallThumbnail}}" />
+        </div>
+        <a class="col-sm-8" [routerLink]="['/books', book.industryIdentifier]">
+          <span class="h4">{{book.title}}</span>
+          <br />
+          <span class="text-muted"> {{book.authors}}</span>
+        </a>
+        <div id="buy-row-center" class="col-sm-2 align-items-center">
+          <div class="row justify-content-center">
+            <a class="btn btn-outline-info my-2 my-sm-0" href="{{book.canonicalVolumeLink}}">{{book.retailPriceAmount}}PLN</a>
+          </div>
+          <div class="row justify-content-center">
+            <span class="promo-details" *ngIf="book.listPriceAmount != 0; else elseBlock">
+              {{this.Math.round(100 - (book.retailPriceAmount * 100) / book.listPriceAmount)}}% lower
+            </span>
+            <ng-template #elseBlock>Free</ng-template>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ol>
+</div>
