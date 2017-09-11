@@ -4,10 +4,7 @@ import com.javaacademy.crawler.Scrapper;
 import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.nodes.Document;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author devas
@@ -22,6 +19,11 @@ abstract class JsoupBookScrapper implements Scrapper {
     String scrapperName;
     String baseUrl;
     String promosUrl;
+
+    @Override
+    public String getName() {
+        return scrapperName;
+    }
 
     static long parseIsbn(String s) {
         long isbn;
@@ -73,7 +75,7 @@ abstract class JsoupBookScrapper implements Scrapper {
 
     BookModel parseSinglePage(String link) {
         if (!shouldDataBeScrapped) return new BookModel();
-        return new BookModel.Builder(
+        BookModel bookModel = new BookModel.Builder(
                 getIndustryIdentifier(),
                 getTitle(),
                 getAuthors(),
@@ -83,6 +85,16 @@ abstract class JsoupBookScrapper implements Scrapper {
                 getListPrice(),
                 getRetailPrice()
         ).build();
+        List<String> strings = Arrays.asList(bookModel.getTitle().split("(\\. )|(! )", 2));
+        Iterator<String> iterator = strings.iterator();
+        if (iterator.hasNext()) {
+            bookModel.setTitle(iterator.next());
+        }
+        if (iterator.hasNext()) {
+            bookModel.setSubtitle(iterator.next());
+        }
+        System.out.println(bookModel);
+        return bookModel;
     }
 
     abstract Long getIndustryIdentifier();

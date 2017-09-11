@@ -41,11 +41,6 @@ public class BonitoScrapper extends JsoupBookScrapper {
     }
 
     @Override
-    public String getName() {
-        return "Bonito";
-    }
-
-    @Override
     Set<String> getLinksFromGrid() {
         Elements elements = getDoc().getElementsByAttributeValueStarting("href", "/k").select("[title=Pokaż...]");
         Set<String> sublinks = new HashSet<>(elements.eachAttr("href"));
