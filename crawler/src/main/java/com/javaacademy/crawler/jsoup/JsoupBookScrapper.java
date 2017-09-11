@@ -93,7 +93,6 @@ abstract class JsoupBookScrapper implements Scrapper {
         if (iterator.hasNext()) {
             bookModel.setSubtitle(iterator.next());
         }
-        System.out.println(bookModel);
         return bookModel;
     }
 
