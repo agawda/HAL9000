@@ -25,7 +25,7 @@ public class BookSender {
     public BookSender(Set<BookModel> books) {
         booksToSend = new HashMap<>();
         booksSendCounter = new HashMap<>();
-        books.forEach(bookItem -> booksToSend.put(bookItem, false));
+        books.forEach(this::validateBookAndAddToMap);
     }
 
     private void sendBooksTo(String serverIp, int numberOfBooks) {
@@ -110,5 +110,17 @@ public class BookSender {
 
     public static void printOnConsole(String s) {
         System.out.print(s);
+    }
+
+    private void validateBookAndAddToMap(BookModel bookModel) {
+        if (bookModel.getListPriceAmount() < bookModel.getRetailPriceAmount()) {
+            return;
+        }
+        if (bookModel.getListPriceAmount() != 0) {
+            if(bookModel.getListPriceAmount() == bookModel.getRetailPriceAmount()) {
+                return;
+            }
+        }
+        booksToSend.put(bookModel, false);
     }
 }
