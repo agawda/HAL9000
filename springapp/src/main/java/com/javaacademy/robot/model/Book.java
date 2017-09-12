@@ -1,5 +1,6 @@
 package com.javaacademy.robot.model;
 
+import com.javaacademy.robot.converters.LocalDatePersistenceConverter;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -66,6 +67,7 @@ public class Book {
     String shopName;
 
     @Column(name = "dateAdded")
+    @Convert(converter = LocalDatePersistenceConverter.class)
     LocalDateTime dateAdded;
 
     public Book() {
