@@ -4,7 +4,6 @@ import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.googlebooks.model.BookItem;
 import com.javaacademy.crawler.googlebooks.model.Isbn;
-import org.mockito.Matchers;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -36,7 +35,7 @@ public class GoogleBookConverterTest {
         Isbn isbn = mock(Isbn.class);
         isbnList.add(isbn);
         when(isbn.getIdentifier()).thenReturn("123123123123");
-        Long result = googleBookConverter.getIsbn(isbnList);
+        Long result = googleBookConverter.getIsbn(isbnList, "");
         Assert.assertNotNull(result);
     }
 
