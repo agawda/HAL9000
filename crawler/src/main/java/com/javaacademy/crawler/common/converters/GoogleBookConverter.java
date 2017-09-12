@@ -24,7 +24,7 @@ public class GoogleBookConverter {
         bookModel.setAuthors(volumeInfo.getAuthors());
         List<Isbn> industryIdentifiers = volumeInfo.getIndustryIdentifiers();
         if (industryIdentifiers != null) {
-            bookModel.setIndustryIdentifier(getIsbn(industryIdentifiers));
+            bookModel.setIndustryIdentifier(getIsbn(industryIdentifiers, bookModel.getTitle()));
         }
         bookModel.setCategories(volumeInfo.getCategories());
         bookModel.setSmallThumbnail(volumeInfo.getImageLinks().getSmallThumbnail());
@@ -38,7 +38,7 @@ public class GoogleBookConverter {
         return bookModel;
     }
 
-    Long getIsbn(List<Isbn> list) {
+    Long getIsbn(List<Isbn> list, String title) {
         Map<String, Long> map = new HashMap<>();
         for (Isbn isbn : list) {
             try {
@@ -49,8 +49,16 @@ public class GoogleBookConverter {
                 AppLogger.logger.log(Level.INFO, "Could not parse ISBN", e);
             }
         }
-        long randomLong = new Random().nextLong();
-        return randomLong < 0 ? map.getOrDefault("ISBN_13", -randomLong) : map.getOrDefault("ISBN_13", randomLong);
+        return map.getOrDefault("ISBN_13", generateIsbn(title));
+    }
+
+    long generateIsbn(String title) {
+        long isbn =  title.hashCode();
+        if(isbn < 0) {
+            return isbn * -1;
+        } else {
+            return isbn;
+        }
     }
 
     public Set<BookModel> convertToDtosWithoutNulls(Set<Book> bookItems) {

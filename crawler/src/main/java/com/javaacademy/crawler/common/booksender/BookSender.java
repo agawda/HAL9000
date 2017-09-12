@@ -25,7 +25,7 @@ public class BookSender {
     public BookSender(Set<BookModel> books) {
         booksToSend = new HashMap<>();
         booksSendCounter = new HashMap<>();
-        books.forEach(bookItem -> booksToSend.put(bookItem, false));
+        books.forEach(this::validateBookAndAddToMap);
     }
 
     private void sendBooksTo(String serverIp, int numberOfBooks) {
@@ -50,7 +50,7 @@ public class BookSender {
             }
             sendBooksTo(serverIp, numberOfBooksSentAtOnce);
             sleepFor(sendingTimeInterval, "when sending books to book server");
-            displayProgress(booksToSend.values().stream().filter(aBoolean -> aBoolean).count(), booksToSend.size());
+            displayProgress(booksToSend.values().stream().filter(aBoolean -> aBoolean).count(), booksToSend.size(), '»');
         }
         long numberOfSentBooks = booksToSend.values().stream().filter(aBoolean -> aBoolean).count();
         logSendingBooks(bookstoreName, millisWhenStaredSending);
@@ -94,21 +94,39 @@ public class BookSender {
         return areAllBooksSent;
     }
 
-    public static void displayProgress(long loopIndex, long maxLooppIndex) {
-        long progress = loopIndex * 100 / maxLooppIndex;
+    public static void displayProgress(long loopIndex, long maxLoopIndex, char loadingCharacter) {
+        long progress = loopIndex * 100 / maxLoopIndex;
         if (progress > 100) {
             return;
         }
         char c;
-        printOnConsole("[");
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
         for (int i = 0; i <= 100; i++) {
-            c = i > progress ? '-' : '|';
-            printOnConsole(Character.toString(c));
+            c = i > progress ? ' ' : loadingCharacter;
+            stringBuilder.append(c);
         }
-        printOnConsole("] " + progress + "%\n");
+        stringBuilder.append("] ").append(progress).append("%\n");
+        printOnConsole(stringBuilder.toString());
+    }
+
+    public static void displayProgress(long loopIndex, long maxLoopIndex) {
+        displayProgress(loopIndex, maxLoopIndex, '▓');
     }
 
     public static void printOnConsole(String s) {
         System.out.print(s);
+    }
+
+    private void validateBookAndAddToMap(BookModel bookModel) {
+        if (bookModel.getListPriceAmount() < bookModel.getRetailPriceAmount()) {
+            return;
+        }
+        if (bookModel.getListPriceAmount() != 0) {
+            if (bookModel.getListPriceAmount() == bookModel.getRetailPriceAmount()) {
+                return;
+            }
+        }
+        booksToSend.put(bookModel, false);
     }
 }

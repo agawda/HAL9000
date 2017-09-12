@@ -70,5 +70,4 @@ public class GoogleBookConverterTest {
         assertEquals(bookModel.getRetailPriceAmount(), retailPriceAmount);
         assertEquals(bookModel.getRetailPriceCurrencyCode(), retailPriceCurrencyCode);
      }
-
 }

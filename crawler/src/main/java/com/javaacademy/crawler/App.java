@@ -12,6 +12,7 @@ import com.javaacademy.crawler.jsoup.MatrasScrapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.logging.Level;
 
 import static com.javaacademy.crawler.common.logger.AppLogger.*;
 
@@ -29,18 +30,24 @@ public class App {
         serverIpAddress = loadIpAddress();
         if (serverIpAddress.equals("")) return;
         App app = new App();
-        Set<Scrapper> scrappers = new HashSet<>();
+        List<Scrapper> scrappers = new ArrayList<>();
+        scrappers.add(new GoogleScrapper());
         scrappers.add(new BonitoScrapper());
+        scrappers.add(new CzytamScrapper());
         scrappers.add(new GandalfScrapper());
         scrappers.add(new MatrasScrapper());
-        scrappers.add(new CzytamScrapper());
-        scrappers.add(new GoogleScrapper());
         app.runApp(scrappers);
     }
 
-    void runApp(Set<Scrapper> scrappers) {
+    void runApp(List<Scrapper> scrappers) {
         for (Scrapper scrapper : scrappers) {
-            Set<BookModel> books = scrapper.scrape();
+            Set<BookModel> books;
+            try {
+                books = scrapper.scrape();
+            } catch (Exception e) {
+                AppLogger.logger.log(Level.WARNING, "Exception during scrapping, " + scrapper.getName(), e);
+                books = scrapper.getScrappedBooks();
+            }
             sendScrappedBooks(books, scrapper.getName());
         }
         logResults();
@@ -49,7 +56,7 @@ public class App {
     private void logResults() {
         for (String storeName :
                 crawlersSendBooksStats.keySet()) {
-            statistics.info(() -> "Total books from " + storeName + ": " +crawlersSendBooksStats.get(storeName));
+            statistics.info(() -> "Total books from " + storeName + ": " + crawlersSendBooksStats.get(storeName));
         }
     }
 

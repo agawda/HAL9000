@@ -1,6 +1,7 @@
 package com.javaacademy.robot.controllers;
 
 import com.javaacademy.robot.model.BookDto;
+import com.javaacademy.robot.service.BookSearch;
 import com.javaacademy.robot.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +18,12 @@ import java.util.List;
 public class BookRestAPIController {
 
     private BookService bookService;
+    private BookSearch bookSearch;
 
     @Autowired
-    public BookRestAPIController(BookService bookService) {
+    public BookRestAPIController(BookService bookService, BookSearch bookSearch) {
         this.bookService = bookService;
+        this.bookSearch = bookSearch;
     }
 
     @RequestMapping("/api/books")
@@ -31,5 +34,10 @@ public class BookRestAPIController {
     @RequestMapping("/api/app")
     public List<BookDto> bookList() {
         return bookService.getAllBookDtos();
+    }
+
+    @RequestMapping("/api/search")
+    public List<BookDto> searchResults(@RequestParam(value = "query") String query) {
+        return bookSearch.search(query);
     }
 }

@@ -7,9 +7,7 @@ import com.javaacademy.crawler.common.retrofit.SendingRetrofit;
 import org.testng.annotations.Test;
 import retrofit2.Call;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -43,6 +41,31 @@ public class BookSenderTest {
     public void testConstruct() {
         BookSender bookSender = new BookSender(getBookModelsMap().keySet());
         assertEquals(bookSender.booksToSend.size(), getBookModelsMap().keySet().size());
+    }
+
+    @Test
+    public void validateBookAndAddToMapTestSamePrices() {
+        Set<BookModel> books = new HashSet<>();
+        double listPrice = 1.0;
+        BookModel bookModel =   mock(BookModel.class);
+        when(bookModel.getListPriceAmount()).thenReturn(listPrice);
+        when(bookModel.getRetailPriceAmount()).thenReturn(listPrice);
+        books.add(bookModel);
+        BookSender bookSender = new BookSender(books);
+        assertEquals(bookSender.booksToSend.size(), 0);
+    }
+
+    @Test
+    public void validateBookAndAddToMapTestLowerPrices() {
+        Set<BookModel> books = new HashSet<>();
+        double listPrice = 1.0;
+        double retailPrice = 2.0;
+        BookModel bookModel =   mock(BookModel.class);
+        when(bookModel.getListPriceAmount()).thenReturn(listPrice);
+        when(bookModel.getRetailPriceAmount()).thenReturn(retailPrice);
+        books.add(bookModel);
+        BookSender bookSender = new BookSender(books);
+        assertEquals(bookSender.booksToSend.size(), 0);
     }
 
     private SendingRetrofit getSendingRetrofitMock(Call<String> serverResponse) {

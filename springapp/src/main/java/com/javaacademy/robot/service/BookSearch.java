@@ -1,6 +1,7 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.model.Book;
+import com.javaacademy.robot.model.BookDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,9 @@ public class BookSearch {
         this.bookService = bookService;
     }
 
-    public List<Book> search(String givenTitle) {
-        List<Book> result = new ArrayList<>();
-        List<Book> allBooks = bookService.getAllBooks();
+    public List<BookDto> search(String givenTitle) {
+        List<BookDto> result = new ArrayList<>();
+        List<BookDto> allBooks = bookService.getAllBookDtos();
         allBooks.forEach(book -> {
             boolean isAdded = false;
             if(book.getTitle().toLowerCase().contains(givenTitle.toLowerCase())) {
@@ -44,9 +45,9 @@ public class BookSearch {
         return result;
     }
 
-    public Set<Book> advancedSearch(Map<String, String> parameters) {
-        Set<Book> result = new HashSet<>();
-        List<Book> allBooks = bookService.getAllBooks();
+    public Set<BookDto> advancedSearch(Map<String, String> parameters) {
+        Set<BookDto> result = new HashSet<>();
+        List<BookDto> allBooks = bookService.getAllBookDtos();
         String givenTitle = parameters.getOrDefault("title", "");
         String givenAuthor = parameters.getOrDefault("author", "");
         String givenCategory = parameters.getOrDefault("category", "");

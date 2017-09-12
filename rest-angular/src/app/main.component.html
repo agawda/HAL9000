@@ -1,3 +1,25 @@
+<nav class="navbar navbar-dark bg-dark navbar-static-top">
+  <div class="container">
+    <div class="col-sm-2">
+      <a class="navbar-brand" href="#">Home</a>
+    </div>
+    <div class="col-md-6">
+      <label for="cb">Menu</label>
+      <input type="checkbox" style="display: none" id="cb">
+      <div id="menu">
+        <button for="sort-title-ascending">Sort ascending by Title</button>
+        <h1>XD</h1>
+      </div>
+    </div>
+    <div class="col-sm-4">
+    <form class="form-inline">
+      <input #searchBox id="search-box" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"
+      (keyup)="searchBooks(searchBox.value)">
+      <button class="btn btn-outline-info my-2 my-sm-0" (click)="searchBooks(searchBox.value)">Search</button>
+    </form>
+  </div>
+  </div>
+</nav>
 <div class="container" id="body">
   <div class="container">
     <div class="row text-primary">
@@ -6,7 +28,7 @@
         <button class="col-md-2" (click)="sortByAuthor()">Author</button>
         <button class="col-md-2" (click)="sortByPrice()">Price</button>
         <button class="col-md-2" (click)="sortByPromo()">Promo</button>
-        <button class="col-sm-2" (click)="reset()">Reset</button>
+        <button class="col-sm-2" (click)="reset()">XD</button>
     </div>
   </div>
   <ol class="list-group">
@@ -18,7 +40,7 @@
         <a class="col-sm-8" [routerLink]="['/books', book.industryIdentifier]">
           <span class="h4">{{book.title}}</span>
           <br />
-          <span class="text-muted"> {{book.authors}}</span>
+          <span class="text-muted"> {{book.authors}} </span>
         </a>
         <div id="buy-row-center" class="col-sm-2 align-items-center">
           <div class="row justify-content-center">
