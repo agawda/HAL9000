@@ -1,6 +1,6 @@
 package com.javaacademy.robot.service;
 
-import com.javaacademy.robot.model.Book;
+import com.javaacademy.robot.model.BookDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,12 +17,12 @@ import static org.mockito.Mockito.when;
 public class BookSearchTest {
 
     private BookService bookServiceMock = mock(BookService.class);
-    private List<Book> bookList;
+    private List<BookDto> bookList;
 
     @Before
     public void setUp() {
-        List<Book> result = new ArrayList<>();
-        Book exampleBook = new Book();
+        List<BookDto> result = new ArrayList<>();
+        BookDto exampleBook = new BookDto();
         exampleBook.setTitle("Keeping Up with the Quants");
         exampleBook.setAuthors(Arrays.asList("Thomas H. Davenport", "Jinho Kim"));
         exampleBook.setCategories(Arrays.asList("Medical", "Thriller"));
@@ -33,40 +33,40 @@ public class BookSearchTest {
 
     @Test
     public void shouldReturnBooksContainingTitleKeyword() {
-        when(bookServiceMock.getAllBooks()).thenReturn(bookList);
+        when(bookServiceMock.getAllBookDtos()).thenReturn(bookList);
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         String givenTitle = "keeping";
 
-        List<Book> givenResults = bookSearch.search(givenTitle);
+        List<BookDto> givenResults = bookSearch.search(givenTitle);
 
         assertEquals(givenResults.size(), 1);
     }
 
     @Test
     public void shouldReturnBooksContainingAuthorKeyword() {
-        when(bookServiceMock.getAllBooks()).thenReturn(bookList);
+        when(bookServiceMock.getAllBookDtos()).thenReturn(bookList);
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         String givenTitle = "davenport";
 
-        List<Book> givenResults = bookSearch.search(givenTitle);
+        List<BookDto> givenResults = bookSearch.search(givenTitle);
 
         assertEquals(givenResults.size(), 1);
     }
 
     @Test
     public void shouldReturnBooksContainingCategoryKeyword() {
-        when(bookServiceMock.getAllBooks()).thenReturn(bookList);
+        when(bookServiceMock.getAllBookDtos()).thenReturn(bookList);
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         String givenTitle = "medical";
 
-        List<Book> givenResults = bookSearch.search(givenTitle);
+        List<BookDto> givenResults = bookSearch.search(givenTitle);
 
         assertEquals(givenResults.size(), 1);
     }
 
     @Test
     public void shouldReturnBooksContainingAllKeywords() {
-        when(bookServiceMock.getAllBooks()).thenReturn(bookList);
+        when(bookServiceMock.getAllBookDtos()).thenReturn(bookList);
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         Map<String, String> query = new HashMap<>();
         query.put("title", "Keeping");
@@ -75,33 +75,33 @@ public class BookSearchTest {
         query.put("minPrice", "50");
         query.put("maxPrice", "100");
 
-        Set<Book> givenResults = bookSearch.advancedSearch(query);
+        Set<BookDto> givenResults = bookSearch.advancedSearch(query);
 
         assertEquals(givenResults.size(), 1);
     }
 
     @Test
     public void shouldReturnBooksContainingMinPrice() {
-        when(bookServiceMock.getAllBooks()).thenReturn(bookList);
+        when(bookServiceMock.getAllBookDtos()).thenReturn(bookList);
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         Map<String, String> query = new HashMap<>();
         query.put("minPrice", "50");
         query.put("maxPrice", "-1.0");
 
-        Set<Book> givenResults = bookSearch.advancedSearch(query);
+        Set<BookDto> givenResults = bookSearch.advancedSearch(query);
 
         assertEquals(givenResults.size(), 1);
     }
 
     @Test
     public void shouldReturnBooksContainingMaxPrice() {
-        when(bookServiceMock.getAllBooks()).thenReturn(bookList);
+        when(bookServiceMock.getAllBookDtos()).thenReturn(bookList);
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         Map<String, String> query = new HashMap<>();
         query.put("minPrice", "-1.0");
         query.put("maxPrice", "100");
 
-        Set<Book> givenResults = bookSearch.advancedSearch(query);
+        Set<BookDto> givenResults = bookSearch.advancedSearch(query);
 
         assertEquals(givenResults.size(), 1);
     }

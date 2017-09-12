@@ -50,7 +50,7 @@ public class GreetingController {
 
     @PostMapping("/search")
     public String searchController(@RequestParam("content") String content, Model model) {
-        List<Book> books = bookSearch.search(content);
+        List<BookDto> books = bookSearch.search(content);
         model.addAttribute(BOOKS_STRING, books);
         return STATIC_TEMPLATES_BOOKSTORE;
     }
@@ -94,7 +94,7 @@ public class GreetingController {
         if(maxPrice.equals("")) {
             parameters.put("maxPrice", "-1.0");
         }
-        Set<Book> books = bookSearch.advancedSearch(parameters);
+        Set<BookDto> books = bookSearch.advancedSearch(parameters);
         model.addAttribute("books", books);
         model.addAttribute("id", "Search results");
         return STATIC_TEMPLATES_BOOKSTORE;
