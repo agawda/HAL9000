@@ -6,6 +6,8 @@ import org.jsoup.nodes.Document;
 
 import java.util.*;
 
+import static com.javaacademy.crawler.common.booksender.BookSender.displayProgress;
+
 /**
  * @author devas
  * @since 04.09.17
@@ -19,10 +21,16 @@ abstract class JsoupBookScrapper implements Scrapper {
     String scrapperName;
     String baseUrl;
     String promosUrl;
+    Set<BookModel> bookModels = new HashSet<>();
 
     @Override
     public String getName() {
         return scrapperName;
+    }
+
+    @Override
+    public Set<BookModel> getScrappedBooks() {
+        return bookModels;
     }
 
     static long parseIsbn(String s) {
@@ -65,10 +73,13 @@ abstract class JsoupBookScrapper implements Scrapper {
 
     Set<BookModel> parseSingleGrid() {
         Set<BookModel> bookModels = new HashSet<>();
-        for (String link : getLinksFromGrid()) {
+        Set<String> linksFromGrRid = getLinksFromGrid();
+        int i = 1;
+        for (String link : linksFromGrRid) {
             connect(link);
             BookModel bookModel = parseSinglePage(link);
             bookModels.add(bookModel);
+            displayProgress(i++, linksFromGrRid.size(), '░');
         }
         return bookModels;
     }

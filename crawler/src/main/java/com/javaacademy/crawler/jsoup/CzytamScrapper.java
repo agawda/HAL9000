@@ -29,7 +29,6 @@ public class CzytamScrapper extends JsoupBookScrapper {
         long scrapperStartTime = System.nanoTime();
         AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
         printOnConsole("Scrapping from Czytam\n");
-        Set<BookModel> bookModels = new HashSet<>();
         for (int i = pageStartIndex; i < pageEndIndex; i++) {
             connect(promosUrl + i + ".html");
             bookModels.addAll(parseSingleGrid());

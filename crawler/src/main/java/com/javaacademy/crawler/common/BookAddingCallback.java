@@ -1,8 +1,9 @@
 package com.javaacademy.crawler.common;
 
-import com.javaacademy.crawler.common.interfaces.Book;
+import com.javaacademy.crawler.common.converters.GoogleBookConverter;
 import com.javaacademy.crawler.common.interfaces.BooksWrapper;
 import com.javaacademy.crawler.common.logger.AppLogger;
+import com.javaacademy.crawler.common.model.BookModel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import retrofit2.Call;
@@ -17,11 +18,11 @@ import static com.javaacademy.crawler.common.logger.AppLogger.DEFAULT_LEVEL;
 @Getter
 @EqualsAndHashCode
 public class  BookAddingCallback<T extends BooksWrapper> implements Callback<T> {
-    private Set<Book> books;
+    private Set<BookModel> books;
     String bookstoreName;
     private RequestStatus requestStatus = RequestStatus.STARTED;
 
-    public BookAddingCallback(Set<Book> books, String bookstoreName) {
+    public BookAddingCallback(Set<BookModel> books, String bookstoreName) {
         this.books = books;
         this.bookstoreName = bookstoreName;
     }
@@ -36,7 +37,7 @@ public class  BookAddingCallback<T extends BooksWrapper> implements Callback<T> 
         if (response.isSuccessful()) {
             try {
                 BooksWrapper bw = response.body();
-                books.addAll(bw.getItems());
+                books.addAll(bw.getItems(new GoogleBookConverter()));
                 AppLogger.logger.log(DEFAULT_LEVEL, "Callback completed");
                 requestStatus = RequestStatus.COMPLETED;
             } catch (Exception e) {

@@ -4,8 +4,6 @@ import com.javaacademy.crawler.Scrapper;
 import com.javaacademy.crawler.common.BookAddingCallback;
 import com.javaacademy.crawler.common.CustomCallback;
 import com.javaacademy.crawler.common.RequestStatus;
-import com.javaacademy.crawler.common.converters.GoogleBookConverter;
-import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import com.javaacademy.crawler.googlebooks.controllers.Controller;
@@ -25,25 +23,30 @@ public class GoogleScrapper implements Scrapper {
     static int sleepTime = 2000;
     static int maxValue = 1_000; //Should not be greater than 1000
     static int completionWaitingInterval = 6000;
-    Set<Book> books = new HashSet<>();
+    Set<BookModel> books = new HashSet<>();
     Set<BookAddingCallback> callbacks = new HashSet<>();
     boolean isLoopDone = false;
     Controller controller = new Controller();
     private long googleScrappingStartTime;
 
+    @Override
     public Set<BookModel> scrape() {
         Consumer<TotalItemsWrapper> consumer =
                 totalItemsWrapper -> collectAllBooksFromGoogle(
                         totalItemsWrapper.getTotalItems()
                 );
         getNumberOfBooksAndStartCollection(consumer);
-        Set<Book> scrappedBooks =  waitForCallbacksToComplete(completionWaitingInterval);
-        return new GoogleBookConverter().convertToDtosWithoutNulls(scrappedBooks);
+        return waitForCallbacksToComplete(completionWaitingInterval);
     }
 
     @Override
     public String getName() {
         return "Google";
+    }
+
+    @Override
+    public Set<BookModel> getScrappedBooks() {
+        return books;
     }
 
     void getNumberOfBooksAndStartCollection(Consumer<TotalItemsWrapper> consumer) {
@@ -59,8 +62,7 @@ public class GoogleScrapper implements Scrapper {
         for (int i = 0; i < numOfBooks; i += step) {
             displayProgress(i, maxValue);
             BookAddingCallback<GoogleBooksWrapper> bookItemBookAddingCallback =
-                    new BookAddingCallback<>(books,
-                            "Google Bookstore " + i + " - " + (i + step));
+                    new BookAddingCallback<>(books, "Google Bookstore " + i + " - " + (i + step));
             callbacks.add(bookItemBookAddingCallback);
             int end = step;
             int nextStep = i + step;
@@ -95,16 +97,16 @@ public class GoogleScrapper implements Scrapper {
         return isLoopDone && areCallbacksDone;
     }
 
-    public Set<Book> getBooks() {
+    public Set<BookModel> getBooks() {
         return books;
     }
 
-    private Set<Book> waitForCallbacksToComplete(int sleepTimeMillis) {
+    private Set<BookModel> waitForCallbacksToComplete(int sleepTimeMillis) {
         while (!areAllCallbacksDone()) {
             sleepFor(sleepTimeMillis, "");
         }
 
-        Set<Book> scrappedBooks = getBooks();
+        Set<BookModel> scrappedBooks = getBooks();
         AppLogger.logger.log(DEFAULT_LEVEL, "All the books collected size is: " + scrappedBooks.size());
         return scrappedBooks;
     }

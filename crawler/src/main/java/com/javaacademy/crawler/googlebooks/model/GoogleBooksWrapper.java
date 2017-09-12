@@ -1,13 +1,13 @@
 package com.javaacademy.crawler.googlebooks.model;
 
-import com.javaacademy.crawler.common.interfaces.Book;
+import com.javaacademy.crawler.common.converters.GoogleBookConverter;
 import com.javaacademy.crawler.common.interfaces.BooksWrapper;
+import com.javaacademy.crawler.common.model.BookModel;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -20,8 +20,8 @@ public class GoogleBooksWrapper implements BooksWrapper {
     List<BookItem> items;
 
     @Override
-    public List<Book> getItems() {
+    public List<BookModel> getItems(GoogleBookConverter googleBookConverter) {
         if(items == null) {return new ArrayList<>();}
-        return items.stream().map((Function<BookItem, Book>) bookItem -> bookItem).collect(Collectors.toList());
+        return items.stream().map(googleBookConverter::convertToDto).collect(Collectors.toList());
     }
 }

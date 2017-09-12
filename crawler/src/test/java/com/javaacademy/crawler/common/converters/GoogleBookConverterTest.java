@@ -12,11 +12,31 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 
 public class GoogleBookConverterTest {
+
+    @Test
+    public void generateIsbnTest() {
+        GoogleBookConverter googleBookConverter = new GoogleBookConverter();
+        String title = "title";
+        long expectedIsbn = title.hashCode();
+        long isbn = googleBookConverter.generateIsbn(title);
+        assertEquals(isbn, expectedIsbn);
+    }
+
+    @Test
+    public void generateIsbnTestNegative() {
+        GoogleBookConverter googleBookConverter = new GoogleBookConverter();
+        String title = "Zarys ginekologii onkologicznej Tom 1-2";
+        long expectedIsbn = title.hashCode();
+        assertTrue(expectedIsbn < 0);
+        long isbn = googleBookConverter.generateIsbn(title);
+        assertTrue(isbn > 0);
+    }
 
     @Test
     public void convertToDtosWithoutNullsTestException() {

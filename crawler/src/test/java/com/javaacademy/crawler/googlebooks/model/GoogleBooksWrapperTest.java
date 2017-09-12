@@ -1,13 +1,16 @@
 package com.javaacademy.crawler.googlebooks.model;
 
+import com.javaacademy.crawler.common.converters.GoogleBookConverter;
+import com.javaacademy.crawler.common.model.BookModel;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.*;
 
 @Test
 public class GoogleBooksWrapperTest {
@@ -18,7 +21,9 @@ public class GoogleBooksWrapperTest {
         books.add(new BookItem());
         GoogleBooksWrapper googleBooksWrapper = new GoogleBooksWrapper();
         googleBooksWrapper.items = books;
-        assertEquals(googleBooksWrapper.getItems().size(), 2);
+        GoogleBookConverter googleBookConverter = mock(GoogleBookConverter.class);
+        when(googleBookConverter.convertToDto(any())).thenReturn(new BookModel());
+        assertEquals(googleBooksWrapper.getItems(googleBookConverter).size(), 2);
     }
 
     public void testToString() {

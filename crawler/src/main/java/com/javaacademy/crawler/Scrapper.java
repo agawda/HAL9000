@@ -9,4 +9,7 @@ public interface Scrapper {
     Set<BookModel> scrape();
 
     String getName();
+
+    Set<BookModel> getScrappedBooks();
+
 }

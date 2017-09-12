@@ -30,7 +30,6 @@ public class BonitoScrapper extends JsoupBookScrapper {
         long scrapperStartTime = System.nanoTime();
         AppLogger.logger.log(DEFAULT_LEVEL, "Scrapping books from " + scrapperName);
         printOnConsole("Scrapping from Bonito\n");
-        Set<BookModel> bookModels = new HashSet<>();
         for (int i = pageStartIndex; i < pageEndIndex; i++) {
             connect(promosUrl);
             bookModels.addAll(parseSingleGrid());

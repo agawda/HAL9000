@@ -1,7 +1,7 @@
 package com.javaacademy.crawler.common;
 
-import com.javaacademy.crawler.common.interfaces.Book;
 import com.javaacademy.crawler.common.interfaces.BooksWrapper;
+import com.javaacademy.crawler.common.model.BookModel;
 import okhttp3.ResponseBody;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -14,13 +14,14 @@ import java.util.Set;
 
 import static com.javaacademy.crawler.common.RequestStatus.COMPLETED;
 import static com.javaacademy.crawler.common.RequestStatus.ERROR;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.*;
 
 public class BookAddingCallbackTest {
     private String bookstoreName = "Test";
-    private Set<Book> books = new HashSet<>();
+    private Set<BookModel> books = new HashSet<>();
     private BookAddingCallback<BooksWrapper> callback;
 
     @BeforeMethod
@@ -37,10 +38,10 @@ public class BookAddingCallbackTest {
     @Test
     public void testOnResponseSuccess() {
         BooksWrapper booksWrapper = mock(BooksWrapper.class);
-        List<Book> booksList = new ArrayList<>();
-        Book book = mock(Book.class);
+        List<BookModel> booksList = new ArrayList<>();
+        BookModel book = mock(BookModel.class);
         booksList.add(book);
-        when(booksWrapper.getItems()).thenReturn(booksList);
+        when(booksWrapper.getItems(any())).thenReturn(booksList);
         Response<BooksWrapper> response = Response.success(booksWrapper);
         callback.onResponse(null, response);
         assertEquals(callback.getRequestStatus(), COMPLETED);

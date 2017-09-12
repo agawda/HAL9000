@@ -49,7 +49,16 @@ public class GoogleBookConverter {
                 AppLogger.logger.log(Level.INFO, "Could not parse ISBN", e);
             }
         }
-        return map.getOrDefault("ISBN_13", (long) title.hashCode());
+        return map.getOrDefault("ISBN_13", generateIsbn(title));
+    }
+
+    long generateIsbn(String title) {
+        long isbn =  title.hashCode();
+        if(isbn < 0) {
+            return isbn * -1;
+        } else {
+            return isbn;
+        }
     }
 
     public Set<BookModel> convertToDtosWithoutNulls(Set<Book> bookItems) {
