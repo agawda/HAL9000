@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BookService } from './book.service';
 import { Book } from './book';
+
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
 
 
 @Component({
@@ -29,8 +32,10 @@ export class MainComponent {
     this.isSortedByPromo = true;
   }
 
-  search(param: string) {
-    this.books = this.books.filter(book => param in book);
+  searchBooks(param: string) {
+    this.bookService.searchBooks(param).then(books => {
+      this.books = books;
+    });
   }
 
   sortBy(param: string) {
@@ -118,6 +123,8 @@ export class MainComponent {
   sortByPromo() {
     if (this.isSortedByPromo) {
       this.books.sort((a: any, b: any) => {
+        if(a.listPriceAmount === 0) return -1;
+        if(b.listPriceAmount === 0) return 1;
         const aPromo = 100 - (a.retailPriceAmount * 100 / a.listPriceAmount);
         const bPromo = 100 - (b.retailPriceAmount * 100 / b.listPriceAmount);
         if (aPromo < bPromo) {
@@ -131,6 +138,8 @@ export class MainComponent {
       this.isSortedByPromo = false;
     } else {
       this.books.sort((a: any, b: any) => {
+        if(a.listPriceAmount === 0) return 1;
+        if(b.listPriceAmount === 0) return -1;
         const aPromo = 100 - (a.retailPriceAmount * 100 / a.listPriceAmount);
         const bPromo = 100 - (b.retailPriceAmount * 100 / b.listPriceAmount);
         if (aPromo < bPromo) {

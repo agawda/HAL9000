@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class GreetingControllerTest {
+public class GreetingControllerTestIT {
     private String mediaTypeTextUtf8 = "text/html;charset=UTF-8";
     private String urlTemplateSort = "/sort";
     private String sortingString = "sorting";

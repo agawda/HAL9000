@@ -1,6 +1,7 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.model.Book;
+import com.javaacademy.robot.model.BookDto;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,7 +38,7 @@ public class BookSearchTest {
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         String givenTitle = "keeping";
 
-        List<Book> givenResults = bookSearch.search(givenTitle);
+        List<BookDto> givenResults = bookSearch.search(givenTitle);
 
         assertEquals(givenResults.size(), 1);
     }
@@ -48,7 +49,7 @@ public class BookSearchTest {
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         String givenTitle = "davenport";
 
-        List<Book> givenResults = bookSearch.search(givenTitle);
+        List<BookDto> givenResults = bookSearch.search(givenTitle);
 
         assertEquals(givenResults.size(), 1);
     }
@@ -59,7 +60,7 @@ public class BookSearchTest {
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         String givenTitle = "medical";
 
-        List<Book> givenResults = bookSearch.search(givenTitle);
+        List<BookDto> givenResults = bookSearch.search(givenTitle);
 
         assertEquals(givenResults.size(), 1);
     }
@@ -75,7 +76,7 @@ public class BookSearchTest {
         query.put("minPrice", "50");
         query.put("maxPrice", "100");
 
-        Set<Book> givenResults = bookSearch.advancedSearch(query);
+        Set<BookDto> givenResults = bookSearch.advancedSearch(query);
 
         assertEquals(givenResults.size(), 1);
     }
@@ -88,7 +89,7 @@ public class BookSearchTest {
         query.put("minPrice", "50");
         query.put("maxPrice", "-1.0");
 
-        Set<Book> givenResults = bookSearch.advancedSearch(query);
+        Set<BookDto> givenResults = bookSearch.advancedSearch(query);
 
         assertEquals(givenResults.size(), 1);
     }
@@ -101,7 +102,7 @@ public class BookSearchTest {
         query.put("minPrice", "-1.0");
         query.put("maxPrice", "100");
 
-        Set<Book> givenResults = bookSearch.advancedSearch(query);
+        Set<BookDto> givenResults = bookSearch.advancedSearch(query);
 
         assertEquals(givenResults.size(), 1);
     }
