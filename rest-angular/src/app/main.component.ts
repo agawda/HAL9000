@@ -1,17 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BookService } from './book.service';
 import { Book } from './book';
-
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-
 
 @Component({
   selector: 'app-books',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
+
 export class MainComponent {
   title = 'books';
 
@@ -156,5 +153,9 @@ export class MainComponent {
 
   reset() {
     this.bookService.getBook().subscribe(books => this.books = books);
+  }
+
+  filter(title: string, author: string, category: string, bookstore: string, min: number, max: number) {
+
   }
 }
