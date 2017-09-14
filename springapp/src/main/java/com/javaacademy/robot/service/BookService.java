@@ -7,6 +7,7 @@ import com.javaacademy.robot.model.BookDto;
 import com.javaacademy.robot.model.BookModels;
 import com.javaacademy.robot.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ public class BookService {
 
     private BookRepository bookRepository;
     private BookConverter bookConverter;
+
+    private static final int ENTRIES_PER_PAGE = 20;
 
     public BookService(@Autowired BookRepository bookRepository, @Autowired BookConverter bookConverter) {
         this.bookRepository = bookRepository;
@@ -66,6 +69,10 @@ public class BookService {
         for (Book book : books) {
             saveBook(book);
         }
+    }
+
+    public List<Book> findAll(int pageId) {
+        return bookRepository.findAll(new PageRequest(pageId, ENTRIES_PER_PAGE)).getContent();
     }
 
     public List<BookDto> getAllBookDtos() {

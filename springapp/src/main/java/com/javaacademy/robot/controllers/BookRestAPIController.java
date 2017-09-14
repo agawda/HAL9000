@@ -1,9 +1,11 @@
 package com.javaacademy.robot.controllers;
 
+import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
 import com.javaacademy.robot.service.BookSearch;
 import com.javaacademy.robot.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,5 +41,15 @@ public class BookRestAPIController {
     @RequestMapping("/api/search")
     public List<BookDto> searchResults(@RequestParam(value = "query") String query) {
         return bookSearch.search(query);
+    }
+
+    @RequestMapping("/api/pages")
+    public List<Book> getPage(@RequestParam(value = "id") int pageId) {
+        return bookService.findAll(pageId);
+    }
+
+    @RequestMapping("/api/booksTotal")
+    public Integer getBooksNumber() {
+        return bookService.getAllBookDtos().size();
     }
 }

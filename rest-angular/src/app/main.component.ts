@@ -21,15 +21,34 @@ export class MainComponent {
   isSortedByAuthor: boolean;
   isSortedByPrice: boolean;
   isSortedByPromo: boolean;
+  currentPage: number;
+  maxPages: number;
 
 
   constructor(private bookService: BookService, private router: Router) {
-    bookService.getBook().subscribe(books => this.books = books);
     this.Math = Math;
     this.isSortedByTitle = true;
     this.isSortedByAuthor = true;
     this.isSortedByPrice = true;
     this.isSortedByPromo = true;
+    this.currentPage = 0;
+    bookService.getTotalBooks().then(maxBooks => {
+      this.maxPages = Math.ceil(maxBooks/20);
+    });
+    bookService.getPage(this.currentPage).then(books => this.books = books);
+  }
+
+  nextPage() {
+    if(this.currentPage === this.maxPages) return;
+    this.currentPage++;
+    this.bookService.getPage(this.currentPage).then(books => this.books = books);
+    console.log(this.currentPage);
+  }
+
+  previousPage() {
+    if(this.currentPage === 0) return;
+    this.currentPage--;
+    this.bookService.getPage(this.currentPage).then(books => this.books = books);
   }
 
   searchBooks(param: string) {
@@ -155,6 +174,6 @@ export class MainComponent {
   }
 
   reset() {
-    this.bookService.getBook().subscribe(books => this.books = books);
+    this.bookService.getPage(this.currentPage).then(books => this.books = books);
   }
 }

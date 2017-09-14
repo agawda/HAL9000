@@ -5,6 +5,7 @@ import { Book } from "./book";
 
 @Injectable()
 export class BookService {
+  private basePageUrl = "http://localhost:8080/api/pages/?id=";
   private baseSortUrl = "http://localhost:8080/api/sorted/?sorted=";
   private baseSearchUrl = "http://localhost:8080/api/search/?query=";
 
@@ -15,6 +16,21 @@ export class BookService {
         return this.http.get("http://localhost:8080/api/app")
          .map((res: Response) => res.json() as Book[])
          .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+   }
+
+   getPage(page: number): Promise<Book[]> {
+     const url = `${this.basePageUrl}${page}`;
+     return this.http.get(url)
+     .toPromise()
+     .then(response => response.json())
+     .catch(this.handleError);
+   }
+
+   getTotalBooks(): Promise<number> {
+     return this.http.get("http://localhost:8080/api/booksTotal")
+      .toPromise()
+      .then(response => response.json())
+      .catch(this.handleError);
    }
 
    getBooksSorted(param: string): Observable<Book[]> {
