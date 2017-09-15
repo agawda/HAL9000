@@ -55,9 +55,11 @@ public class BookConverterTest {
         Book book1 = new Book();
         book1.setTitle("Title");
         book1.setSubtitle("Subtitle1");
+        book1.setAuthors(new ArrayList<>());
         Book book2 = new Book();
         book2.setTitle("Title2");
         book2.setSubtitle("Subtitle2");
+        book2.setAuthors(new ArrayList<>());
         List<Book> books = new ArrayList<>(Arrays.asList(book1, book2));
 
         BookConverter bookConverter = new BookConverter();
@@ -78,7 +80,7 @@ public class BookConverterTest {
     public void recognizeShopNameTest() {
         BookConverter bookConverter = new BookConverter();
         BookConverter.Shop[] shops = BookConverter.Shop.values();
-        for (BookConverter.Shop shop :shops) {
+        for (BookConverter.Shop shop : shops) {
             BookDto bookDto = new BookDto();
             bookDto.setCanonicalVolumeLink("http://" + shop.getStoreAddress() + "/");
             assertEquals(shop.toString(), bookConverter.recognizeShopName(bookDto));
@@ -100,7 +102,7 @@ public class BookConverterTest {
         BookConverter bookConverter = new BookConverter();
         double listPriceDiscount = 2;
         double retailPriceAmount = 1;
-        byte result  = bookConverter.calculateDiscount(listPriceDiscount, retailPriceAmount);
+        byte result = bookConverter.calculateDiscount(listPriceDiscount, retailPriceAmount);
         assertEquals(result, 50);
     }
 
@@ -109,8 +111,23 @@ public class BookConverterTest {
         BookConverter bookConverter = new BookConverter();
         double listPriceDiscount = 0;
         double retailPriceAmount = 0;
-        byte result  = bookConverter.calculateDiscount(listPriceDiscount, retailPriceAmount);
+        byte result = bookConverter.calculateDiscount(listPriceDiscount, retailPriceAmount);
         assertEquals(result, 0);
+    }
+
+    @Test
+    public void parseAuthorsTest() {
+        BookConverter bookConverter = new BookConverter();
+        List<String> authors = new ArrayList<>();
+        authors.add("WTF");
+        assertEquals(authors, bookConverter.parseAuthors(authors));
+    }
+
+    @Test
+    public void parseAuthorsTestNull() {
+        BookConverter bookConverter = new BookConverter();
+        List<String> authors = null;
+        assertEquals(new ArrayList<>(), bookConverter.parseAuthors(authors));
     }
 
     @Test(expected = IllegalArgumentException.class)
