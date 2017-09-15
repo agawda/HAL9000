@@ -66,6 +66,8 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
     List<String> parseAuthors(List<String> authors) {
         if(authors == null) {
             return Collections.emptyList();
+        }else if (authors.size() == 1 && authors.get(0).equals("")) {
+            return Collections.emptyList();
         } else {
             return authors;
         }
