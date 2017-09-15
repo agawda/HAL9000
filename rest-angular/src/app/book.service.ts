@@ -6,7 +6,7 @@ import { Book } from "./book";
 @Injectable()
 export class BookService {
   private basePageUrl = "http://localhost:8080/api/pages/?id=";
-  private baseSortUrl = "http://localhost:8080/api/sorted/?sorted=";
+  private baseSortUrl = "http://localhost:8080/api/sort?type=title&order=ascending&pageId=0";
   private baseSearchUrl = "http://localhost:8080/api/search/?query=";
 
    constructor(private http: Http) {
@@ -34,7 +34,7 @@ export class BookService {
    }
 
    getBooksSorted(param: string): Observable<Book[]> {
-     const url = `${this.baseSortUrl}${param}`;
+     const url = `${this.baseSortUrl}`;
      console.log(url);
      return this.http.get(url)
      .map((res: Response) => res.json() as Book[])

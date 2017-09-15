@@ -62,29 +62,30 @@ export class MainComponent {
   }
 
   sortByTitle() {
-    if (this.isSortedByTitle) {
-      this.books.sort((a: any, b: any) => {
-        if (a.title < b.title) {
-          return -1;
-        } else if (a.title > b.title) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      this.isSortedByTitle = false;
-    } else {
-      this.books.sort((a: any, b: any) => {
-        if (a.title < b.title) {
-          return 1;
-        } else if (a.title > b.title) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      this.isSortedByTitle = true;
-    }
+    this.bookService.getBooksSorted("a").subscribe(books => this.books = books);
+    // if (this.isSortedByTitle) {
+    //   this.books.sort((a: any, b: any) => {
+    //     if (a.title < b.title) {
+    //       return -1;
+    //     } else if (a.title > b.title) {
+    //       return 1;
+    //     } else {
+    //       return 0;
+    //     }
+    //   });
+    //   this.isSortedByTitle = false;
+    // } else {
+    //   this.books.sort((a: any, b: any) => {
+    //     if (a.title < b.title) {
+    //       return 1;
+    //     } else if (a.title > b.title) {
+    //       return -1;
+    //     } else {
+    //       return 0;
+    //     }
+    //   });
+    //   this.isSortedByTitle = true;
+    // }
   }
 
   sortByAuthor() {

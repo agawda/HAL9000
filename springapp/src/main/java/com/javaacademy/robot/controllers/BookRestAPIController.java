@@ -1,11 +1,11 @@
 package com.javaacademy.robot.controllers;
 
+import com.javaacademy.robot.helpers.FilterType;
 import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
 import com.javaacademy.robot.service.BookSearch;
 import com.javaacademy.robot.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,5 +54,14 @@ public class BookRestAPIController {
     @RequestMapping("/api/booksTotal")
     public Integer getBooksNumber() {
         return bookService.getAllBookDtos().size();
+    }
+
+    @RequestMapping("/api/sort")
+    public ResponseEntity<List<BookDto>> sortedBooks(
+            @RequestParam(value = "type") String type,
+            @RequestParam(value = "order") String order,
+            @RequestParam(value = "pageId") int pageId) {
+        FilterType filterType = FilterType.valueOf(type.toUpperCase() + "_" + order.toUpperCase());
+        return ResponseEntity.ok(bookService.findAll(filterType, pageId));
     }
 }

@@ -1,6 +1,7 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.converters.BookConverter;
+import com.javaacademy.robot.helpers.FilterType;
 import com.javaacademy.robot.logger.ServerLogger;
 import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
@@ -8,9 +9,11 @@ import com.javaacademy.robot.model.BookModels;
 import com.javaacademy.robot.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,6 +76,55 @@ public class BookService {
 
     public List<Book> findAll(int pageId) {
         return bookRepository.findAll(new PageRequest(pageId, ENTRIES_PER_PAGE)).getContent();
+    }
+
+    public List<BookDto> findAll() {
+        return findAll();
+    }
+
+    public List<BookDto> findAll(FilterType filterType, int pageId) {
+        List<Book> books = Collections.emptyList();
+        switch(filterType) {
+            case TITLE_ASCENDING:
+                books = getFilteredBooks(pageId, Sort.Direction.ASC, "title");
+                break;
+            case TITLE_DESCENGING:
+                books = getFilteredBooks(pageId, Sort.Direction.DESC, "title");
+                break;
+            case AUTHOR_ASCENDING:
+                books = getFilteredBooks(pageId, Sort.Direction.ASC, "authors");
+                break;
+            case AUTHOR_DESCENDING:
+                books = getFilteredBooks(pageId, Sort.Direction.DESC, "authors");
+                break;
+            case CATEGORY_ASCENDING:
+                books = getFilteredBooks(pageId, Sort.Direction.ASC, "category");
+                break;
+            case CATEGORY_DESCENDING:
+                books = getFilteredBooks(pageId, Sort.Direction.DESC, "category");
+                break;
+            case PRICE_ASCENDING:
+                books = getFilteredBooks(pageId, Sort.Direction.ASC, "retailPriceAmount");
+                break;
+            case PRICE_DESCENDING:
+                books = getFilteredBooks(pageId, Sort.Direction.DESC, "retailPriceAmount");
+                break;
+            case PROMO_ASCENDING:
+                books = getFilteredBooks(pageId, Sort.Direction.DESC, "promo");
+                break;
+            case PROMO_DESCENDING:
+                books = getFilteredBooks(pageId, Sort.Direction.DESC, "promo");
+                break;
+
+        }
+        return bookConverter.toDtos(books);
+    }
+
+    private List<Book> getFilteredBooks(int pageId, Sort.Direction direction, String param) {
+        List<Book> books;
+        books = bookRepository.findAll(
+                new PageRequest(pageId, ENTRIES_PER_PAGE, direction, param)).getContent();
+        return books;
     }
 
     public List<BookDto> getAllBookDtos() {
