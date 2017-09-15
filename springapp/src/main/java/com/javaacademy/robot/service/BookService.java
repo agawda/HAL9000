@@ -118,11 +118,11 @@ public class BookService {
             case PRICE_DESCENDING:
                 books = getFilteredBooks(pageId, Sort.Direction.DESC, "retailPriceAmount");
                 break;
-            case PROMO_ASCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "promo");
+            case DISCOUNT_ASCENDING:
+                books = getFilteredBooks(pageId, Sort.Direction.ASC, "discount");
                 break;
-            case PROMO_DESCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "promo");
+            case DISCOUNT_DESCENDING:
+                books = getFilteredBooks(pageId, Sort.Direction.DESC, "discount");
                 break;
 
         }

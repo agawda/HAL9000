@@ -89,34 +89,10 @@ export class MainComponent {
 
   sortByPromo() {
     if (this.isSortedByPromo) {
-      this.books.sort((a: any, b: any) => {
-        if(a.listPriceAmount === 0) return -1;
-        if(b.listPriceAmount === 0) return 1;
-        const aPromo = 100 - (a.retailPriceAmount * 100 / a.listPriceAmount);
-        const bPromo = 100 - (b.retailPriceAmount * 100 / b.listPriceAmount);
-        if (aPromo < bPromo) {
-          return -1;
-        } else if (aPromo > bPromo) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
+      this.sortRequestAscending("discount");
       this.isSortedByPromo = false;
     } else {
-      this.books.sort((a: any, b: any) => {
-        if(a.listPriceAmount === 0) return 1;
-        if(b.listPriceAmount === 0) return -1;
-        const aPromo = 100 - (a.retailPriceAmount * 100 / a.listPriceAmount);
-        const bPromo = 100 - (b.retailPriceAmount * 100 / b.listPriceAmount);
-        if (aPromo < bPromo) {
-          return 1;
-        } else if (aPromo > bPromo) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
+      this.sortRequestDescending("discount");
       this.isSortedByPromo = true;
     }
   }
