@@ -4,6 +4,7 @@ import com.javaacademy.robot.model.BookDto;
 import com.javaacademy.robot.service.BookSearch;
 import com.javaacademy.robot.service.BookService;
 import org.junit.Test;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,9 +39,9 @@ public class BookRestAPIControllerTest {
         BookDto expectedBook = new BookDto();
         expectedBook.setIndustryIdentifier(id);
         when(bookService.getBookByIsbn(id)).thenReturn(expectedBook);
-        BookDto givenBook = bookRestAPIController.bookRequestById(id);
+        ResponseEntity<BookDto> givenBook = bookRestAPIController.bookRequestById(id);
 
-        assertEquals(expectedBook, givenBook);
+        assertEquals(expectedBook, givenBook.getBody());
     }
 
     @Test
