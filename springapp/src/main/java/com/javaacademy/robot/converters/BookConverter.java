@@ -5,9 +5,7 @@ import com.javaacademy.robot.model.BookDto;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -40,7 +38,7 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         book.setIndustryIdentifier(dto.getIndustryIdentifier());
         book.setTitle(dto.getTitle());
         book.setSubtitle(dto.getSubtitle());
-        book.setAuthors(dto.getAuthors());
+        book.setAuthors(parseAuthors(dto.getAuthors()));
         book.setCategories(dto.getCategories());
         book.setSmallThumbnail(dto.getSmallThumbnail());
         book.setCanonicalVolumeLink(dto.getCanonicalVolumeLink());
@@ -63,6 +61,14 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
     @Override
     public List<BookDto> toDtos(List<Book> entities) {
         return entities.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    List<String> parseAuthors(List<String> authors) {
+        if(authors == null) {
+            return Collections.emptyList();
+        } else {
+            return authors;
+        }
     }
 
     String recognizeShopName(BookDto bookDto) {
