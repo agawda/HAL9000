@@ -1,6 +1,7 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.model.Book;
+import com.javaacademy.robot.model.BookDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,10 @@ public class BookServiceTestIT {
 
     @Test
     public void testGetAllBooks() {
-        Book book = new Book();
+        BookDto book = new BookDto();
         book.setIndustryIdentifier(1L);
         book.setTitle("DummyName");
-        Book book1 = new Book();
+        BookDto book1 = new BookDto();
         book1.setIndustryIdentifier(2L);
         book1.setTitle("DummyName1");
         bookService.saveBook(book);

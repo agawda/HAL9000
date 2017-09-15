@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static com.javaacademy.robot.logger.ServerLogger.DEFAULT_LEVEL;
@@ -38,14 +39,22 @@ public class BookService {
         try {
             savedBook = bookRepository.save(book);
         } catch (Exception e) {
-            logger.log(DEFAULT_LEVEL, "Could not save the book " + book + ", exception: " +e.getMessage());
+            logger.log(DEFAULT_LEVEL, "Could not save the book " + book + ", exception: " + e.getMessage());
         }
         return book.equals(savedBook);
     }
 
     public boolean saveBook(BookDto bookDto) {
-        Book convertedEntity = bookConverter.toEntity(bookDto);
-        return saveBook(convertedEntity);
+        System.out.println(bookDto);
+        try {
+            System.out.println("Converting");
+            Book convertedEntity = bookConverter.toEntity(bookDto);
+            System.out.println("convertedEntity = " + convertedEntity);
+            return saveBook(convertedEntity);
+        } catch (IllegalArgumentException e) {
+            logger.log(Level.WARNING, "Could not parse book because prices were incorrect: ", e);
+        }
+        return false;
     }
 
     List<Book> getAllBooks() {
@@ -84,7 +93,7 @@ public class BookService {
 
     public List<BookDto> findAll(FilterType filterType, int pageId) {
         List<Book> books = Collections.emptyList();
-        switch(filterType) {
+        switch (filterType) {
             case TITLE_ASCENDING:
                 books = getFilteredBooks(pageId, Sort.Direction.ASC, "title");
                 break;
