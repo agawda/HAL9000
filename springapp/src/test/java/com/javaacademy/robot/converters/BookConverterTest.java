@@ -24,9 +24,10 @@ public class BookConverterTest {
         book.setSmallThumbnail("SmallThumb");
         book.setCanonicalVolumeLink("CanonLink");
         book.setSaleability("Saleability");
-        book.setListPriceAmount(10.0);
+        book.setListPriceAmount(30.0);
         book.setListPriceCurrencyCode("listCurrCode");
         book.setRetailPriceAmount(20.0);
+        book.setDiscount(new BookConverter().calculateDiscount(30, 20));
         book.setRetailPriceCurrencyCode("retailCurr");
 
         BookConverter bookConverter = new BookConverter();
@@ -92,5 +93,31 @@ public class BookConverterTest {
         bookDto.setCanonicalVolumeLink(s);
         String result = bookConverter.recognizeShopName(bookDto);
         assertEquals(result, "UNKNOWN");
+    }
+
+    @Test
+    public void calculateDiscountTest() {
+        BookConverter bookConverter = new BookConverter();
+        double listPriceDiscount = 2;
+        double retailPriceAmount = 1;
+        byte result  = bookConverter.calculateDiscount(listPriceDiscount, retailPriceAmount);
+        assertEquals(result, 50);
+    }
+
+    @Test
+    public void calculateDiscountTestZero() {
+        BookConverter bookConverter = new BookConverter();
+        double listPriceDiscount = 0;
+        double retailPriceAmount = 0;
+        byte result  = bookConverter.calculateDiscount(listPriceDiscount, retailPriceAmount);
+        assertEquals(result, 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void calculateDiscountTestException() {
+        BookConverter bookConverter = new BookConverter();
+        double listPriceDiscount = 1;
+        double retailPriceAmount = 3;
+        bookConverter.calculateDiscount(listPriceDiscount, retailPriceAmount);
     }
 }

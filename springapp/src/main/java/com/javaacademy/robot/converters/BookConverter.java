@@ -30,6 +30,7 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         bookDto.setRetailPriceCurrencyCode(entity.getRetailPriceCurrencyCode());
         bookDto.setDateAdded(entity.getDateAdded());
         bookDto.setShopName(entity.getShopName());
+        bookDto.setDiscount(entity.getDiscount());
         return bookDto;
     }
 
@@ -50,6 +51,7 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         book.setRetailPriceCurrencyCode(dto.getRetailPriceCurrencyCode());
         book.setDateAdded(LocalDateTime.now());
         book.setShopName(recognizeShopName(dto));
+        book.setDiscount(calculateDiscount(dto.getListPriceAmount(), dto.getRetailPriceAmount()));
         return book;
     }
 
@@ -65,15 +67,25 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
 
     String recognizeShopName(BookDto bookDto) {
         String link = bookDto.getCanonicalVolumeLink();
-        if(link != null && link.contains("//")) {
+        if (link != null && link.contains("//")) {
             String[] linkParts = bookDto.getCanonicalVolumeLink().split("/");
-            if(linkParts.length > 1) {
+            if (linkParts.length > 1) {
                 String shopLinkFirstPart = bookDto.getCanonicalVolumeLink().split("/")[2];
                 return Shop.getStoreName(shopLinkFirstPart).toString();
             }
             return Shop.UNKNOWN.toString();
         }
         return Shop.UNKNOWN.toString();
+    }
+
+    byte calculateDiscount(double listPriceAmount, double retailPriceAmount) {
+        if(listPriceAmount < retailPriceAmount) {
+            throw new IllegalArgumentException("List price cannot be lower than retail price");
+        }
+        if (listPriceAmount == 0) {
+            return 0;
+        }
+        return (byte) (100 - (retailPriceAmount * 100 / listPriceAmount));
     }
 
     enum Shop {
