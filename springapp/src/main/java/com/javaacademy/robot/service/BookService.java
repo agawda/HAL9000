@@ -88,13 +88,13 @@ public class BookService {
             case TITLE_ASCENDING:
                 books = getFilteredBooks(pageId, Sort.Direction.ASC, "title");
                 break;
-            case TITLE_DESCENGING:
+            case TITLE_DESCENDING:
                 books = getFilteredBooks(pageId, Sort.Direction.DESC, "title");
                 break;
-            case AUTHOR_ASCENDING:
+            case AUTHORS_ASCENDING:
                 books = getFilteredBooks(pageId, Sort.Direction.ASC, "authors");
                 break;
-            case AUTHOR_DESCENDING:
+            case AUTHORS_DESCENDING:
                 books = getFilteredBooks(pageId, Sort.Direction.DESC, "authors");
                 break;
             case CATEGORY_ASCENDING:

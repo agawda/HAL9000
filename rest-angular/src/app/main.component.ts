@@ -57,85 +57,32 @@ export class MainComponent {
     });
   }
 
-  sortBy(param: string) {
-    this.bookService.getBooksSorted(param).subscribe(books => this.books = books);
-  }
-
   sortByTitle() {
-    this.bookService.getBooksSorted("a").subscribe(books => this.books = books);
-    // if (this.isSortedByTitle) {
-    //   this.books.sort((a: any, b: any) => {
-    //     if (a.title < b.title) {
-    //       return -1;
-    //     } else if (a.title > b.title) {
-    //       return 1;
-    //     } else {
-    //       return 0;
-    //     }
-    //   });
-    //   this.isSortedByTitle = false;
-    // } else {
-    //   this.books.sort((a: any, b: any) => {
-    //     if (a.title < b.title) {
-    //       return 1;
-    //     } else if (a.title > b.title) {
-    //       return -1;
-    //     } else {
-    //       return 0;
-    //     }
-    //   });
-    //   this.isSortedByTitle = true;
-    // }
+    if (this.isSortedByTitle) {
+      this.sortRequestAscending("title");
+      this.isSortedByTitle = false;
+    } else {
+      this.sortRequestDescending("title");
+      this.isSortedByTitle = true;
+    }
   }
 
   sortByAuthor() {
     if (this.isSortedByAuthor) {
-      this.books.sort((a: any, b: any) => {
-        if (a.authors[0] < b.authors[0]) {
-          return -1;
-        } else if (a.authors[0] > b.authors[0]) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
+      this.sortRequestAscending("authors");
       this.isSortedByAuthor = false;
     } else {
-      this.books.sort((a: any, b: any) => {
-        if (a.authors[0] < b.authors[0]) {
-          return 1;
-        } else if (a.authors[0] > b.authors[0]) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
+      this.sortRequestDescending("authors");
       this.isSortedByAuthor = true;
     }
   }
 
   sortByPrice() {
     if (this.isSortedByPrice) {
-      this.books.sort((a: any, b: any) => {
-        if (a.retailPriceAmount < b.retailPriceAmount) {
-          return -1;
-        } else if (a.retailPriceAmount > b.retailPriceAmount) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
+      this.sortRequestAscending("price");
       this.isSortedByPrice = false;
     } else {
-      this.books.sort((a: any, b: any) => {
-        if (a.retailPriceAmount < b.retailPriceAmount) {
-          return 1;
-        } else if (a.retailPriceAmount > b.retailPriceAmount) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
+      this.sortRequestDescending("price");
       this.isSortedByPrice = true;
     }
   }
@@ -172,6 +119,14 @@ export class MainComponent {
       });
       this.isSortedByPromo = true;
     }
+  }
+
+  private sortRequestAscending(param: string) {
+    this.bookService.getBooksSorted(param, "ascending", this.currentPage).subscribe(books => this.books = books);
+  }
+
+  private sortRequestDescending(param: string) {
+    this.bookService.getBooksSorted(param, "descending", this.currentPage).subscribe(books => this.books = books);
   }
 
   reset() {
