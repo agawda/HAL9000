@@ -130,6 +130,14 @@ public class BookConverterTest {
         assertEquals(new ArrayList<>(), bookConverter.parseAuthors(authors));
     }
 
+    @Test
+    public void parseAuthorsTestOneEmptyAuthor() {
+        BookConverter bookConverter = new BookConverter();
+        List<String> authors = new ArrayList<>();
+        authors.add("");
+        assertEquals(new ArrayList<>(), bookConverter.parseAuthors(authors));
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void calculateDiscountTestException() {
         BookConverter bookConverter = new BookConverter();
