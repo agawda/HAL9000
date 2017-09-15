@@ -6,6 +6,7 @@ import com.javaacademy.robot.service.BookSearch;
 import com.javaacademy.robot.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,8 +30,10 @@ public class BookRestAPIController {
     }
 
     @RequestMapping("/api/books")
-    public BookDto bookRequestById(@RequestParam(value = "id") Long id) {
-        return bookService.getBookByIsbn(id);
+    public ResponseEntity<BookDto> bookRequestById(@RequestParam(value = "id") Long id) {
+        BookDto foundBook = bookService.getBookByIsbn(id);
+        if(foundBook == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(bookService.getBookByIsbn(id));
     }
 
     @RequestMapping("/api/app")
