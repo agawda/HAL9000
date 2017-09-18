@@ -6,7 +6,6 @@ import { Book } from './book';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
-
 @Component({
   selector: 'app-books',
   templateUrl: './main.component.html',
@@ -15,22 +14,28 @@ import 'rxjs/add/operator/distinctUntilChanged';
 export class MainComponent {
   title = 'books';
 
+  private TITLE = "title";
+  private AUTHOR = "authors";
+  private PRICE = "price";
+  private PROMO = "discount";
+  private ASC = "ascending";
+  private DSC = "descending";
+  private NONE = "none";
+
   books: Book[];
   Math: any;
-  isSortedByTitle: boolean;
-  isSortedByAuthor: boolean;
-  isSortedByPrice: boolean;
-  isSortedByPromo: boolean;
+  sortBy: string; //title, author, price, promo
+  orderBy: string; //ascending, descending, null
+
   currentPage: number;
   maxPages: number;
 
 
   constructor(private bookService: BookService, private router: Router) {
     this.Math = Math;
-    this.isSortedByTitle = true;
-    this.isSortedByAuthor = true;
-    this.isSortedByPrice = true;
-    this.isSortedByPromo = true;
+
+    this.orderBy = this.NONE;
+    this.sortBy = this.NONE;
     this.currentPage = 0;
     bookService.getTotalBooks().then(maxBooks => {
       this.maxPages = Math.ceil(maxBooks/20);
@@ -41,14 +46,16 @@ export class MainComponent {
   nextPage() {
     if(this.currentPage === this.maxPages) return;
     this.currentPage++;
-    this.bookService.getPage(this.currentPage).then(books => this.books = books);
+    if(this.sortBy !== this.NONE) this.sortRequest();
+    else this.getRequest();
     console.log(this.currentPage);
   }
 
   previousPage() {
     if(this.currentPage === 0) return;
     this.currentPage--;
-    this.bookService.getPage(this.currentPage).then(books => this.books = books);
+    if(this.sortBy !== this.NONE) this.sortRequest();
+    else this.getRequest();
   }
 
   searchBooks(param: string) {
@@ -58,54 +65,56 @@ export class MainComponent {
   }
 
   sortByTitle() {
-    if (this.isSortedByTitle) {
-      this.sortRequestAscending("title");
-      this.isSortedByTitle = false;
-    } else {
-      this.sortRequestDescending("title");
-      this.isSortedByTitle = true;
+    this.sortBy = this.TITLE;
+    if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
+      this.orderBy = this.ASC;
+    } else if(this.orderBy === this.ASC) {
+      this.orderBy = this.DSC;
     }
+    this.sortRequest();
   }
 
   sortByAuthor() {
-    if (this.isSortedByAuthor) {
-      this.sortRequestAscending("authors");
-      this.isSortedByAuthor = false;
-    } else {
-      this.sortRequestDescending("authors");
-      this.isSortedByAuthor = true;
+    this.sortBy = this.AUTHOR;
+    if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
+      this.orderBy = this.ASC;
+    } else if(this.orderBy === this.ASC) {
+      this.orderBy = this.DSC;
     }
+    this.sortRequest();
   }
 
   sortByPrice() {
-    if (this.isSortedByPrice) {
-      this.sortRequestAscending("price");
-      this.isSortedByPrice = false;
-    } else {
-      this.sortRequestDescending("price");
-      this.isSortedByPrice = true;
+    this.sortBy = this.PRICE;
+    if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
+      this.orderBy = this.ASC;
+    } else if(this.orderBy === this.ASC) {
+      this.orderBy = this.DSC;
     }
+    this.sortRequest();
   }
 
   sortByPromo() {
-    if (this.isSortedByPromo) {
-      this.sortRequestAscending("discount");
-      this.isSortedByPromo = false;
-    } else {
-      this.sortRequestDescending("discount");
-      this.isSortedByPromo = true;
+    this.sortBy = this.PROMO;
+    if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
+      this.orderBy = this.ASC;
+    } else if(this.orderBy === this.ASC) {
+      this.orderBy = this.DSC;
     }
+    this.sortRequest();
   }
 
-  private sortRequestAscending(param: string) {
-    this.bookService.getBooksSorted(param, "ascending", this.currentPage).subscribe(books => this.books = books);
+  private sortRequest() {
+    this.bookService.getBooksSorted(this.sortBy, this.orderBy, this.currentPage).subscribe(books => this.books = books);
   }
 
-  private sortRequestDescending(param: string) {
-    this.bookService.getBooksSorted(param, "descending", this.currentPage).subscribe(books => this.books = books);
+  private getRequest() {
+    this.bookService.getPage(this.currentPage).then(books => this.books = books);
   }
 
   reset() {
-    this.bookService.getPage(this.currentPage).then(books => this.books = books);
+    this.getRequest();
+    this.sortBy = this.NONE;
+    this.orderBy = this.NONE;
   }
 }
