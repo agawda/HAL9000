@@ -1,5 +1,6 @@
 package com.javaacademy.crawler.jsoup;
 
+import com.javaacademy.crawler.common.converters.GoogleBookConverter;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.select.Elements;
@@ -51,7 +52,7 @@ public class CzytamScrapper extends JsoupBookScrapper {
         if (elements.isEmpty()) {
             elements = getDoc().select("#panel4-2 > p > span:containsOwn(Kod paskowy:)");
         }
-        return elements.isEmpty() ? new Random().nextLong() :
+        return elements.isEmpty() ? GoogleBookConverter.generateIsbn(getTitle()) :
                 parseIsbn(elements.next().text().replace("-", ""));
     }
 
