@@ -83,12 +83,9 @@ public class BookService {
         }
     }
 
-    public List<Book> findAll(int pageId) {
-        return bookRepository.findAll(new PageRequest(pageId, ENTRIES_PER_PAGE)).getContent();
-    }
-
-    public List<BookDto> findAll() {
-        return findAll();
+    public List<BookDto> findAll(int pageId) {
+        List<Book> books = bookRepository.findAll(new PageRequest(pageId, ENTRIES_PER_PAGE)).getContent();
+        return this.bookConverter.toDtos(books);
     }
 
     public List<BookDto> findAll(FilterType filterType, int pageId) {
@@ -105,12 +102,6 @@ public class BookService {
                 break;
             case AUTHORS_DESCENDING:
                 books = getFilteredBooks(pageId, Sort.Direction.DESC, "authors");
-                break;
-            case CATEGORY_ASCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.ASC, "category");
-                break;
-            case CATEGORY_DESCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "category");
                 break;
             case PRICE_ASCENDING:
                 books = getFilteredBooks(pageId, Sort.Direction.ASC, "retailPriceAmount");

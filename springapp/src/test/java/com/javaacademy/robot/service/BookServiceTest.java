@@ -1,25 +1,31 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.converters.BookConverter;
+import com.javaacademy.robot.helpers.FilterType;
 import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
 import com.javaacademy.robot.model.BookModels;
 import com.javaacademy.robot.repository.BookRepository;
 import org.junit.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class BookServiceTest {
     private BookRepository bookRepository = mock(BookRepository.class);
     private BookConverter bookConverter = mock(BookConverter.class);
+    private Page pageMock = mock(Page.class);
     private BookService bookService;
+
+
 
     @Test
     public void getBookByIsbnTest() {
@@ -97,6 +103,124 @@ public class BookServiceTest {
         assertFalse(bookService.saveBook(bookDto));
     }
 
+    @Test
+    public void shouldReturnOnePage() {
+        Page pageMock = mock(Page.class);
+        BookService givenBookService = new BookService(bookRepository, bookConverter);
+        int givenPageId = 0;
+
+        when(bookRepository.findAll(any(Pageable.class))).thenReturn(pageMock);
+        when(bookConverter.toDtos(getBooks())).thenReturn(getDtos());
+        when(bookRepository.findAll(any(Pageable.class)).getContent()).thenReturn(getBooks());
+
+        List<BookDto> givenBooks = givenBookService.findAll(givenPageId);
+        assertEquals(givenBooks.size(), 3);
+    }
+
+    @Test
+    public void shouldReturnBooksSortedByTitleAscending() {
+        BookService givenBookService = new BookService(bookRepository, bookConverter);
+        int givenPageId = 0;
+
+        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.ASC, "title"))).thenReturn(pageMock);
+        when(pageMock.getContent()).thenReturn(getBooks());
+        when(bookConverter.toDtos(any())).thenReturn(getDtos());
+
+        List<BookDto> givenBooks = givenBookService.findAll(FilterType.TITLE_ASCENDING, givenPageId);
+        assertNotNull(givenBooks);
+    }
+
+    @Test
+    public void shouldReturnBooksSortedByTitleDescending() {
+        BookService givenBookService = new BookService(bookRepository, bookConverter);
+        int givenPageId = 0;
+
+        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.DESC, "title"))).thenReturn(pageMock);
+        when(pageMock.getContent()).thenReturn(getBooks());
+        when(bookConverter.toDtos(any())).thenReturn(getDtos());
+
+        List<BookDto> givenBooks = givenBookService.findAll(FilterType.TITLE_DESCENDING, givenPageId);
+        assertNotNull(givenBooks);
+    }
+
+    @Test
+    public void shouldReturnBooksSortedByAuthorsAscending() {
+        BookService givenBookService = new BookService(bookRepository, bookConverter);
+        int givenPageId = 0;
+
+        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.ASC, "authors"))).thenReturn(pageMock);
+        when(pageMock.getContent()).thenReturn(getBooks());
+        when(bookConverter.toDtos(any())).thenReturn(getDtos());
+
+        List<BookDto> givenBooks = givenBookService.findAll(FilterType.AUTHORS_ASCENDING, givenPageId);
+        assertNotNull(givenBooks);
+    }
+
+    @Test
+    public void shouldReturnBooksSortedByAuthorsDescending() {
+        BookService givenBookService = new BookService(bookRepository, bookConverter);
+        int givenPageId = 0;
+
+        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.DESC, "authors"))).thenReturn(pageMock);
+        when(pageMock.getContent()).thenReturn(getBooks());
+        when(bookConverter.toDtos(any())).thenReturn(getDtos());
+
+        List<BookDto> givenBooks = givenBookService.findAll(FilterType.AUTHORS_DESCENDING, givenPageId);
+        assertNotNull(givenBooks);
+    }
+
+    @Test
+    public void shouldReturnBooksSortedByPriceAscending() {
+        BookService givenBookService = new BookService(bookRepository, bookConverter);
+        int givenPageId = 0;
+
+        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.ASC, "retailPriceAmount"))).thenReturn(pageMock);
+        when(pageMock.getContent()).thenReturn(getBooks());
+        when(bookConverter.toDtos(any())).thenReturn(getDtos());
+
+        List<BookDto> givenBooks = givenBookService.findAll(FilterType.PRICE_ASCENDING, givenPageId);
+        assertNotNull(givenBooks);
+    }
+
+    @Test
+    public void shouldReturnBooksSortedByPriceDescending() {
+        BookService givenBookService = new BookService(bookRepository, bookConverter);
+        int givenPageId = 0;
+
+        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.DESC, "retailPriceAmount"))).thenReturn(pageMock);
+        when(pageMock.getContent()).thenReturn(getBooks());
+        when(bookConverter.toDtos(any())).thenReturn(getDtos());
+
+        List<BookDto> givenBooks = givenBookService.findAll(FilterType.PRICE_DESCENDING, givenPageId);
+        assertNotNull(givenBooks);
+    }
+
+    @Test
+    public void shouldReturnBooksSortedByDiscountAscending() {
+        BookService givenBookService = new BookService(bookRepository, bookConverter);
+        int givenPageId = 0;
+
+        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.ASC, "discount"))).thenReturn(pageMock);
+        when(pageMock.getContent()).thenReturn(getBooks());
+        when(bookConverter.toDtos(any())).thenReturn(getDtos());
+
+        List<BookDto> givenBooks = givenBookService.findAll(FilterType.DISCOUNT_ASCENDING, givenPageId);
+        assertNotNull(givenBooks);
+    }
+
+    @Test
+    public void shouldReturnBooksSortedByDiscountDescending() {
+        BookService givenBookService = new BookService(bookRepository, bookConverter);
+        int givenPageId = 0;
+
+        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.DESC, "discount"))).thenReturn(pageMock);
+        when(pageMock.getContent()).thenReturn(getBooks());
+        when(bookConverter.toDtos(any())).thenReturn(getDtos());
+
+        List<BookDto> givenBooks = givenBookService.findAll(FilterType.DISCOUNT_DESCENDING, givenPageId);
+        assertNotNull(givenBooks);
+    }
+
     private BookModels getBookModels() {
         BookDto bookDto = new BookDto();
         bookDto.setIndustryIdentifier(1L);
@@ -111,13 +235,22 @@ public class BookServiceTest {
     }
 
     private List<Book> getBooks() {
-        Book bookDto = new Book();
+        Book book = new Book();
+        book.setIndustryIdentifier(1L);
+        Book book2 = new Book();
+        book2.setIndustryIdentifier(2L);
+        Book book3 = new Book();
+        book3.setIndustryIdentifier(3L);
+        return new ArrayList<>(Arrays.asList(book, book2, book3));
+    }
+
+    private List<BookDto> getDtos() {
+        BookDto bookDto = new BookDto();
         bookDto.setIndustryIdentifier(1L);
-        Book bookDto2 = new Book();
+        BookDto bookDto2 = new BookDto();
         bookDto2.setIndustryIdentifier(2L);
-        Book bookDto3 = new Book();
+        BookDto bookDto3 = new BookDto();
         bookDto3.setIndustryIdentifier(3L);
         return new ArrayList<>(Arrays.asList(bookDto, bookDto2, bookDto3));
     }
-
 }
