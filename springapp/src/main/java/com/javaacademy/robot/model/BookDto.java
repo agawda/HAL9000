@@ -23,6 +23,7 @@ public class BookDto {
     double listPriceAmount;
     String listPriceCurrencyCode;
     double retailPriceAmount;
+    byte discount;
     String retailPriceCurrencyCode;
     String shopName;
     LocalDateTime dateAdded;

@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -88,6 +89,14 @@ public class BookServiceTest {
         verify(bookRepository, times(3)).save(any(Book.class));
     }
 
+    @Test
+    public void testSavingBook() {
+        BookDto bookDto = new BookDto();
+        when(bookConverter.toEntity(bookDto)).thenThrow(new IllegalArgumentException());
+        bookService = new BookService(bookRepository, bookConverter);
+        assertFalse(bookService.saveBook(bookDto));
+    }
+
     private BookModels getBookModels() {
         BookDto bookDto = new BookDto();
         bookDto.setIndustryIdentifier(1L);
@@ -107,7 +116,7 @@ public class BookServiceTest {
         Book bookDto2 = new Book();
         bookDto2.setIndustryIdentifier(2L);
         Book bookDto3 = new Book();
-        bookDto3.setIndustryIdentifier(3L);;
+        bookDto3.setIndustryIdentifier(3L);
         return new ArrayList<>(Arrays.asList(bookDto, bookDto2, bookDto3));
     }
 

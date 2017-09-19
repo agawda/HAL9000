@@ -32,6 +32,9 @@ public class Book {
     @Column(name = "subtitle", length = 512)
     String subtitle;
 
+    @Column(name = "discount")
+    byte discount;
+
     @ElementCollection
     @CollectionTable(name = "Authors", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "author")
