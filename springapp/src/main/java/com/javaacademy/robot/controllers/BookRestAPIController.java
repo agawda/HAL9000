@@ -47,7 +47,7 @@ public class BookRestAPIController {
     }
 
     @RequestMapping("/api/pages")
-    public List<Book> getPage(@RequestParam(value = "id") int pageId) {
+    public List<BookDto> getPage(@RequestParam(value = "id") int pageId) {
         return bookService.findAll(pageId);
     }
 
