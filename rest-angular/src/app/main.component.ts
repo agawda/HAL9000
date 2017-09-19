@@ -30,13 +30,13 @@ export class MainComponent {
   currentPage: number;
   maxPages: number;
 
-
   constructor(private bookService: BookService, private router: Router) {
     this.Math = Math;
 
     this.orderBy = this.NONE;
     this.sortBy = this.NONE;
     this.currentPage = 0;
+
     bookService.getTotalBooks().then(maxBooks => {
       this.maxPages = Math.ceil(maxBooks/20);
     });
@@ -65,6 +65,7 @@ export class MainComponent {
   }
 
   sortByTitle() {
+    this.checkIfSorted(this.TITLE);
     this.sortBy = this.TITLE;
     if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
       this.orderBy = this.ASC;
@@ -75,6 +76,7 @@ export class MainComponent {
   }
 
   sortByAuthor() {
+    this.checkIfSorted(this.AUTHOR);
     this.sortBy = this.AUTHOR;
     if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
       this.orderBy = this.ASC;
@@ -85,6 +87,7 @@ export class MainComponent {
   }
 
   sortByPrice() {
+    this.checkIfSorted(this.PRICE);
     this.sortBy = this.PRICE;
     if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
       this.orderBy = this.ASC;
@@ -95,6 +98,7 @@ export class MainComponent {
   }
 
   sortByPromo() {
+    this.checkIfSorted(this.PROMO);
     this.sortBy = this.PROMO;
     if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
       this.orderBy = this.ASC;
@@ -110,6 +114,10 @@ export class MainComponent {
 
   private getRequest() {
     this.bookService.getPage(this.currentPage).then(books => this.books = books);
+  }
+
+  private checkIfSorted(param: string) {
+    if(this.sortBy !== param && this.orderBy !== this.NONE) this.orderBy = this.NONE;
   }
 
   reset() {
