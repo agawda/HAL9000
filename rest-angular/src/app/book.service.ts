@@ -8,6 +8,7 @@ export class BookService {
   private basePageUrl = "http://localhost:10520/api/pages/?id=";
   private baseSortUrl = "http://localhost:10520/api/sort";
   private baseSearchUrl = "http://localhost:10520/api/search/?query=";
+  private baseAdvancedSearchUrl = "http://localhost:10520/api/advancedSearch/";
   private baseMaxBooksUrl = "http://localhost:10520/api/booksTotal";
 
    constructor(private http: Http) {}
@@ -42,6 +43,20 @@ export class BookService {
    return this.http.get(url)
     .toPromise().then(response => response.json())
     .catch(this.handleError);
+  }
+
+  advancedSearchBooks(title: string, author: string, category: string, bookstore: string, min: number, max: number): Promise<Book[]> {
+    const titleP = "?title=";
+    const authorP = "&author=";
+    const categoryP = "&category=";
+    const bookstoreP = "&bookstore=";
+    const minP = "&minPrice=";
+    const maxP = "&maxPrice=";
+    const url = `${this.baseAdvancedSearchUrl}${titleP}${title}${authorP}${author}${categoryP}${category}${bookstoreP}${bookstore}${minP}${min}${maxP}${max}`;
+    console.log(url);
+    return this.http.get(url)
+      .toPromise().then(response => response.json())
+      .catch(this.handleError);
   }
 
    private handleError(error: any): Promise<any> {
