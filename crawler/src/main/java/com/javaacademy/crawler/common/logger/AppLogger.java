@@ -77,7 +77,7 @@ public class AppLogger {
     }
 
     private static String getFilenameWithSystemTime() {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm_dd-MM-yyyy");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH-mm_dd-MM-yyyy");
         return "Crawler-" +dateTimeFormatter.format(LocalDateTime.now()) +".log";
     }
 
