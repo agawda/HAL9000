@@ -12,21 +12,48 @@ import { Book } from './book';
 export class MainComponent {
   title = 'books';
 
+  private TITLE = "title";
+  private AUTHOR = "authors";
+  private PRICE = "retailPriceAmount";
+  private PROMO = "discount";
+  private ASC = "ascending";
+  private DSC = "descending";
+  private NONE = "none";
+  private BOOKS_PER_PAGE = 20;
+
   books: Book[];
   Math: any;
-  isSortedByTitle: boolean;
-  isSortedByAuthor: boolean;
-  isSortedByPrice: boolean;
-  isSortedByPromo: boolean;
+  sortBy: string; //title, author, price, promo
+  orderBy: string; //ascending, descending, null
 
+  currentPage: number;
+  maxPages: number;
 
   constructor(private bookService: BookService, private router: Router) {
-    bookService.getBook().subscribe(books => this.books = books);
     this.Math = Math;
-    this.isSortedByTitle = true;
-    this.isSortedByAuthor = true;
-    this.isSortedByPrice = true;
-    this.isSortedByPromo = true;
+
+    this.orderBy = this.NONE;
+    this.sortBy = this.NONE;
+    this.currentPage = 0;
+
+    bookService.getTotalBooks().then(maxBooks => {
+      this.maxPages = Math.ceil(maxBooks / this.BOOKS_PER_PAGE);
+    });
+    bookService.getPage(this.currentPage).then(books => this.books = books);
+  }
+
+  nextPage() {
+    if(this.currentPage === this.maxPages) return;
+    this.currentPage++;
+    if(this.sortBy !== this.NONE) this.sortRequest();
+    else this.getRequest();
+  }
+
+  previousPage() {
+    if(this.currentPage === 0) return;
+    this.currentPage--;
+    if(this.sortBy !== this.NONE) this.sortRequest();
+    else this.getRequest();
   }
 
   searchBooks(param: string) {
@@ -35,124 +62,66 @@ export class MainComponent {
     });
   }
 
-  sortBy(param: string) {
-    this.bookService.getBooksSorted(param).subscribe(books => this.books = books);
-  }
-
   sortByTitle() {
-    if (this.isSortedByTitle) {
-      this.books.sort((a: any, b: any) => {
-        if (a.title < b.title) {
-          return -1;
-        } else if (a.title > b.title) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      this.isSortedByTitle = false;
-    } else {
-      this.books.sort((a: any, b: any) => {
-        if (a.title < b.title) {
-          return 1;
-        } else if (a.title > b.title) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      this.isSortedByTitle = true;
+    this.checkIfSorted(this.TITLE);
+    this.sortBy = this.TITLE;
+    if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
+      this.orderBy = this.ASC;
+    } else if(this.orderBy === this.ASC) {
+      this.orderBy = this.DSC;
     }
+    this.sortRequest();
   }
 
   sortByAuthor() {
-    if (this.isSortedByAuthor) {
-      this.books.sort((a: any, b: any) => {
-        if (a.authors[0] < b.authors[0]) {
-          return -1;
-        } else if (a.authors[0] > b.authors[0]) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      this.isSortedByAuthor = false;
-    } else {
-      this.books.sort((a: any, b: any) => {
-        if (a.authors[0] < b.authors[0]) {
-          return 1;
-        } else if (a.authors[0] > b.authors[0]) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      this.isSortedByAuthor = true;
+    this.checkIfSorted(this.AUTHOR);
+    this.sortBy = this.AUTHOR;
+    if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
+      this.orderBy = this.ASC;
+    } else if(this.orderBy === this.ASC) {
+      this.orderBy = this.DSC;
     }
+    this.sortRequest();
   }
 
   sortByPrice() {
-    if (this.isSortedByPrice) {
-      this.books.sort((a: any, b: any) => {
-        if (a.retailPriceAmount < b.retailPriceAmount) {
-          return -1;
-        } else if (a.retailPriceAmount > b.retailPriceAmount) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      this.isSortedByPrice = false;
-    } else {
-      this.books.sort((a: any, b: any) => {
-        if (a.retailPriceAmount < b.retailPriceAmount) {
-          return 1;
-        } else if (a.retailPriceAmount > b.retailPriceAmount) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      this.isSortedByPrice = true;
+    this.checkIfSorted(this.PRICE);
+    this.sortBy = this.PRICE;
+    if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
+      this.orderBy = this.ASC;
+    } else if(this.orderBy === this.ASC) {
+      this.orderBy = this.DSC;
     }
+    this.sortRequest();
   }
 
   sortByPromo() {
-    if (this.isSortedByPromo) {
-      this.books.sort((a: any, b: any) => {
-        if(a.listPriceAmount === 0) return -1;
-        if(b.listPriceAmount === 0) return 1;
-        const aPromo = 100 - (a.retailPriceAmount * 100 / a.listPriceAmount);
-        const bPromo = 100 - (b.retailPriceAmount * 100 / b.listPriceAmount);
-        if (aPromo < bPromo) {
-          return -1;
-        } else if (aPromo > bPromo) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      this.isSortedByPromo = false;
-    } else {
-      this.books.sort((a: any, b: any) => {
-        if(a.listPriceAmount === 0) return 1;
-        if(b.listPriceAmount === 0) return -1;
-        const aPromo = 100 - (a.retailPriceAmount * 100 / a.listPriceAmount);
-        const bPromo = 100 - (b.retailPriceAmount * 100 / b.listPriceAmount);
-        if (aPromo < bPromo) {
-          return 1;
-        } else if (aPromo > bPromo) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      this.isSortedByPromo = true;
+    this.checkIfSorted(this.PROMO);
+    this.sortBy = this.PROMO;
+    if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
+      this.orderBy = this.ASC;
+    } else if(this.orderBy === this.ASC) {
+      this.orderBy = this.DSC;
     }
+    this.sortRequest();
+  }
+
+  private sortRequest() {
+    this.bookService.getBooksSorted(this.sortBy, this.orderBy, this.currentPage).subscribe(books => this.books = books);
+  }
+
+  private getRequest() {
+    this.bookService.getPage(this.currentPage).then(books => this.books = books);
+  }
+
+  private checkIfSorted(param: string) {
+    if(this.sortBy !== param && this.orderBy !== this.NONE) this.orderBy = this.NONE;
   }
 
   reset() {
-    this.bookService.getBook().subscribe(books => this.books = books);
+    this.getRequest();
+    this.sortBy = this.NONE;
+    this.orderBy = this.NONE;
   }
 
   filter(title: string, author: string, category: string, bookstore: string, min: number, max: number) {

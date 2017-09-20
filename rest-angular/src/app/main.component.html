@@ -34,6 +34,12 @@
   </div>
   </div>
 </nav>
+<div class="container">
+  <div class="row">
+    <button (click)="previousPage()"><</button>
+    <button (click)="nextPage()">></button>
+  </div>
+</div>
 <div class="container" id="body">
   <div class="container">
     <div class="row text-primary">
@@ -42,7 +48,7 @@
         <button class="col-md-2" (click)="sortByAuthor()">Author</button>
         <button class="col-md-2" (click)="sortByPrice()">Price</button>
         <button class="col-md-2" (click)="sortByPromo()">Promo</button>
-        <button class="col-sm-2" (click)="reset()">Reset</button>
+        <button class="col-sm-2" (click)="reset()">Reset sorting</button>
     </div>
   </div>
   <ol class="list-group">

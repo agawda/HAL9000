@@ -1,9 +1,11 @@
 package com.javaacademy.robot.controllers;
 
+import com.javaacademy.robot.helpers.FilterOrder;
 import com.javaacademy.robot.model.BookDto;
 import com.javaacademy.robot.service.BookSearch;
 import com.javaacademy.robot.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,8 +29,11 @@ public class BookRestAPIController {
     }
 
     @RequestMapping("/api/books")
-    public BookDto bookRequestById(@RequestParam(value = "id") Long id) {
-        return bookService.getBookByIsbn(id);
+    public ResponseEntity<BookDto> bookRequestById(@RequestParam(value = "id") Long id) {
+        System.out.println("id = " + id);
+        BookDto foundBook = bookService.getBookByIsbn(id);
+        if(foundBook == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(bookService.getBookByIsbn(id));
     }
 
     @RequestMapping("/api/app")
@@ -39,5 +44,24 @@ public class BookRestAPIController {
     @RequestMapping("/api/search")
     public List<BookDto> searchResults(@RequestParam(value = "query") String query) {
         return bookSearch.search(query);
+    }
+
+    @RequestMapping("/api/pages")
+    public List<BookDto> getPage(@RequestParam(value = "id") int pageId) {
+        return bookService.findAll(pageId);
+    }
+
+    @RequestMapping("/api/booksTotal")
+    public int getBooksNumber() {
+        return bookService.getAllBookDtos().size();
+    }
+
+    @RequestMapping("/api/sort")
+    public ResponseEntity<List<BookDto>> sortedBooks(
+            @RequestParam(value = "type") String type,
+            @RequestParam(value = "order") String order,
+            @RequestParam(value = "pageId") int pageId) {
+        FilterOrder filterOrder = FilterOrder.valueOf(order.toUpperCase());
+        return ResponseEntity.ok(bookService.findAll(filterOrder, type, pageId));
     }
 }

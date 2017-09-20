@@ -1,16 +1,20 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.converters.BookConverter;
+import com.javaacademy.robot.helpers.FilterOrder;
 import com.javaacademy.robot.logger.ServerLogger;
 import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
 import com.javaacademy.robot.model.BookModels;
 import com.javaacademy.robot.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static com.javaacademy.robot.logger.ServerLogger.DEFAULT_LEVEL;
@@ -22,6 +26,8 @@ public class BookService {
     private BookRepository bookRepository;
     private BookConverter bookConverter;
 
+    private static final int ENTRIES_PER_PAGE = 20;
+
     public BookService(@Autowired BookRepository bookRepository, @Autowired BookConverter bookConverter) {
         this.bookRepository = bookRepository;
         this.bookConverter = bookConverter;
@@ -32,14 +38,22 @@ public class BookService {
         try {
             savedBook = bookRepository.save(book);
         } catch (Exception e) {
-            logger.log(DEFAULT_LEVEL, "Could not save the book " + book + ", exception: " +e.getMessage());
+            logger.log(DEFAULT_LEVEL, "Could not save the book " + book + ", exception: " + e.getMessage());
         }
         return book.equals(savedBook);
     }
 
     public boolean saveBook(BookDto bookDto) {
-        Book convertedEntity = bookConverter.toEntity(bookDto);
-        return saveBook(convertedEntity);
+        System.out.println(bookDto);
+        try {
+            System.out.println("Converting");
+            Book convertedEntity = bookConverter.toEntity(bookDto);
+            System.out.println("convertedEntity = " + convertedEntity);
+            return saveBook(convertedEntity);
+        } catch (IllegalArgumentException e) {
+            logger.log(Level.WARNING, "Could not parse book because prices were incorrect: ", e);
+        }
+        return false;
     }
 
     List<Book> getAllBooks() {
@@ -66,6 +80,28 @@ public class BookService {
         for (Book book : books) {
             saveBook(book);
         }
+    }
+
+    public List<BookDto> findAll(int pageId) {
+        List<Book> books = bookRepository.findAll(new PageRequest(pageId, ENTRIES_PER_PAGE)).getContent();
+        return this.bookConverter.toDtos(books);
+    }
+
+    public List<BookDto> findAll(FilterOrder filterOrder, String columnName, int pageId) {
+        List<Book> books;
+        if(filterOrder == FilterOrder.ASCENDING) {
+            books = getFilteredBooks(pageId, Sort.Direction.ASC, columnName);
+        } else {
+            books = getFilteredBooks(pageId, Sort.Direction.DESC, columnName);
+        }
+        return bookConverter.toDtos(books);
+    }
+
+    private List<Book> getFilteredBooks(int pageId, Sort.Direction direction, String param) {
+        List<Book> books;
+        books = bookRepository.findAll(
+                new PageRequest(pageId, ENTRIES_PER_PAGE, direction, param)).getContent();
+        return books;
     }
 
     public List<BookDto> getAllBookDtos() {
