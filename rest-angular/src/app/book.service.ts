@@ -8,7 +8,7 @@ export class BookService {
   private basePageUrl = "http://localhost:10520/api/pages/?id=";
   private baseSortUrl = "http://localhost:10520/api/sort";
   private baseSearchUrl = "http://localhost:10520/api/search/?query=";
-  private baseAdvancedSearchUrl = "http://localhost:10520/api/advancedSearch/";
+  private baseAdvancedSearchUrl = "http://localhost:10520/api/advancedSearch";
   private baseMaxBooksUrl = "http://localhost:10520/api/booksTotal";
 
    constructor(private http: Http) {}
