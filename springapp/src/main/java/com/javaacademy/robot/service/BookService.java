@@ -1,7 +1,7 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.converters.BookConverter;
-import com.javaacademy.robot.helpers.FilterType;
+import com.javaacademy.robot.helpers.FilterOrder;
 import com.javaacademy.robot.logger.ServerLogger;
 import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -88,34 +87,12 @@ public class BookService {
         return this.bookConverter.toDtos(books);
     }
 
-    public List<BookDto> findAll(FilterType filterType, int pageId) {
-        List<Book> books = Collections.emptyList();
-        switch (filterType) {
-            case TITLE_ASCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.ASC, "title");
-                break;
-            case TITLE_DESCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "title");
-                break;
-            case AUTHORS_ASCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.ASC, "authors");
-                break;
-            case AUTHORS_DESCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "authors");
-                break;
-            case PRICE_ASCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.ASC, "retailPriceAmount");
-                break;
-            case PRICE_DESCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "retailPriceAmount");
-                break;
-            case DISCOUNT_ASCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.ASC, "discount");
-                break;
-            case DISCOUNT_DESCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "discount");
-                break;
-
+    public List<BookDto> findAll(FilterOrder filterOrder, String columnName, int pageId) {
+        List<Book> books;
+        if(filterOrder == FilterOrder.ASCENDING) {
+            books = getFilteredBooks(pageId, Sort.Direction.ASC, columnName);
+        } else {
+            books = getFilteredBooks(pageId, Sort.Direction.DESC, columnName);
         }
         return bookConverter.toDtos(books);
     }

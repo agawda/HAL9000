@@ -10,6 +10,7 @@ export class Book {
   listPriceAmount: number;
   listPriceCurrencyCode: string;
   retailPriceAmount: number;
+  discount: number;
   retailPriceCurrencyCode: string;
   shopName: string;
   dateAdded: string;

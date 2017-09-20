@@ -1,7 +1,6 @@
 package com.javaacademy.robot.controllers;
 
-import com.javaacademy.robot.helpers.FilterType;
-import com.javaacademy.robot.model.Book;
+import com.javaacademy.robot.helpers.FilterOrder;
 import com.javaacademy.robot.model.BookDto;
 import com.javaacademy.robot.service.BookSearch;
 import com.javaacademy.robot.service.BookService;
@@ -53,7 +52,7 @@ public class BookRestAPIController {
     }
 
     @RequestMapping("/api/booksTotal")
-    public Integer getBooksNumber() {
+    public int getBooksNumber() {
         return bookService.getAllBookDtos().size();
     }
 
@@ -62,7 +61,7 @@ public class BookRestAPIController {
             @RequestParam(value = "type") String type,
             @RequestParam(value = "order") String order,
             @RequestParam(value = "pageId") int pageId) {
-        FilterType filterType = FilterType.valueOf(type.toUpperCase() + "_" + order.toUpperCase());
-        return ResponseEntity.ok(bookService.findAll(filterType, pageId));
+        FilterOrder filterOrder = FilterOrder.valueOf(order.toUpperCase());
+        return ResponseEntity.ok(bookService.findAll(filterOrder, type, pageId));
     }
 }

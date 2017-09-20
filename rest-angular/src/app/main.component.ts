@@ -1,10 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BookService } from './book.service';
 import { Book } from './book';
-
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
 
 @Component({
   selector: 'app-books',
@@ -16,11 +13,12 @@ export class MainComponent {
 
   private TITLE = "title";
   private AUTHOR = "authors";
-  private PRICE = "price";
+  private PRICE = "retailPriceAmount";
   private PROMO = "discount";
   private ASC = "ascending";
   private DSC = "descending";
   private NONE = "none";
+  private BOOKS_PER_PAGE = 20;
 
   books: Book[];
   Math: any;
@@ -38,7 +36,7 @@ export class MainComponent {
     this.currentPage = 0;
 
     bookService.getTotalBooks().then(maxBooks => {
-      this.maxPages = Math.ceil(maxBooks/20);
+      this.maxPages = Math.ceil(maxBooks / this.BOOKS_PER_PAGE);
     });
     bookService.getPage(this.currentPage).then(books => this.books = books);
   }
@@ -48,7 +46,6 @@ export class MainComponent {
     this.currentPage++;
     if(this.sortBy !== this.NONE) this.sortRequest();
     else this.getRequest();
-    console.log(this.currentPage);
   }
 
   previousPage() {
