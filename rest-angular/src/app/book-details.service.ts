@@ -5,7 +5,7 @@ import { Book } from "./book";
 
 @Injectable()
 export class BookDetailsService {
-  private booksApiURL = "http://localhost:8080/api/books?id=";
+  private booksApiURL = "http://localhost:10520/api/books?id=";
    constructor(private http: Http) {
    }
 
