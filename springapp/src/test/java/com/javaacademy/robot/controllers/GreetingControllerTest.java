@@ -11,6 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.logging.Level;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -41,7 +43,7 @@ public class GreetingControllerTest {
                     .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                     .andExpect(status().isOk());
         } catch (Exception e) {
-            ServerLogger.logger.warning("Exception thrown!");
+            ServerLogger.logger.log(Level.WARNING, "Exception thrown!", e);
         }
     }
 
@@ -54,7 +56,7 @@ public class GreetingControllerTest {
                     .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                     .andExpect(status().is4xxClientError());
         } catch (Exception e) {
-            ServerLogger.logger.warning("Exception thrown!");
+            ServerLogger.logger.log(Level.WARNING, "Exception thrown!", e);
         }
     }
 
@@ -67,7 +69,7 @@ public class GreetingControllerTest {
                     .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                     .andExpect(status().isOk());
         } catch (Exception e) {
-            ServerLogger.logger.warning("Exception thrown!");
+            ServerLogger.logger.log(Level.WARNING, "Exception thrown!", e);
         }
     }
 
@@ -80,7 +82,7 @@ public class GreetingControllerTest {
                     .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                     .andExpect(status().isOk());
         } catch (Exception e) {
-            ServerLogger.logger.warning("Exception thrown!");
+            ServerLogger.logger.log(Level.WARNING, "Exception thrown!", e);
         }
     }
 
@@ -93,7 +95,7 @@ public class GreetingControllerTest {
                     .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                     .andExpect(status().isOk());
         } catch (Exception e) {
-            ServerLogger.logger.warning("Exception thrown!");
+            ServerLogger.logger.log(Level.WARNING, "Exception thrown!", e);
         }
     }
 
@@ -106,7 +108,7 @@ public class GreetingControllerTest {
                     .accept(MediaType.parseMediaType(mediaTypeTextUtf8)))
                     .andExpect(status().isOk());
         } catch (Exception e) {
-            ServerLogger.logger.warning("Exception thrown!");
+            ServerLogger.logger.log(Level.WARNING, "Exception thrown!", e);
         }
     }
 

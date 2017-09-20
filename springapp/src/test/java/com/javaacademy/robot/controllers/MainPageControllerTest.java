@@ -1,5 +1,6 @@
 package com.javaacademy.robot.controllers;
 
+import com.javaacademy.robot.logger.ServerLogger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.logging.Level;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -24,9 +27,13 @@ public class MainPageControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void shouldReturnMainPageTemplate() throws Exception {
-        this.mockMvc.perform(get("/").accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("text/html;charset=UTF-8"));
+    public void shouldReturnMainPageTemplate() {
+        try {
+            this.mockMvc.perform(get("/").accept(MediaType.parseMediaType("text/html;charset=UTF-8")))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType("text/html;charset=UTF-8"));
+        } catch (Exception e) {
+            ServerLogger.logger.log(Level.WARNING, "Exception thrown!", e);
+        }
     }
 }

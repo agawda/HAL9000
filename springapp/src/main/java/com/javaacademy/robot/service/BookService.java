@@ -44,11 +44,8 @@ public class BookService {
     }
 
     public boolean saveBook(BookDto bookDto) {
-        System.out.println(bookDto);
         try {
-            System.out.println("Converting");
             Book convertedEntity = bookConverter.toEntity(bookDto);
-            System.out.println("convertedEntity = " + convertedEntity);
             return saveBook(convertedEntity);
         } catch (IllegalArgumentException e) {
             logger.log(Level.WARNING, "Could not parse book because prices were incorrect: ", e);
