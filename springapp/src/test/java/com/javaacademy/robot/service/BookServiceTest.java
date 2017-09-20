@@ -1,7 +1,7 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.converters.BookConverter;
-import com.javaacademy.robot.helpers.FilterType;
+import com.javaacademy.robot.helpers.FilterOrder;
 import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
 import com.javaacademy.robot.model.BookModels;
@@ -126,7 +126,7 @@ public class BookServiceTest {
         when(pageMock.getContent()).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
 
-        List<BookDto> givenBooks = givenBookService.findAll(FilterType.TITLE_ASCENDING, givenPageId);
+        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.ASCENDING, "title", givenPageId);
         assertNotNull(givenBooks);
     }
 
@@ -139,7 +139,7 @@ public class BookServiceTest {
         when(pageMock.getContent()).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
 
-        List<BookDto> givenBooks = givenBookService.findAll(FilterType.TITLE_DESCENDING, givenPageId);
+        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.DESCENDING, "title", givenPageId);
         assertNotNull(givenBooks);
     }
 
@@ -152,7 +152,7 @@ public class BookServiceTest {
         when(pageMock.getContent()).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
 
-        List<BookDto> givenBooks = givenBookService.findAll(FilterType.AUTHORS_ASCENDING, givenPageId);
+        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.ASCENDING, "authors", givenPageId);
         assertNotNull(givenBooks);
     }
 
@@ -165,7 +165,7 @@ public class BookServiceTest {
         when(pageMock.getContent()).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
 
-        List<BookDto> givenBooks = givenBookService.findAll(FilterType.AUTHORS_DESCENDING, givenPageId);
+        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.DESCENDING, "authors", givenPageId);
         assertNotNull(givenBooks);
     }
 
@@ -178,7 +178,7 @@ public class BookServiceTest {
         when(pageMock.getContent()).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
 
-        List<BookDto> givenBooks = givenBookService.findAll(FilterType.PRICE_ASCENDING, givenPageId);
+        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.ASCENDING, "retailPriceAmount", givenPageId);
         assertNotNull(givenBooks);
     }
 
@@ -191,7 +191,7 @@ public class BookServiceTest {
         when(pageMock.getContent()).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
 
-        List<BookDto> givenBooks = givenBookService.findAll(FilterType.PRICE_DESCENDING, givenPageId);
+        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.DESCENDING, "retailPriceAmount",  givenPageId);
         assertNotNull(givenBooks);
     }
 
@@ -204,7 +204,7 @@ public class BookServiceTest {
         when(pageMock.getContent()).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
 
-        List<BookDto> givenBooks = givenBookService.findAll(FilterType.DISCOUNT_ASCENDING, givenPageId);
+        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.ASCENDING, "discount", givenPageId);
         assertNotNull(givenBooks);
     }
 
@@ -217,7 +217,7 @@ public class BookServiceTest {
         when(pageMock.getContent()).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
 
-        List<BookDto> givenBooks = givenBookService.findAll(FilterType.DISCOUNT_DESCENDING, givenPageId);
+        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.DESCENDING, "discount", givenPageId);
         assertNotNull(givenBooks);
     }
 
