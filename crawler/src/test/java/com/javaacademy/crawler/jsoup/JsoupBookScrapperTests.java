@@ -1,11 +1,7 @@
 package com.javaacademy.crawler.jsoup;
 
-import com.javaacademy.crawler.common.logger.AppLogger;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.Random;
-import java.util.logging.Level;
 
 /**
  * @author devas
