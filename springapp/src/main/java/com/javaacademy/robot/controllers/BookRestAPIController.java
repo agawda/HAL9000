@@ -10,11 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Anna Gawda
- * 08.09.2017
+ *         08.09.2017
  */
 @RestController
 public class BookRestAPIController {
@@ -32,7 +35,7 @@ public class BookRestAPIController {
     public ResponseEntity<BookDto> bookRequestById(@RequestParam(value = "id") Long id) {
         System.out.println("id = " + id);
         BookDto foundBook = bookService.getBookByIsbn(id);
-        if(foundBook == null) return ResponseEntity.notFound().build();
+        if (foundBook == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(bookService.getBookByIsbn(id));
     }
 
@@ -44,6 +47,32 @@ public class BookRestAPIController {
     @RequestMapping("/api/search")
     public List<BookDto> searchResults(@RequestParam(value = "query") String query) {
         return bookSearch.search(query);
+    }
+
+    @RequestMapping("/api/advancedSearch")
+    public ResponseEntity<Set<BookDto>> advancedSearchPostController(
+            @RequestParam(value = "title") String title,
+            @RequestParam(value = "author") String author,
+            @RequestParam(value = "category") String category,
+            @RequestParam(value = "bookstore") String bookstore,
+            @RequestParam(value = "minPrice") String minPrice,
+            @RequestParam(value = "maxPrice") String maxPrice) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("title", title);
+        parameters.put("author", author);
+        parameters.put("category", category);
+        parameters.put("bookstore", bookstore);
+
+        parameters.put("minPrice", minPrice);
+        if (minPrice.equals("")) {
+            parameters.put("minPrice", "-1.0");
+        }
+        parameters.put("maxPrice", maxPrice);
+        if (maxPrice.equals("")) {
+            parameters.put("maxPrice", "-1.0");
+        }
+        Set<BookDto> books = bookSearch.advancedSearch(parameters);
+        return ResponseEntity.ok(books);
     }
 
     @RequestMapping("/api/pages")

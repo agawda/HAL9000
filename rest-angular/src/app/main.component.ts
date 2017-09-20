@@ -125,6 +125,7 @@ export class MainComponent {
   }
 
   filter(title: string, author: string, category: string, bookstore: string, min: number, max: number) {
-
+    this.bookService.advancedSearchBooks(title, author, category, bookstore, min, max)
+      .then(books=>this.books = books);
   }
 }

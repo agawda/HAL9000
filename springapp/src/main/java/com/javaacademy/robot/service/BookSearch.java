@@ -51,6 +51,7 @@ public class BookSearch {
         String givenTitle = parameters.getOrDefault("title", "");
         String givenAuthor = parameters.getOrDefault("author", "");
         String givenCategory = parameters.getOrDefault("category", "");
+        String givenBookstore = parameters.getOrDefault("bookstore", "");
         Double maxPrice = Double.valueOf(parameters.get("maxPrice"));
         Double minPrice = Double.valueOf(parameters.get("minPrice"));
         allBooks.forEach(book -> {
@@ -69,6 +70,10 @@ public class BookSearch {
                     result.add(book);
                 }
             });
+
+            if(!givenBookstore.equals("") && book.getShopName().toLowerCase().contains(givenBookstore.toLowerCase())) {
+                result.add(book);
+            }
 
             if(maxPrice != -1 && minPrice != -1) {
                 if(book.getRetailPriceAmount() <= maxPrice && book.getRetailPriceAmount() >= minPrice) {
