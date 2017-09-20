@@ -8,6 +8,7 @@ import { Book } from './book';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
+
 export class MainComponent {
   title = 'books';
 
@@ -121,5 +122,9 @@ export class MainComponent {
     this.getRequest();
     this.sortBy = this.NONE;
     this.orderBy = this.NONE;
+  }
+
+  filter(title: string, author: string, category: string, bookstore: string, min: number, max: number) {
+
   }
 }

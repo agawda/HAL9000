@@ -1,14 +1,28 @@
 <nav class="navbar navbar-dark bg-dark navbar-static-top">
   <div class="container">
-    <div class="col-sm-2">
-      <a class="navbar-brand" href="#">Home</a>
+    <div class="col-sm-1">
+      <a class="h1 navbar-brand" href="#">Home</a>
     </div>
-    <div class="col-md-6">
-      <label for="cb">Menu</label>
+    <div class="col-md-7">
+      <label class="navbar-brand" for="cb">Filter</label>
       <input type="checkbox" style="display: none" id="cb">
       <div id="menu">
-        <button for="sort-title-ascending">Sort ascending by Title</button>
-        <h1>XD</h1>
+        <div class="container" id="filters-container">
+          <div class="row filter-row">
+              <input #title-box class="col-sm-4" type="text" placeholder="Title">
+              <input #author-box class="col-sm-4" type="text" placeholder="Author">
+              <input #min-box class="price-slider col-sm-3" id="min-price" type="number" min="0" max="2000" placeholder="Min price"/>
+          </div>
+          <div class="row filter-row">
+            <input #category-box class="col-sm-4" type="text" placeholder="Category">
+            <input #bookstore-box class="col-sm-4" type="text" placeholder="Bookstore">
+            <input #max-box class="price-slider col-sm-3" id="max-price" type="number" min="0" max="2000" placeholder="Max price"/>
+          </div>
+        </div>
+        <button class="col-sm-3" id="filter-button" (click)="filter(title-box.value, author-box.value,
+        category-box.value, bookstore-box.value, min-box.value, max-box.value)">
+          Filter
+        </button>
       </div>
     </div>
     <div class="col-sm-4">

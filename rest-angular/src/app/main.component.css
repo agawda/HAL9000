@@ -23,8 +23,27 @@ a {
 
 #menu {
   width: 100%;
-  height: 100px;
+  height: 115px;
   background-color: white;
 }
 
-input:not(:checked) + div { display: none; }
+input:not(:checked) + div {
+  display: none;
+}
+
+#filters-container {
+  padding: 2px;
+}
+
+.filter-row {
+  margin: 1px;
+  padding: 2px;
+}
+
+.price-slider {
+  margin: 2px 4px 0px 4px;
+}
+
+#filter-button {
+  margin-left: 67%;
+}
