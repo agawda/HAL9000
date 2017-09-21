@@ -1,6 +1,5 @@
 package com.javaacademy.robot.controllers;
 
-import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
 import com.javaacademy.robot.service.BookSearch;
 import com.javaacademy.robot.service.BookService;

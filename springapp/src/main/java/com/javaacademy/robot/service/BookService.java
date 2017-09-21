@@ -45,11 +45,8 @@ public class BookService {
     }
 
     public boolean saveBook(BookDto bookDto) {
-        System.out.println(bookDto);
         try {
-            System.out.println("Converting");
             Book convertedEntity = bookConverter.toEntity(bookDto);
-            System.out.println("convertedEntity = " + convertedEntity);
             return saveBook(convertedEntity);
         } catch (IllegalArgumentException e) {
             logger.log(Level.WARNING, "Could not parse book because prices were incorrect: ", e);
@@ -120,5 +117,10 @@ public class BookService {
 
     public List<BookDto> getAllBookDtos() {
         return bookConverter.toDtos(getAllBooks());
+    }
+
+    public List<BookDto> getByEverything(String title, String author, String category, String shopName, double minPrice, double maxPrice) {
+        List<Book> books = bookRepository.findAllBy(title, author, category, shopName, minPrice, maxPrice);
+        return bookConverter.toDtos(books);
     }
 }

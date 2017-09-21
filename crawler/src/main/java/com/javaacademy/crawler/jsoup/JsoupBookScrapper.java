@@ -73,7 +73,7 @@ abstract class JsoupBookScrapper implements Scrapper {
     abstract Set<String> getLinksFromGrid();
 
     Set<BookModel> parseSingleGrid() {
-        Set<BookModel> bookModels = new HashSet<>();
+        bookModels = new HashSet<>();
         Set<String> linksFromGrRid = getLinksFromGrid();
         int i = 1;
         for (String link : linksFromGrRid) {

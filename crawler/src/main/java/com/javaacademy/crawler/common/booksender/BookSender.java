@@ -122,10 +122,8 @@ public class BookSender {
         if (bookModel.getListPriceAmount() < bookModel.getRetailPriceAmount()) {
             return;
         }
-        if (bookModel.getListPriceAmount() != 0) {
-            if (bookModel.getListPriceAmount() == bookModel.getRetailPriceAmount()) {
-                return;
-            }
+        if (bookModel.getListPriceAmount() != 0 && (bookModel.getListPriceAmount() == bookModel.getRetailPriceAmount())) {
+            return;
         }
         booksToSend.put(bookModel, false);
     }
