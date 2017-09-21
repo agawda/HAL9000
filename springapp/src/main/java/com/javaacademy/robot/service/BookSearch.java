@@ -1,6 +1,5 @@
 package com.javaacademy.robot.service;
 
-import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

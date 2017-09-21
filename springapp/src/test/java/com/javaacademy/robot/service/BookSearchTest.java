@@ -18,6 +18,8 @@ public class BookSearchTest {
 
     private BookService bookServiceMock = mock(BookService.class);
     private List<BookDto> bookList;
+    private String minPrice = "minPrice";
+    private String maxPrice = "maxPrice";
 
     @Before
     public void setUp() {
@@ -72,8 +74,8 @@ public class BookSearchTest {
         query.put("title", "Keeping");
         query.put("author", "Davenport");
         query.put("category", "medical");
-        query.put("minPrice", "50");
-        query.put("maxPrice", "100");
+        query.put(minPrice, "50");
+        query.put(maxPrice, "100");
 
         Set<BookDto> givenResults = bookSearch.advancedSearch(query);
 
@@ -85,8 +87,8 @@ public class BookSearchTest {
         when(bookServiceMock.getAllBookDtos()).thenReturn(bookList);
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         Map<String, String> query = new HashMap<>();
-        query.put("minPrice", "50");
-        query.put("maxPrice", "-1.0");
+        query.put(minPrice, "50");
+        query.put(maxPrice, "-1.0");
 
         Set<BookDto> givenResults = bookSearch.advancedSearch(query);
 
@@ -98,8 +100,8 @@ public class BookSearchTest {
         when(bookServiceMock.getAllBookDtos()).thenReturn(bookList);
         BookSearch bookSearch = new BookSearch(bookServiceMock);
         Map<String, String> query = new HashMap<>();
-        query.put("minPrice", "-1.0");
-        query.put("maxPrice", "100");
+        query.put(minPrice, "-1.0");
+        query.put(maxPrice, "100");
 
         Set<BookDto> givenResults = bookSearch.advancedSearch(query);
 

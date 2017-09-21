@@ -54,9 +54,9 @@ public class App {
     }
 
     private void logResults() {
-        for (String storeName :
-                crawlersSendBooksStats.keySet()) {
-            statistics.info(() -> "Total books from " + storeName + ": " + crawlersSendBooksStats.get(storeName));
+        for (Map.Entry<String, Long> entry :
+                crawlersSendBooksStats.entrySet()) {
+            statistics.info(() -> "Total books from " + entry.getKey() + ": " + entry.getValue());
         }
     }
 

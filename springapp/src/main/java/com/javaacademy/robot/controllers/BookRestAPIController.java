@@ -30,7 +30,6 @@ public class BookRestAPIController {
 
     @RequestMapping("/api/books")
     public ResponseEntity<BookDto> bookRequestById(@RequestParam(value = "id") Long id) {
-        System.out.println("id = " + id);
         BookDto foundBook = bookService.getBookByIsbn(id);
         if (foundBook == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(bookService.getBookByIsbn(id));
