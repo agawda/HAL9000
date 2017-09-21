@@ -256,4 +256,40 @@ public class BookServiceTest {
         bookDto3.setIndustryIdentifier(3L);
         return new ArrayList<>(Arrays.asList(bookDto, bookDto2, bookDto3));
     }
+
+    @Test
+    public void sortAuthorsIfAppliedTest() {
+        BookService givenBookService = new BookService(bookRepository, bookConverter);
+        FilterOrder filterOrder = FilterOrder.ASCENDING;
+        String columnName = "authors";
+        List<String> strings = new ArrayList<>();
+        String first = "abc";
+        String second = "cba";
+        String third = "wtf";
+        strings.add(second);
+        strings.add(third);
+        strings.add(first);
+        givenBookService.sortAuthorsIfApplied(filterOrder, columnName, strings);
+        assertEquals(strings.get(0), first);
+        assertEquals(strings.get(1), second);
+        assertEquals(strings.get(2), third);
+    }
+
+    @Test
+    public void sortAuthorsIfAppliedTestReverse() {
+        BookService givenBookService = new BookService(bookRepository, bookConverter);
+        FilterOrder filterOrder = FilterOrder.DESCENDING;
+        String columnName = "authors";
+        List<String> strings = new ArrayList<>();
+        String first = "abc";
+        String second = "cba";
+        String third = "wtf";
+        strings.add(second);
+        strings.add(third);
+        strings.add(first);
+        givenBookService.sortAuthorsIfApplied(filterOrder, columnName, strings);
+        assertEquals(strings.get(2), first);
+        assertEquals(strings.get(1), second);
+        assertEquals(strings.get(0), third);
+    }
 }
