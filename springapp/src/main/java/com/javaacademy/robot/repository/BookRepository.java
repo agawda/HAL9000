@@ -18,7 +18,7 @@ public interface BookRepository extends PagingAndSortingRepository<Book, Long> {
             "lower(a) like %?2% and " +
             "lower(c) like %?3% and " +
             "lower(b.shopName) like %?4% and " +
-            "b.retailPriceAmount > ?5 and " +
-            "b.retailPriceAmount < ?6")
+            "b.retailPriceAmount >= ?5 and " +
+            "b.retailPriceAmount <= ?6")
     List<Book> findAllBy(String title, String author, String category, String shopName, double minPrice, double maxPrice);
 }
