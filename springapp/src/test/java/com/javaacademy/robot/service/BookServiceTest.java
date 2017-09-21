@@ -258,7 +258,7 @@ public class BookServiceTest {
     public void sortAuthorsIfAppliedTest() {
         BookService givenBookService = new BookService(bookRepository, bookConverter);
         FilterOrder filterOrder = FilterOrder.ASCENDING;
-        String columnName = "author";
+        String columnName = "authors";
         List<String> strings = new ArrayList<>();
         String first = "abc";
         String second = "cba";
@@ -276,7 +276,7 @@ public class BookServiceTest {
     public void sortAuthorsIfAppliedTestReverse() {
         BookService givenBookService = new BookService(bookRepository, bookConverter);
         FilterOrder filterOrder = FilterOrder.DESCENDING;
-        String columnName = "author";
+        String columnName = "authors";
         List<String> strings = new ArrayList<>();
         String first = "abc";
         String second = "cba";
