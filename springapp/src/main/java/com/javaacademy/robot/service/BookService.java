@@ -100,7 +100,7 @@ public class BookService {
     }
 
     void sortAuthorsIfApplied(FilterOrder filterOrder, String columnName, List<String> authors) {
-        if (!columnName.equalsIgnoreCase("author")) {
+        if (!columnName.equalsIgnoreCase("authors")) {
             return;
         }
         if (filterOrder == FilterOrder.ASCENDING) {
