@@ -45,6 +45,7 @@ public class App {
             Set<BookModel> books;
             try {
                 books = scrapper.scrape();
+                numberOfScrappedBooks += books.size();
             } catch (Exception e) {
                 AppLogger.logger.log(Level.WARNING, "Exception during scrapping, " + scrapper.getName(), e);
                 books = scrapper.getScrappedBooks();
