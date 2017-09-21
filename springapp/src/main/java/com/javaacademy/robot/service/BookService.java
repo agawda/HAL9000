@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -89,13 +90,26 @@ public class BookService {
 
     public List<BookDto> findAll(FilterOrder filterOrder, String columnName, int pageId) {
         List<Book> books;
-        if(filterOrder == FilterOrder.ASCENDING) {
+        if (filterOrder == FilterOrder.ASCENDING) {
             books = getFilteredBooks(pageId, Sort.Direction.ASC, columnName);
         } else {
             books = getFilteredBooks(pageId, Sort.Direction.DESC, columnName);
         }
+        books.forEach(book -> sortAuthorsIfApplied(filterOrder, columnName, book.getAuthors()));
         return bookConverter.toDtos(books);
     }
+
+    void sortAuthorsIfApplied(FilterOrder filterOrder, String columnName, List<String> authors) {
+        if (!columnName.equalsIgnoreCase("author")) {
+            return;
+        }
+        if (filterOrder == FilterOrder.ASCENDING) {
+            Collections.sort(authors);
+        } else {
+            authors.sort(Collections.reverseOrder());
+        }
+    }
+
 
     private List<Book> getFilteredBooks(int pageId, Sort.Direction direction, String param) {
         List<Book> books;

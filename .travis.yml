@@ -18,5 +18,5 @@ addons:
     branches:
       - master
       - development
-      - code-smells-fixes
+      - improvements
       - jsoup_subtitles
