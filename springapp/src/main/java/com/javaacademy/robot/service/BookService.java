@@ -107,4 +107,9 @@ public class BookService {
     public List<BookDto> getAllBookDtos() {
         return bookConverter.toDtos(getAllBooks());
     }
+
+    public List<BookDto> getByEverything(String title, String author, String category, String shopName, double minPrice, double maxPrice) {
+        List<Book> books = bookRepository.findAllBy(title, author, category, shopName, minPrice, maxPrice);
+        return bookConverter.toDtos(books);
+    }
 }
