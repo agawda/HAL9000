@@ -1,5 +1,6 @@
 package com.javaacademy.crawler.jsoup;
 
+import com.javaacademy.crawler.common.converters.GoogleBookConverter;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.select.Elements;
@@ -53,7 +54,7 @@ public class MatrasScrapper extends JsoupBookScrapper {
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("label:containsOwn(ISBN:)");
         if (elements.isEmpty()) {
-            return new Random().nextLong();
+            return GoogleBookConverter.generateIsbn(getTitle());
         } else {
             String[] split = elements.next().text().split(", ");
             return parseIsbn(split[split.length - 1].replace("-", ""));

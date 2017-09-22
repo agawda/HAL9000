@@ -1,7 +1,6 @@
 package com.javaacademy.robot.controllers;
 
-import com.javaacademy.robot.helpers.FilterType;
-import com.javaacademy.robot.model.Book;
+import com.javaacademy.robot.helpers.FilterOrder;
 import com.javaacademy.robot.model.BookDto;
 import com.javaacademy.robot.service.BookSearch;
 import com.javaacademy.robot.service.BookService;
@@ -15,7 +14,7 @@ import java.util.List;
 
 /**
  * @author Anna Gawda
- * 08.09.2017
+ *         08.09.2017
  */
 @RestController
 public class BookRestAPIController {
@@ -32,7 +31,7 @@ public class BookRestAPIController {
     @RequestMapping("/api/books")
     public ResponseEntity<BookDto> bookRequestById(@RequestParam(value = "id") Long id) {
         BookDto foundBook = bookService.getBookByIsbn(id);
-        if(foundBook == null) return ResponseEntity.notFound().build();
+        if (foundBook == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(bookService.getBookByIsbn(id));
     }
 
@@ -46,13 +45,32 @@ public class BookRestAPIController {
         return bookSearch.search(query);
     }
 
+    @RequestMapping("/api/advancedSearch")
+    public ResponseEntity<List<BookDto>> advancedSearchPostController(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "author", required = false) String author,
+            @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "bookstore", required = false) String bookstore,
+            @RequestParam(value = "minPrice", required = false, defaultValue = "0") double minPrice,
+            @RequestParam(value = "maxPrice", required = false, defaultValue = "1000000") double maxPrice) {
+
+        List<BookDto> bookDtos = bookService.getByEverything(
+                title.toLowerCase(),
+                author.toLowerCase(),
+                category.toLowerCase(),
+                bookstore.toLowerCase(),
+                minPrice,
+                maxPrice);
+        return ResponseEntity.ok(bookDtos);
+    }
+
     @RequestMapping("/api/pages")
-    public List<Book> getPage(@RequestParam(value = "id") int pageId) {
+    public List<BookDto> getPage(@RequestParam(value = "id") int pageId) {
         return bookService.findAll(pageId);
     }
 
     @RequestMapping("/api/booksTotal")
-    public Integer getBooksNumber() {
+    public int getBooksNumber() {
         return bookService.getAllBookDtos().size();
     }
 
@@ -61,7 +79,7 @@ public class BookRestAPIController {
             @RequestParam(value = "type") String type,
             @RequestParam(value = "order") String order,
             @RequestParam(value = "pageId") int pageId) {
-        FilterType filterType = FilterType.valueOf(type.toUpperCase() + "_" + order.toUpperCase());
-        return ResponseEntity.ok(bookService.findAll(filterType, pageId));
+        FilterOrder filterOrder = FilterOrder.valueOf(order.toUpperCase());
+        return ResponseEntity.ok(bookService.findAll(filterOrder, type, pageId));
     }
 }

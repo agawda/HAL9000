@@ -52,7 +52,7 @@ public class GoogleBookConverter {
         return map.getOrDefault("ISBN_13", generateIsbn(title));
     }
 
-    long generateIsbn(String title) {
+    public static long generateIsbn(String title) {
         long isbn =  title.hashCode();
         if(isbn < 0) {
             return isbn * -1;

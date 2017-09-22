@@ -1,5 +1,6 @@
 package com.javaacademy.crawler.jsoup;
 
+import com.javaacademy.crawler.common.converters.GoogleBookConverter;
 import com.javaacademy.crawler.common.logger.AppLogger;
 import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.select.Elements;
@@ -48,7 +49,7 @@ public class GandalfScrapper extends JsoupBookScrapper {
     @Override
     Long getIndustryIdentifier() {
         Elements elements = getDoc().select("td[itemprop=isbn]");
-        return elements.isEmpty() ? new Random().nextLong() :
+        return elements.isEmpty() ? GoogleBookConverter.generateIsbn(getTitle()) :
                 parseIsbn(elements.text().replace("-", "").replace("X", ""));
     }
 

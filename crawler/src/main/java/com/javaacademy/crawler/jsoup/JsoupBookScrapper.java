@@ -1,6 +1,7 @@
 package com.javaacademy.crawler.jsoup;
 
 import com.javaacademy.crawler.Scrapper;
+import com.javaacademy.crawler.common.converters.GoogleBookConverter;
 import com.javaacademy.crawler.common.model.BookModel;
 import org.jsoup.nodes.Document;
 
@@ -38,7 +39,7 @@ abstract class JsoupBookScrapper implements Scrapper {
         try {
             isbn = Long.parseLong(s);
         } catch (NumberFormatException e) {
-            return new Random().nextLong();
+            return GoogleBookConverter.generateIsbn(s);
         }
         return isbn;
     }
@@ -72,7 +73,7 @@ abstract class JsoupBookScrapper implements Scrapper {
     abstract Set<String> getLinksFromGrid();
 
     Set<BookModel> parseSingleGrid() {
-        Set<BookModel> bookModels = new HashSet<>();
+        bookModels = new HashSet<>();
         Set<String> linksFromGrRid = getLinksFromGrid();
         int i = 1;
         for (String link : linksFromGrRid) {

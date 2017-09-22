@@ -23,6 +23,7 @@ import static com.javaacademy.crawler.common.logger.AppLogger.*;
  */
 public class App {
     private static Map<String, Long> crawlersSendBooksStats = new HashMap<>();
+    private static int numberOfScrappedBooks = 0;
     private static String serverIpAddress;
 
     public static void main(String[] args) {
@@ -44,9 +45,11 @@ public class App {
             Set<BookModel> books;
             try {
                 books = scrapper.scrape();
+                numberOfScrappedBooks += books.size();
             } catch (Exception e) {
                 AppLogger.logger.log(Level.WARNING, "Exception during scrapping, " + scrapper.getName(), e);
                 books = scrapper.getScrappedBooks();
+                numberOfScrappedBooks += books.size();
             }
             sendScrappedBooks(books, scrapper.getName());
         }
@@ -54,6 +57,8 @@ public class App {
     }
 
     private void logResults() {
+        statistics.info(() -> "Total books scrapped: " + numberOfScrappedBooks);
+        statistics.info(() -> "Total books sent to server: " + crawlersSendBooksStats.values().stream().reduce(0L, Long::sum));
         for (String storeName :
                 crawlersSendBooksStats.keySet()) {
             statistics.info(() -> "Total books from " + storeName + ": " + crawlersSendBooksStats.get(storeName));

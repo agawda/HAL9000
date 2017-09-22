@@ -1,7 +1,7 @@
 package com.javaacademy.robot.service;
 
 import com.javaacademy.robot.converters.BookConverter;
-import com.javaacademy.robot.helpers.FilterType;
+import com.javaacademy.robot.helpers.FilterOrder;
 import com.javaacademy.robot.logger.ServerLogger;
 import com.javaacademy.robot.model.Book;
 import com.javaacademy.robot.model.BookDto;
@@ -45,11 +45,8 @@ public class BookService {
     }
 
     public boolean saveBook(BookDto bookDto) {
-        System.out.println(bookDto);
         try {
-            System.out.println("Converting");
             Book convertedEntity = bookConverter.toEntity(bookDto);
-            System.out.println("convertedEntity = " + convertedEntity);
             return saveBook(convertedEntity);
         } catch (IllegalArgumentException e) {
             logger.log(Level.WARNING, "Could not parse book because prices were incorrect: ", e);
@@ -83,51 +80,33 @@ public class BookService {
         }
     }
 
-    public List<Book> findAll(int pageId) {
-        return bookRepository.findAll(new PageRequest(pageId, ENTRIES_PER_PAGE)).getContent();
+    public List<BookDto> findAll(int pageId) {
+        List<Book> books = bookRepository.findAll(new PageRequest(pageId, ENTRIES_PER_PAGE)).getContent();
+        return this.bookConverter.toDtos(books);
     }
 
-    public List<BookDto> findAll() {
-        return findAll();
-    }
-
-    public List<BookDto> findAll(FilterType filterType, int pageId) {
-        List<Book> books = Collections.emptyList();
-        switch (filterType) {
-            case TITLE_ASCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.ASC, "title");
-                break;
-            case TITLE_DESCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "title");
-                break;
-            case AUTHORS_ASCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.ASC, "authors");
-                break;
-            case AUTHORS_DESCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "authors");
-                break;
-            case CATEGORY_ASCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.ASC, "category");
-                break;
-            case CATEGORY_DESCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "category");
-                break;
-            case PRICE_ASCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.ASC, "retailPriceAmount");
-                break;
-            case PRICE_DESCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "retailPriceAmount");
-                break;
-            case DISCOUNT_ASCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.ASC, "discount");
-                break;
-            case DISCOUNT_DESCENDING:
-                books = getFilteredBooks(pageId, Sort.Direction.DESC, "discount");
-                break;
-
+    public List<BookDto> findAll(FilterOrder filterOrder, String columnName, int pageId) {
+        List<Book> books;
+        if (filterOrder == FilterOrder.ASCENDING) {
+            books = getFilteredBooks(pageId, Sort.Direction.ASC, columnName);
+        } else {
+            books = getFilteredBooks(pageId, Sort.Direction.DESC, columnName);
         }
+        books.forEach(book -> sortAuthorsIfApplied(filterOrder, columnName, book.getAuthors()));
         return bookConverter.toDtos(books);
     }
+
+    void sortAuthorsIfApplied(FilterOrder filterOrder, String columnName, List<String> authors) {
+        if (!columnName.equalsIgnoreCase("authors") || authors == null) {
+            return;
+        }
+        if (filterOrder == FilterOrder.ASCENDING) {
+            Collections.sort(authors);
+        } else {
+            authors.sort(Collections.reverseOrder());
+        }
+    }
+
 
     private List<Book> getFilteredBooks(int pageId, Sort.Direction direction, String param) {
         List<Book> books;
@@ -138,5 +117,10 @@ public class BookService {
 
     public List<BookDto> getAllBookDtos() {
         return bookConverter.toDtos(getAllBooks());
+    }
+
+    public List<BookDto> getByEverything(String title, String author, String category, String shopName, double minPrice, double maxPrice) {
+        List<Book> books = bookRepository.findAllBy(title, author, category, shopName, minPrice, maxPrice);
+        return bookConverter.toDtos(books);
     }
 }

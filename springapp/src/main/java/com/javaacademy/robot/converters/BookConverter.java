@@ -17,7 +17,7 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         bookDto.setIndustryIdentifier(entity.getIndustryIdentifier());
         bookDto.setTitle(entity.getTitle());
         bookDto.setSubtitle(entity.getSubtitle());
-        setSortedAuthors(bookDto, entity);
+        bookDto.setAuthors(entity.getAuthors());
         bookDto.setCategories(entity.getCategories());
         bookDto.setSmallThumbnail(entity.getSmallThumbnail());
         bookDto.setCanonicalVolumeLink(entity.getCanonicalVolumeLink());
@@ -71,11 +71,6 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         } else {
             return authors;
         }
-    }
-
-    private void setSortedAuthors(BookDto dto, Book entity) {
-        Collections.sort(entity.getAuthors());
-        dto.setAuthors(entity.getAuthors());
     }
 
     String recognizeShopName(BookDto bookDto) {
