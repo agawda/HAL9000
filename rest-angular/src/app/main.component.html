@@ -34,9 +34,10 @@
   </div>
   </div>
 </nav>
-<div class="container">
-  <div class="row">
+<div class="container" style="text-align: center">
+  <div class="row" style="padding: 15px; display: block; margin: auto;">
     <button (click)="previousPage()"><</button>
+    <label style="padding-left: 5px; padding-right: 5px; padding-top: 5px">Page: {{currentPage + 1}}/{{maxPages + 1}}</label>
     <button (click)="nextPage()">></button>
   </div>
 </div>
@@ -76,4 +77,10 @@
       </div>
     </li>
   </ol>
+</div><div class="container" style="text-align: center">
+  <div class="row" style="padding: 15px; display: block; margin: auto;">
+    <button (click)="previousPage()"><</button>
+    <label style="padding-left: 5px; padding-right: 5px; padding-top: 5px">Page: {{currentPage + 1}}/{{maxPages + 1}}</label>
+    <button (click)="nextPage()">></button>
+  </div>
 </div>
