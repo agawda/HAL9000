@@ -39,16 +39,12 @@
 </nav>
 <div class="container" style="text-align: center">
   <div class="row" style="padding: 15px; display: block; margin: auto;">
-    <span *ngIf="currentPage != 0">
-    <button (click)="firstPage()"><<</button>
-    <button (click)="previousPage()"><</button>
-    </span>
+    <button [disabled]="currentPage == 0" (click)="firstPage()"><<</button>
+    <button [disabled]="currentPage == 0" (click)="previousPage()"><</button>
     <label style="padding-left: 5px; padding-right: 5px; padding-top: 5px">Page: {{currentPage + 1}}/{{maxPages +
       1}}</label>
-    <span *ngIf="currentPage != maxPages">
-    <button (click)="nextPage()">></button>
-    <button (click)="lastPage()">>></button>
-    </span>
+    <button [disabled]="currentPage == maxPages" (click)="nextPage()">></button>
+    <button [disabled]="currentPage == maxPages" (click)="lastPage()">>></button>
   </div>
 </div>
 <div class="container" id="body">
