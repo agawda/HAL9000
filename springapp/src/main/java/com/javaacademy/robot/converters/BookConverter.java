@@ -93,7 +93,7 @@ public class BookConverter implements DtoEntityConverter<Book, BookDto> {
         if (listPriceAmount == 0) {
             return 0;
         }
-        return (byte) (100 - (retailPriceAmount * 100 / listPriceAmount));
+        return (byte) Math.round(100 - (retailPriceAmount * 100 / listPriceAmount));
     }
 
     enum Shop {
