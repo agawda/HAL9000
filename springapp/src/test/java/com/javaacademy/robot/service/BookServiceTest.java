@@ -25,9 +25,6 @@ public class BookServiceTest {
     private Page pageMock = mock(Page.class);
     private BookService bookService;
     private String title = "title";
-    private String authors = "authors";
-    private String retailPriceAmount = "retailPriceAmount";
-    private String discount = "discount";
 
     @Test
     public void getBookByIsbnTest() {
@@ -146,82 +143,25 @@ public class BookServiceTest {
     }
 
     @Test
-    public void shouldReturnBooksSortedByAuthorsAscending() {
+    public void shouldReturnListOfBooksAdvancedSearch() {
         BookService givenBookService = new BookService(bookRepository, bookConverter);
-        int givenPageId = 0;
 
-        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.ASC, authors))).thenReturn(pageMock);
-        when(pageMock.getContent()).thenReturn(getBooks());
+        when(bookRepository.findAllBy("title", "author", "category", "google", 0, 100)).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
+        List<BookDto> result = givenBookService.getByEverything("title", "author", "category", "google", 0, 100);
 
-        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.ASCENDING, authors, givenPageId);
-        assertNotNull(givenBooks);
+        assertEquals(3, result.size());
     }
 
     @Test
-    public void shouldReturnBooksSortedByAuthorsDescending() {
-        int givenPageId = 0;
+    public void shouldReturnResultListOneKeyword() {
         BookService givenBookService = new BookService(bookRepository, bookConverter);
 
-        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.DESC,
-                authors))).thenReturn(pageMock);
-        when(pageMock.getContent()).thenReturn(getBooks());
+        when(bookRepository.findAllByQuery(any())).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
+        List<BookDto> result = givenBookService.searchOneKeyword("title");
 
-        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.DESCENDING, authors, givenPageId);
-        assertNotNull(givenBooks);
-    }
-
-    @Test
-    public void shouldReturnBooksSortedByPriceAscending() {
-        BookService givenBookService = new BookService(bookRepository, bookConverter);
-        int givenPageId = 0;
-
-        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.ASC, retailPriceAmount))).thenReturn(pageMock);
-        when(pageMock.getContent()).thenReturn(getBooks());
-        when(bookConverter.toDtos(any())).thenReturn(getDtos());
-
-        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.ASCENDING, retailPriceAmount, givenPageId);
-        assertNotNull(givenBooks);
-    }
-
-    @Test
-    public void shouldReturnBooksSortedByPriceDescending() {
-        int givenPageId = 0;
-        BookService givenBookService = new BookService(bookRepository, bookConverter);
-
-        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.DESC, retailPriceAmount))).thenReturn(pageMock);
-        when(pageMock.getContent()).thenReturn(getBooks());
-        when(bookConverter.toDtos(any())).thenReturn(getDtos());
-
-        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.DESCENDING, retailPriceAmount,  givenPageId);
-        assertNotNull(givenBooks);
-    }
-
-    @Test
-    public void shouldReturnBooksSortedByDiscountAscending() {
-        BookService givenBookService = new BookService(bookRepository, bookConverter);
-        int givenPageId = 0;
-
-        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.ASC, discount))).thenReturn(pageMock);
-        when(pageMock.getContent()).thenReturn(getBooks());
-        when(bookConverter.toDtos(any())).thenReturn(getDtos());
-
-        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.ASCENDING, discount, givenPageId);
-        assertNotNull(givenBooks);
-    }
-
-    @Test
-    public void shouldReturnBooksSortedByDiscountDescending() {
-        int givenPageId = 0;
-        BookService givenBookService = new BookService(bookRepository, bookConverter);
-
-        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.DESC, discount))).thenReturn(pageMock);
-        when(pageMock.getContent()).thenReturn(getBooks());
-        when(bookConverter.toDtos(any())).thenReturn(getDtos());
-
-        List<BookDto> givenBooks = givenBookService.findAll(FilterOrder.DESCENDING, discount, givenPageId);
-        assertNotNull(givenBooks);
+        assertEquals(3, result.size());
     }
 
     private BookModels getBookModels() {

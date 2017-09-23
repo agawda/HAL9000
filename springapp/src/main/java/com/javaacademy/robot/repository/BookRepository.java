@@ -11,7 +11,7 @@ import java.util.List;
 @Transactional
 @Component
 public interface BookRepository extends PagingAndSortingRepository<Book, Long> {
-    @Query("select b from Book b " +
+    @Query("select distinct b from Book b " +
             "join b.authors a " +
             "join b.categories c " +
             "where lower(b.title) like %?1% and " +
@@ -21,4 +21,13 @@ public interface BookRepository extends PagingAndSortingRepository<Book, Long> {
             "b.retailPriceAmount >= ?5 and " +
             "b.retailPriceAmount <= ?6")
     List<Book> findAllBy(String title, String author, String category, String shopName, double minPrice, double maxPrice);
+
+    @Query("select distinct b from Book b " +
+            "join b.authors a " +
+            "join b.categories c " +
+            "where lower(b.title) like %?1% or " +
+            "lower(a) like %?1% or " +
+            "lower(c) like %?1% or " +
+            "lower(b.shopName) like %?1%")
+    List<Book> findAllByQuery(String query);
 }
