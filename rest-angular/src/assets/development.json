@@ -1,0 +1,9 @@
+{
+  "apiUrl": "http://localhost:10520/api/",
+  "pagesUrl": "/pages/?id=",
+  "sortUrl": "/sort",
+  "searchUrl": "/search/?query=",
+  "advancedSearchUrl": "/advancedSearch",
+  "maxBooksUrl": "/booksTotal",
+  "bookDetailUrl": "/books?id="
+}

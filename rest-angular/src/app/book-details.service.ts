@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-import { Book } from "./book";
+import { Book } from './book';
+import { Config } from './config/config';
 
 @Injectable()
 export class BookDetailsService {
-  private booksApiURL = "http://localhost:10520/api/books?id=";
-   constructor(private http: Http) {
+  private baseUrl: string;
+  private booksApiURL: string;
+
+   constructor(private http: Http, private _config: Config) {
+     this.baseUrl = _config.get('apiUrl');
+     this.booksApiURL = _config.get('bookDetailUrl');
    }
 
    getBook(id: number): Observable<Book> {
-     const url = `${this.booksApiURL}${id}`;
+     const url = `${this.baseUrl}${this.booksApiURL}${id}`;
      console.log(url);
         return this.http.get(url)
          .map((res: Response) => res.json() as Book)

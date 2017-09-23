@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
@@ -9,7 +9,11 @@ import { MainComponent } from './main.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BookDetailsComponent } from './book-details.component';
 import { BookDetailsService } from './book-details.service';
+import { Config } from './config/config';
 
+export function initConfig(config: Config){
+ return () => config.load()
+}
 
 @NgModule({
   declarations: [
@@ -25,7 +29,12 @@ import { BookDetailsService } from './book-details.service';
   ],
   providers: [
     BookService,
-    BookDetailsService
+    BookDetailsService,
+    Config,
+    { provide: APP_INITIALIZER,
+         useFactory: initConfig,
+         deps: [Config],
+         multi: true }
   ],
   bootstrap: [AppComponent]
 })
