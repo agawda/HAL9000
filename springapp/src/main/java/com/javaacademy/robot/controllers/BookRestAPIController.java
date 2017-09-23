@@ -2,7 +2,6 @@ package com.javaacademy.robot.controllers;
 
 import com.javaacademy.robot.helpers.FilterOrder;
 import com.javaacademy.robot.model.BookDto;
-import com.javaacademy.robot.service.BookSearch;
 import com.javaacademy.robot.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Anna Gawda
@@ -20,12 +20,10 @@ import java.util.List;
 public class BookRestAPIController {
 
     private BookService bookService;
-    private BookSearch bookSearch;
 
     @Autowired
-    public BookRestAPIController(BookService bookService, BookSearch bookSearch) {
+    public BookRestAPIController(BookService bookService) {
         this.bookService = bookService;
-        this.bookSearch = bookSearch;
     }
 
     @RequestMapping("/api/books")
@@ -42,11 +40,11 @@ public class BookRestAPIController {
 
     @RequestMapping("/api/search")
     public List<BookDto> searchResults(@RequestParam(value = "query") String query) {
-        return bookSearch.search(query);
+        return bookService.searchOneKeyword(query.toLowerCase());
     }
 
     @RequestMapping("/api/advancedSearch")
-    public ResponseEntity<List<BookDto>> advancedSearchPostController(
+    public ResponseEntity<List<BookDto>> advancedSearchController(
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "author", required = false) String author,
             @RequestParam(value = "category", required = false) String category,
@@ -80,6 +78,9 @@ public class BookRestAPIController {
             @RequestParam(value = "order") String order,
             @RequestParam(value = "pageId") int pageId) {
         FilterOrder filterOrder = FilterOrder.valueOf(order.toUpperCase());
-        return ResponseEntity.ok(bookService.findAll(filterOrder, type, pageId));
+        List<BookDto> result = bookService.findAll(filterOrder, type, pageId);
+        return Objects.nonNull(result) ?
+                ResponseEntity.ok(result) :
+                ResponseEntity.notFound().build();
     }
 }
