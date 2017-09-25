@@ -69,7 +69,7 @@ export class MainComponent {
   }
 
   searchBooks(param: string) {
-    this.bookService.searchBooks(param).then(books => {
+    this.bookService.searchBooks(param).subscribe(books => {
       this.books = books;
     });
   }
