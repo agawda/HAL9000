@@ -120,8 +120,9 @@ public class BookServiceTest {
     public void shouldReturnBooksSortedByTitleAscending() {
         BookService givenBookService = new BookService(bookRepository, bookConverter);
         int givenPageId = 0;
+        Sort.Order order = new Sort.Order(Sort.Direction.ASC, title).ignoreCase();
 
-        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.ASC, title))).thenReturn(pageMock);
+        when(bookRepository.findAll(new PageRequest(givenPageId, 20, new Sort(order)))).thenReturn(pageMock);
         when(pageMock.getContent()).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
 
@@ -133,8 +134,9 @@ public class BookServiceTest {
     public void shouldReturnBooksSortedByTitleDescending() {
         BookService givenBookService = new BookService(bookRepository, bookConverter);
         int givenPageId = 0;
+        Sort.Order order = new Sort.Order(Sort.Direction.DESC, title).ignoreCase();
 
-        when(bookRepository.findAll(new PageRequest(givenPageId, 20, Sort.Direction.DESC, title))).thenReturn(pageMock);
+        when(bookRepository.findAll(new PageRequest(givenPageId, 20, new Sort(order)))).thenReturn(pageMock);
         when(pageMock.getContent()).thenReturn(getBooks());
         when(bookConverter.toDtos(any())).thenReturn(getDtos());
 
@@ -201,7 +203,6 @@ public class BookServiceTest {
     public void sortAuthorsIfAppliedTest() {
         BookService givenBookService = new BookService(bookRepository, bookConverter);
         FilterOrder filterOrder = FilterOrder.ASCENDING;
-        String columnName = "authors";
         List<String> strings = new ArrayList<>();
         String first = "abc";
         String second = "cba";
@@ -209,7 +210,7 @@ public class BookServiceTest {
         strings.add(second);
         strings.add(third);
         strings.add(first);
-        givenBookService.sortAuthorsIfApplied(filterOrder, columnName, strings);
+        givenBookService.sortIfApplied(filterOrder, strings);
         assertEquals(strings.get(0), first);
         assertEquals(strings.get(1), second);
         assertEquals(strings.get(2), third);
@@ -219,7 +220,6 @@ public class BookServiceTest {
     public void sortAuthorsIfAppliedTestReverse() {
         BookService givenBookService = new BookService(bookRepository, bookConverter);
         FilterOrder filterOrder = FilterOrder.DESCENDING;
-        String columnName = "authors";
         List<String> strings = new ArrayList<>();
         String first = "abc";
         String second = "cba";
@@ -227,7 +227,7 @@ public class BookServiceTest {
         strings.add(second);
         strings.add(third);
         strings.add(first);
-        givenBookService.sortAuthorsIfApplied(filterOrder, columnName, strings);
+        givenBookService.sortIfApplied(filterOrder, strings);
         assertEquals(strings.get(2), first);
         assertEquals(strings.get(1), second);
         assertEquals(strings.get(0), third);

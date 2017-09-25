@@ -88,29 +88,33 @@ public class BookService {
     public List<BookDto> findAll(FilterOrder filterOrder, String columnName, int pageId) {
         List<Book> books;
         if (filterOrder == FilterOrder.ASCENDING) {
-            books = getFilteredBooks(pageId, Sort.Direction.ASC, columnName);
+            Sort.Order order = new Sort.Order(Sort.Direction.ASC, columnName).ignoreCase();
+            books = getFilteredBooks(pageId, new Sort(order));
         } else {
-            books = getFilteredBooks(pageId, Sort.Direction.DESC, columnName);
+            Sort.Order order = new Sort.Order(Sort.Direction.DESC, columnName).ignoreCase();
+            books = getFilteredBooks(pageId, new Sort(order));
         }
-        books.forEach(book -> sortAuthorsIfApplied(filterOrder, columnName, book.getAuthors()));
+        if(columnName.equalsIgnoreCase("authors")) {
+            books.forEach(book -> sortIfApplied(filterOrder, book.getAuthors()));
+        }
+        if(columnName.equalsIgnoreCase("categories")) {
+            books.forEach(book -> sortIfApplied(filterOrder, book.getCategories()));
+        }
         return bookConverter.toDtos(books);
     }
 
-    void sortAuthorsIfApplied(FilterOrder filterOrder, String columnName, List<String> authors) {
-        if (!columnName.equalsIgnoreCase("authors") || authors == null) {
-            return;
-        }
+    void sortIfApplied(FilterOrder filterOrder, List<String> toSort) {
         if (filterOrder == FilterOrder.ASCENDING) {
-            Collections.sort(authors);
+            Collections.sort(toSort);
         } else {
-            authors.sort(Collections.reverseOrder());
+            toSort.sort(Collections.reverseOrder());
         }
     }
 
-    private List<Book> getFilteredBooks(int pageId, Sort.Direction direction, String param) {
+    private List<Book> getFilteredBooks(int pageId, Sort sort) {
         List<Book> books;
         books = bookRepository.findAll(
-                new PageRequest(pageId, ENTRIES_PER_PAGE, direction, param)).getContent();
+                new PageRequest(pageId, ENTRIES_PER_PAGE, sort)).getContent();
         return books;
     }
 
