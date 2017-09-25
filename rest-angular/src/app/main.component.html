@@ -9,14 +9,16 @@
       <div id="menu">
         <div class="container" id="filters-container">
           <div class="row filter-row">
-              <input #titleBox class="col-sm-4" type="text" placeholder="Title">
-              <input #authorBox class="col-sm-4" type="text" placeholder="Author">
-              <input #minBox class="price-slider col-sm-3" id="min-price" type="number" min="0" max="2000" placeholder="Min price"/>
+            <input #titleBox class="col-sm-4" type="text" placeholder="Title">
+            <input #authorBox class="col-sm-4" type="text" placeholder="Author">
+            <input #minBox class="price-slider col-sm-3" id="min-price" type="number" min="0" max="2000"
+                   placeholder="Min price"/>
           </div>
           <div class="row filter-row">
             <input #categoryBox class="col-sm-4" type="text" placeholder="Category">
             <input #bookstoreBox class="col-sm-4" type="text" placeholder="Bookstore">
-            <input #maxBox class="price-slider col-sm-3" id="max-price" type="number" min="0" max="2000" placeholder="Max price"/>
+            <input #maxBox class="price-slider col-sm-3" id="max-price" type="number" min="0" max="2000"
+                   placeholder="Max price"/>
           </div>
         </div>
         <button class="col-sm-3" id="filter-button" (click)="filter(titleBox.value, authorBox.value,
@@ -26,40 +28,45 @@
       </div>
     </div>
     <div class="col-sm-4">
-    <form class="form-inline">
-      <input #searchBox id="search-box" class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"
-      (keyup)="searchBooks(searchBox.value)">
-      <button class="btn btn-outline-info my-2 my-sm-0" (click)="searchBooks(searchBox.value)">Search</button>
-    </form>
-  </div>
+      <form class="form-inline">
+        <input #searchBox id="search-box" class="form-control mr-sm-2" type="text" placeholder="Search"
+               aria-label="Search"
+               (keyup)="searchBooks(searchBox.value)">
+        <button class="btn btn-outline-info my-2 my-sm-0" (click)="searchBooks(searchBox.value)">Search</button>
+      </form>
+    </div>
   </div>
 </nav>
-<div class="container">
-  <div class="row">
-    <button (click)="previousPage()"><</button>
-    <button (click)="nextPage()">></button>
+<div class="container" style="text-align: center">
+  <div class="row" style="padding: 15px; display: block; margin: auto;">
+    <button [disabled]="currentPage == 0" (click)="firstPage()"><<</button>
+    <button [disabled]="currentPage == 0" (click)="previousPage()"><</button>
+    <label style="padding-left: 5px; padding-right: 5px; padding-top: 5px">
+      Page: {{currentPage + 1}}/{{maxPages + 1}}</label>
+    <button [disabled]="currentPage == maxPages" (click)="nextPage()">></button>
+    <button [disabled]="currentPage == maxPages" (click)="lastPage()">>></button>
   </div>
 </div>
 <div class="container" id="body">
   <div class="container">
     <div class="row text-primary">
-        <span class="col-sm-2">Sort by:</span>
-        <button class="col-sm-2" (click)="sortByTitle()">Title</button>
-        <button class="col-md-2" (click)="sortByAuthor()">Author</button>
-        <button class="col-md-2" (click)="sortByPrice()">Price</button>
-        <button class="col-md-2" (click)="sortByPromo()">Promo</button>
-        <button class="col-sm-2" (click)="reset()">Reset sorting</button>
+      <span class="col-sm-2">Sort by:</span>
+      <button class="col-sm-2" (click)="sortByTitle()">Title</button>
+      <button class="col-md-2" (click)="sortByAuthor()">Author</button>
+      <button class="col-md-2" (click)="sortByPrice()">Price</button>
+      <button class="col-md-2" (click)="sortByPromo()">Promo</button>
+      <button class="col-sm-2" (click)="reset()">Reset sorting</button>
     </div>
   </div>
   <ol class="list-group">
     <li class="list-group-item" *ngFor="let book of books">
       <div class="row justify-content-center">
         <div class="col-sm-2">
-          <img src="{{book.smallThumbnail}}" />
+          <img src="{{book.smallThumbnail}}"/>
         </div>
         <a class="col-sm-8" [routerLink]="['/books', book.industryIdentifier]">
           <span class="h4">{{book.title}}</span>
-          <br />
+          <br/>
           <span class="text-muted"> {{book.authors}} </span>
         </a>
         <div id="buy-row-center" class="col-sm-2 align-items-center">
@@ -68,7 +75,7 @@
           </div>
           <div class="row justify-content-center">
             <span class="promo-details" *ngIf="book.listPriceAmount != 0; else elseBlock">
-              {{this.Math.round(100 - (book.retailPriceAmount * 100) / book.listPriceAmount)}}% lower
+              {{book.discount}}% lower
             </span>
             <ng-template #elseBlock>Free</ng-template>
           </div>
@@ -76,4 +83,14 @@
       </div>
     </li>
   </ol>
+</div>
+<div class="container" style="text-align: center">
+  <div class="row" style="padding: 15px; display: block; margin: auto;">
+    <button (click)="firstPage()"><<</button>
+    <button (click)="previousPage()"><</button>
+    <label style="padding-left: 5px; padding-right: 5px; padding-top: 5px">Page: {{currentPage + 1}}/{{maxPages +
+      1}}</label>
+    <button (click)="nextPage()">></button>
+    <button (click)="lastPage()">>></button>
+  </div>
 </div>

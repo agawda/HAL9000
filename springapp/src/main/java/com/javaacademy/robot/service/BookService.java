@@ -107,7 +107,6 @@ public class BookService {
         }
     }
 
-
     private List<Book> getFilteredBooks(int pageId, Sort.Direction direction, String param) {
         List<Book> books;
         books = bookRepository.findAll(
@@ -121,6 +120,11 @@ public class BookService {
 
     public List<BookDto> getByEverything(String title, String author, String category, String shopName, double minPrice, double maxPrice) {
         List<Book> books = bookRepository.findAllBy(title, author, category, shopName, minPrice, maxPrice);
+        return bookConverter.toDtos(books);
+    }
+
+    public List<BookDto> searchOneKeyword(String query) {
+        List<Book> books = bookRepository.findAllByQuery(query);
         return bookConverter.toDtos(books);
     }
 }

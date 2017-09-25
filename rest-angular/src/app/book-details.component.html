@@ -1,7 +1,7 @@
 <div class="container" id="book-container">
   <div class="row">
     <div class="col-sm-4">
-      <img src="{{book.smallThumbnail}}" />
+      <img src="{{book.smallThumbnail}}"/>
     </div>
     <div class="col-lg-8">
       <h1>{{book.title}}</h1>
@@ -9,9 +9,9 @@
       <h4 class="text-muted">{{book.authors}}</h4>
       <span id="list-price"><del>{{book.listPriceAmount}}PLN</del></span>
       <a class="btn btn-outline-info my-2 my-sm-0" href="{{book.canonicalVolumeLink}}">{{book.retailPriceAmount}}PLN</a>
-      <br />
+      <br/>
       <span class="promo-details" *ngIf="book.listPriceAmount != 0; else elseBlock">
-        {{this.Math.round(100 - (book.retailPriceAmount * 100) / book.listPriceAmount)}}% lower
+              {{book.discount}}% lower
       </span>
       <ng-template #elseBlock>Free</ng-template>
     </div>

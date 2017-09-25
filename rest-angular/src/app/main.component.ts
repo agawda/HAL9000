@@ -37,7 +37,7 @@ export class MainComponent {
     this.currentPage = 0;
 
     bookService.getTotalBooks().then(maxBooks => {
-      this.maxPages = Math.ceil(maxBooks / this.BOOKS_PER_PAGE);
+      this.maxPages = Math.floor(maxBooks / this.BOOKS_PER_PAGE);
     });
     bookService.getPage(this.currentPage).then(books => this.books = books);
   }
@@ -56,8 +56,20 @@ export class MainComponent {
     else this.getRequest();
   }
 
+  firstPage() {
+    this.currentPage = 0;
+    if(this.sortBy !== this.NONE) this.sortRequest();
+    else this.getRequest();
+  }
+
+  lastPage() {
+    this.currentPage = this.maxPages;
+    if(this.sortBy !== this.NONE) this.sortRequest();
+    else this.getRequest();
+  }
+
   searchBooks(param: string) {
-    this.bookService.searchBooks(param).then(books => {
+    this.bookService.searchBooks(param).subscribe(books => {
       this.books = books;
     });
   }
