@@ -14,6 +14,7 @@ export class MainComponent {
 
   private TITLE = "title";
   private AUTHOR = "authors";
+  private CATEGORY = "categories";
   private PRICE = "retailPriceAmount";
   private PROMO = "discount";
   private ASC = "ascending";
@@ -77,45 +78,44 @@ export class MainComponent {
   sortByTitle() {
     this.checkIfSorted(this.TITLE);
     this.sortBy = this.TITLE;
-    if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
-      this.orderBy = this.ASC;
-    } else if(this.orderBy === this.ASC) {
-      this.orderBy = this.DSC;
-    }
+    this.orderRequest();
     this.sortRequest();
   }
 
   sortByAuthor() {
     this.checkIfSorted(this.AUTHOR);
     this.sortBy = this.AUTHOR;
-    if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
-      this.orderBy = this.ASC;
-    } else if(this.orderBy === this.ASC) {
-      this.orderBy = this.DSC;
-    }
+    this.orderRequest();
+    this.sortRequest();
+  }
+
+  sortByCategory() {
+    this.checkIfSorted(this.CATEGORY);
+    this.sortBy = this.CATEGORY;
+    this.orderRequest();
     this.sortRequest();
   }
 
   sortByPrice() {
     this.checkIfSorted(this.PRICE);
     this.sortBy = this.PRICE;
-    if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
-      this.orderBy = this.ASC;
-    } else if(this.orderBy === this.ASC) {
-      this.orderBy = this.DSC;
-    }
+    this.orderRequest();
     this.sortRequest();
   }
 
   sortByPromo() {
     this.checkIfSorted(this.PROMO);
     this.sortBy = this.PROMO;
+    this.orderRequest();
+    this.sortRequest();
+  }
+
+  private orderRequest() {
     if(this.orderBy === this.NONE || this.orderBy === this.DSC) {
       this.orderBy = this.ASC;
     } else if(this.orderBy === this.ASC) {
       this.orderBy = this.DSC;
     }
-    this.sortRequest();
   }
 
   private sortRequest() {

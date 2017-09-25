@@ -6,9 +6,10 @@
     <div class="col-lg-8">
       <h1>{{book.title}}</h1>
       <h3>{{book.subtitle}}</h3>
-      <h4 class="text-muted">{{book.authors}}</h4>
-      <span id="list-price"><del>{{book.listPriceAmount}}PLN</del></span>
-      <a class="btn btn-outline-info my-2 my-sm-0" href="{{book.canonicalVolumeLink}}">{{book.retailPriceAmount}}PLN</a>
+      <h4 class="text-muted">{{book.authors.join(", ")}}</h4>
+      <h4 class="text-info">{{book.categories.join(", ")}}</h4>
+      <span id="list-price"><del>{{book.listPriceAmount}}{{book.retailPriceCurrencyCode}}</del></span>
+      <a class="btn btn-outline-info my-2 my-sm-0" href="{{book.canonicalVolumeLink}}">{{book.retailPriceAmount}}{{book.retailPriceCurrencyCode}}</a>
       <br/>
       <span class="promo-details" *ngIf="book.listPriceAmount != 0; else elseBlock">
               {{book.discount}}% lower
